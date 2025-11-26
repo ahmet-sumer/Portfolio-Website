@@ -9,4 +9,4 @@ Includes:
   > Skills
   > Roadmap
 
-If you need anything to ask me you can email me [ahmetefe@pixrei.xyz](here) or reach me on instagram [phttps://www.instagram.com/pixrei.xyz/](here).
+If you need anything to ask me you can email me [here](mailto:ahmetefe@pixrei.xyz) or reach me on instagram [here](https://www.instagram.com/pixrei.xyz/).
