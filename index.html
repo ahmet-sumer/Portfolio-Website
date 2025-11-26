@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>Pixrei - AI/ML Security Research</title>
+    <style>
+        :root {
+            --color-white: rgba(255, 255, 255, 1);
+            --color-black: rgba(0, 0, 0, 1);
+            --color-cream-50: rgba(252, 252, 249, 1);
+            --color-cream-100: rgba(255, 255, 253, 1);
+            --color-gray-200: rgba(245, 245, 245, 1);
+            --color-gray-300: rgba(167, 169, 169, 1);
+            --color-gray-400: rgba(119, 124, 124, 1);
+            --color-slate-500: rgba(98, 108, 113, 1);
+            --color-slate-900: rgba(19, 52, 59, 1);
+            --color-teal-300: rgba(50, 184, 198, 1);
+            --color-teal-400: rgba(45, 166, 178, 1);
+            --color-teal-500: rgba(33, 128, 141, 1);
+            --color-teal-600: rgba(29, 116, 128, 1);
+            --color-teal-700: rgba(26, 104, 115, 1);
+            --color-charcoal-700: rgba(31, 33, 33, 1);
+            --color-charcoal-800: rgba(38, 40, 40, 1);
+
+            /* Light mode */
+            --bg-primary: var(--color-cream-50);
+            --bg-secondary: var(--color-cream-100);
+            --text-primary: var(--color-slate-900);
+            --text-secondary: var(--color-slate-500);
+            --border-color: rgba(94, 82, 64, 0.15);
+            --accent: var(--color-teal-500);
+            --accent-hover: var(--color-teal-600);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: var(--color-charcoal-700);
+            --bg-secondary: var(--color-charcoal-800);
+            --text-primary: var(--color-gray-200);
+            --text-secondary: var(--color-gray-300);
+            --border-color: rgba(119, 124, 124, 0.2);
+            --accent: var(--color-teal-300);
+            --accent-hover: var(--color-teal-400);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Header */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] header {
+            background-color: rgba(31, 33, 33, 0.9);
+        }
+
+        header nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--accent);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-right {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.2s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: all 0.2s ease;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--border-color);
+            color: var(--accent);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 6rem 0;
+            text-align: center;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            padding: 0.5rem 1.2rem;
+            background: var(--border-color);
+            border-radius: 20px;
+            color: var(--accent);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
+
+        .hero .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-weight: 400;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.85rem 2rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+        }
+
+        /* Section */
+        section {
+            padding: 4rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        section:last-of-type {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .section-subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+        }
+
+        /* About Section */
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .about-text p {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .about-highlights {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .highlight {
+            background: var(--border-color);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        /* Projects Grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .project-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(33, 128, 141, 0.1);
+        }
+
+        .project-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--border-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .project-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .project-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .project-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        /* Skills Section */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .skill-group {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .skill-group h3 {
+            color: var(--accent);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .skill-list {
+            list-style: none;
+        }
+
+        .skill-list li {
+            padding: 0.6rem 0;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .skill-list li::before {
+            content: '→';
+            color: var(--accent);
+            margin-right: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* Learning Status */
+        .learning-status {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: var(--border-color);
+            color: var(--accent);
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .learning-status h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .learning-status p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-bar {
+            background: var(--border-color);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, var(--accent), var(--color-teal-400));
+            height: 100%;
+            width: 16.7%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .roadmap-phases {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .phase-item {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 1rem;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        .phase-item.active {
+            border-color: var(--accent);
+            background: var(--border-color);
+        }
+
+        .phase-item strong {
+            display: block;
+            margin-top: 0.5rem;
+            color: var(--accent);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        .footer-text {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Stats Container */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+            padding-top: 3rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Project Card Enhancements */
+        .project-card.featured {
+            border: 2px solid var(--accent);
+            position: relative;
+        }
+
+        .project-badge {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+
+        .project-impact {
+            background: var(--border-color);
+            padding: 0.8rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            margin: 1rem 0;
+            font-style: italic;
+            color: var(--text-secondary);
+            border-left: 3px solid var(--accent);
+        }
+
+        .project-impact strong {
+            color: var(--text-primary);
+        }
+
+        /* Terminal Section Styles */
+        .terminal-section {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(15, 25, 35, 0.95));
+            border: 1px solid rgba(50, 184, 198, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(50, 184, 198, 0.2);
+        }
+
+        .terminal-dots {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(50, 184, 198, 0.6);
+        }
+
+        .dot:nth-child(1) {
+            background: #ff5f57;
+        }
+
+        .dot:nth-child(2) {
+            background: #ffbd2e;
+        }
+
+        .dot:nth-child(3) {
+            background: #28c940;
+        }
+
+        .terminal-title {
+            color: #a0a0a0;
+            font-size: 0.85rem;
+            flex: 1;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .terminal-content {
+            color: #32b8c6;
+            font-size: 0.9rem;
+            line-height: 1.8;
+            min-height: 250px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .terminal-line {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .terminal-prompt {
+            color: #32b8c6;
+            margin-right: 0.8rem;
+            font-weight: bold;
+        }
+
+        .terminal-command {
+            color: #ffffff;
+            animation: typing 1.5s steps(40, end);
+        }
+
+        .terminal-output {
+            color: #00d084;
+            margin-top: 0.3rem;
+            margin-left: 1.8rem;
+            animation: fadeIn 0.8s ease 1.5s backwards;
+        }
+
+        .terminal-progress {
+            margin-left: 1.8rem;
+            margin-top: 0.3rem;
+        }
+
+        .progress-segment {
+            display: inline-block;
+            width: 2px;
+            height: 1.2em;
+            background: #32b8c6;
+            margin-right: 2px;
+            animation: pulse 0.8s ease infinite;
+        }
+
+        .progress-segment:nth-child(1) { animation-delay: 0s; }
+        .progress-segment:nth-child(2) { animation-delay: 0.1s; }
+        .progress-segment:nth-child(3) { animation-delay: 0.2s; }
+        .progress-segment:nth-child(4) { animation-delay: 0.3s; }
+        .progress-segment:nth-child(5) { animation-delay: 0.4s; }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 1em;
+            background: #32b8c6;
+            animation: blink 1s infinite;
+            margin-left: 2px;
+        }
+
+        @keyframes typing {
+            0% { width: 0; }
+            100% { width: 100%; }
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(-5px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes blink {
+            0%, 49% { background: #32b8c6; }
+            50%, 100% { background: transparent; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .terminal-section {
+                padding: 1.5rem;
+            }
+
+            .terminal-content {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <a href="#" class="logo">pixrei</a>
+            <div class="nav-right">
+                <ul class="nav-links">
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#projects">Projects</a></li>
+                    <li><a href="#skills">Skills</a></li>
+                </ul>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                    <span id="themeIcon">🌙</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-tag">AI/ML Security Research</div>
+                <h1>Pixrei</h1>
+                <p class="subtitle">Building intelligent systems at the intersection of Machine Learning and Cybersecurity</p>
+                <div class="hero-cta">
+                    <button class="btn btn-primary" onclick="document.getElementById('projects').scrollIntoView({behavior: 'smooth'})">View Projects</button>
+                    <a href="#" class="btn btn-secondary">Blog</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about">
+            <div class="container">
+                <h2 class="section-title">About</h2>
+                <p class="section-subtitle">Computer Science Student | AI/ML Researcher | Security Practitioner</p>
+                
+                <div class="about-content">
+                    <div class="about-text">
+                        <p><strong>Building intelligent systems at the intersection of Machine Learning and Cybersecurity.</strong> I'm a 2nd-year Computer Science student with hands-on expertise in both domains, focusing on practical solutions that detect, prevent, and respond to security threats using advanced ML techniques.</p>
+                        
+                        <p>My approach combines rigorous penetration testing experience (25+ CTF boxes, 3+ security certifications) with deep learning research. I'm currently following an intensive 9-month ML mastery roadmap, progressing from fundamentals through production deployment, with a specialized focus on security applications.</p>
+                        
+                        <p>I believe the future of cybersecurity lies in adaptive, intelligent systems—not static rules. Every line of code and every model I build is designed to create real-world impact.</p>
+                    </div>
+                    <div class="about-highlights">
+                        <div class="highlight">🎓 CS Student (2nd Year)</div>
+                        <div class="highlight">📊 ML Researcher</div>
+                        <div class="highlight">🔒 Security Practitioner</div>
+                        <div class="highlight">🛠 Linux/Arch Expert</div>
+                        <div class="highlight">📈 42+ Days ML Learning</div>
+                        <div class="highlight">🎯 2 Deployed Products</div>
+                    </div>
+                </div>
+
+                <!-- Stats Section -->
+                <div class="stats-container">
+                    <div class="stat-item">
+                        <div class="stat-number">25+</div>
+                        <div class="stat-label">CTF Boxes Completed</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">2</div>
+                        <div class="stat-label">ML Products Deployed</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">5</div>
+                        <div class="stat-label">Active Projects</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">3</div>
+                        <div class="stat-label">Security Courses</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects">
+            <div class="container">
+                <h2 class="section-title">Featured Projects</h2>
+                <p class="section-subtitle">ML + Security in Action</p>
+                
+                <div class="projects-grid">
+                    <div class="project-card">
+                        <div class="project-badge">🚀 In Progress</div>
+                        <div class="project-icon">🎯</div>
+                        <h3>Network Intrusion Detection</h3>
+                        <p>Building a Flask-based ML system for real-time network anomaly detection. Developing ensemble models using Scikit-learn to identify suspicious patterns in network traffic. Focus: accuracy, latency optimization, and practical deployment architecture.</p>
+                        <div class="project-impact">
+                            <strong>Status:</strong> Model training phase | Expected: Scikit-learn phase completion
+                        </div>
+                        <div class="project-tags">
+                            <span class="tag">Flask</span>
+                            <span class="tag">Scikit-learn</span>
+                            <span class="tag">Network Analysis</span>
+                            <span class="tag">Python</span>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-badge">🚀 In Progress</div>
+                        <div class="project-icon">🔍</div>
+                        <h3>Phishing Detection System</h3>
+                        <p>Developing an intelligent phishing detection system combining NLP and ML. Designing models to identify malicious URLs, phishing emails, and credential harvesting attempts. Targeting lightweight architecture for browser extension or API deployment.</p>
+                        <div class="project-impact">
+                            <strong>Status:</strong> Feature engineering phase | Expected: Deep learning phase (Month 2-3)
+                        </div>
+                        <div class="project-tags">
+                            <span class="tag">NLP</span>
+                            <span class="tag">TensorFlow</span>
+                            <span class="tag">JavaScript</span>
+                            <span class="tag">Security</span>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-badge">📋 Planning</div>
+                        <div class="project-icon">📊</div>
+                        <h3>Advanced Security ML Research</h3>
+                        <p>Planned research into adversarial robustness and concept drift in security ML models. Investigating production deployment challenges, model interpretability, and adaptive learning systems for real-world threat detection scenarios.</p>
+                        <div class="project-impact">
+                            <strong>Status:</strong> Research phase | Expected: Month 4-5 (post-Deep Learning)
+                        </div>
+                        <div class="project-tags">
+                            <span class="tag">Research</span>
+                            <span class="tag">TensorFlow/PyTorch</span>
+                            <span class="tag">Adversarial ML</span>
+                            <span class="tag">Production ML</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills">
+            <div class="container">
+                <h2 class="section-title">Skills & Expertise</h2>
+                <p class="section-subtitle">Tools and technologies I work with</p>
+                
+                <div class="skills-grid">
+                    <div class="skill-group">
+                        <h3>Machine Learning</h3>
+                        <ul class="skill-list">
+                            <li>NumPy & Pandas</li>
+                            <li>Scikit-learn</li>
+                            <li>TensorFlow / PyTorch</li>
+                            <li>Model Deployment</li>
+                            <li>Feature Engineering</li>
+                        </ul>
+                    </div>
+
+                    <div class="skill-group">
+                        <h3>Cybersecurity</h3>
+                        <ul class="skill-list">
+                            <li>Penetration Testing</li>
+                            <li>Network Analysis</li>
+                            <li>Security Research</li>
+                            <li>Threat Detection</li>
+                            <li>System Hardening</li>
+                        </ul>
+                    </div>
+
+                    <div class="skill-group">
+                        <h3>Programming</h3>
+                        <ul class="skill-list">
+                            <li>Python (Advanced)</li>
+                            <li>JavaScript / HTML / CSS</li>
+                            <li>Flask / FastAPI</li>
+                            <li>Linux (Arch, CentOS)</li>
+                            <li>Docker & Deployment</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Terminal Workspace -->
+        <section>
+            <div class="container">
+                <h2 class="section-title" style="margin-bottom: 2rem;">Development Workspace</h2>
+                <div class="terminal-section">
+                    <div class="terminal-header">
+                        <div class="terminal-dots">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                        <div class="terminal-title">pixrei@ml-researcher ~/projects</div>
+                    </div>
+                    <div class="terminal-content">
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">$</span>
+                            <span class="terminal-command">python train_model.py --phase ml-fundamentals</span>
+                        </div>
+                        <div class="terminal-output">Initializing ML Fundamentals Phase...</div>
+                        <div class="terminal-output">Loading NumPy & Pandas frameworks... ✓</div>
+                        <div class="terminal-output">Current Week: 1-2 | Focus: Array operations, DataFrames</div>
+                        <div style="margin-top: 1rem; margin-left: 1.8rem;">
+                            <div style="color: #a0a0a0; font-size: 0.85rem;">Training Progress:</div>
+                            <div class="terminal-progress">
+                                <span class="progress-segment"></span>
+                                <span class="progress-segment"></span>
+                                <span class="progress-segment"></span>
+                                <span class="progress-segment"></span>
+                                <span class="progress-segment"></span>
+                            </div>
+                        </div>
+                        <div class="terminal-output" style="margin-top: 1.5rem;">→ Next Phase: Scikit-learn & First Projects</div>
+                        <div class="terminal-line" style="margin-top: 1rem;">
+                            <span class="terminal-prompt">$</span>
+                            <span class="cursor"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Learning Status -->
+        <section>
+            <div class="container">
+                <div class="learning-status">
+                    <div class="status-badge">🚀 In Progress</div>
+                    <h3>9-Month ML Mastery Roadmap</h3>
+                    <p>Intensive learning path combining ML fundamentals with security specialization. Structured progression from theory to production-ready systems.</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-secondary);">Phase 1 (Month 1/9) | Current: NumPy & Pandas (Week 1-2)</p>
+                    
+                    <div class="roadmap-phases">
+                        <div class="phase-item active">
+                            <div>📊 Phase 1</div>
+                            <strong>ML Fundamentals</strong>
+                        </div>
+                        <div class="phase-item">
+                            <div>🧠 Phase 2-3</div>
+                            <strong>Deep Learning</strong>
+                        </div>
+                        <div class="phase-item">
+                            <div>🔒 Phase 4-5</div>
+                            <strong>Security ML</strong>
+                        </div>
+                        <div class="phase-item">
+                            <div>🚀 Phase 6-7</div>
+                            <strong>Deployment</strong>
+                        </div>
+                        <div class="phase-item">
+                            <div>🎯 Phase 8-9</div>
+                            <strong>Polish & Launch</strong>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 2rem; padding: 1.5rem; background: var(--border-color); border-radius: 8px; text-align: left;">
+                        <h4 style="color: var(--accent); margin-bottom: 0.8rem;">Learning Focus Areas:</h4>
+                        <ul style="list-style: none; color: var(--text-secondary); font-size: 0.9rem;">
+                            <li>✓ <strong>ML Foundations:</strong> NumPy, Pandas, Scikit-learn, Feature Engineering</li>
+                            <li>✓ <strong>Deep Learning:</strong> TensorFlow, PyTorch, CNN, RNN, Transformers</li>
+                            <li>✓ <strong>Security Applications:</strong> Malware detection, Intrusion detection, Adversarial ML</li>
+                            <li>✓ <strong>Production Systems:</strong> Flask, Docker, Model deployment, API design</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="https://github.com/Ahmet-sumer" target="_blank" rel="noopener">GitHub</a>
+                <a href="https://linkedin.com" target="_blank" rel="noopener">LinkedIn</a>
+                <a href="mailto:contact@pixrei.xyz">Email</a>
+                <a href="/blog">Blog</a>
+            </div>
+            <p class="footer-text">Building intelligent security systems at the intersection of ML & Cybersecurity. &copy; 2025 Pixrei.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Dark/Light Mode Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const html = document.documentElement;
+
+        // Check saved theme or system preference
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+            setTheme(theme);
+        }
+
+        function setTheme(theme) {
+            html.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+        });
+
+        // Initialize theme on page load
+        initTheme();
+    </script>
+</body>
+</html>
