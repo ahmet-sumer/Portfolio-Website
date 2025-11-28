@@ -638,314 +638,314 @@
             margin-bottom: 0.5rem;
         }
 
-        .learning-status p {
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-        }
+          .learning-status p {
+              color: var(--text-secondary);
+              margin-bottom: 1.5rem;
+          }
 
-        .progress-bar {
-            background: var(--border-color);
-            height: 8px;
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 1.5rem 0;
-        }
+          .progress-bar {
+              background: var(--border-color);
+              height: 8px;
+              border-radius: 4px;
+              overflow: hidden;
+              margin: 1.5rem 0;
+          }
 
-        .progress-fill {
-            background: linear-gradient(90deg, var(--accent), var(--color-teal-400));
-            height: 100%;
-            width: 16.7%;
-            border-radius: 4px;
-            transition: width 0.5s ease;
-        }
+          .progress-fill {
+              background: linear-gradient(90deg, var(--accent), var(--color-teal-400));
+              height: 100%;
+              width: 16.7%;
+              border-radius: 4px;
+              transition: width 0.5s ease;
+          }
 
-        .roadmap-phases {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin-top: 2rem;
-        }
+          .roadmap-phases {
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+              gap: 1rem;
+              margin-top: 2rem;
+          }
 
-        .phase-item {
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 1rem;
-            text-align: center;
-            font-size: 0.85rem;
-            transition: all 0.2s ease;
-        }
+          .phase-item {
+              background: var(--bg-primary);
+              border: 1px solid var(--border-color);
+              border-radius: 6px;
+              padding: 1rem;
+              text-align: center;
+              font-size: 0.85rem;
+              transition: all 0.2s ease;
+          }
 
-        .phase-item:hover {
-            border-color: var(--accent);
-            background: var(--border-color);
-        }
+          .phase-item:hover {
+              border-color: var(--accent);
+              background: var(--border-color);
+          }
 
-        .phase-item.active {
-            border-color: var(--accent);
-            background: var(--border-color);
-        }
+          .phase-item.active {
+              border-color: var(--accent);
+              background: var(--border-color);
+          }
 
-        .phase-item strong {
-            display: block;
-            margin-top: 0.5rem;
-            color: var(--accent);
-        }
+          .phase-item strong {
+              display: block;
+              margin-top: 0.5rem;
+              color: var(--accent);
+          }
 
-        /* Footer */
-        footer {
-            background: var(--bg-secondary);
-            border-top: 1px solid var(--border-color);
-            padding: 3rem 0;
-            text-align: center;
-        }
+          /* Footer */
+          footer {
+              background: var(--bg-secondary);
+              border-top: 1px solid var(--border-color);
+              padding: 3rem 0;
+              text-align: center;
+          }
 
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-        }
+          .footer-links {
+              display: flex;
+              justify-content: center;
+              gap: 2rem;
+              margin-bottom: 1.5rem;
+              flex-wrap: wrap;
+          }
 
-        .footer-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.95rem;
-            transition: color 0.2s ease;
-        }
+          .footer-links a {
+              color: var(--text-secondary);
+              text-decoration: none;
+              font-size: 0.95rem;
+              transition: color 0.2s ease;
+          }
 
-        .footer-links a:hover {
-            color: var(--accent);
-        }
+          .footer-links a:hover {
+              color: var(--accent);
+          }
 
-        .footer-text {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
+          .footer-text {
+              color: var(--text-secondary);
+              font-size: 0.9rem;
+          }
 
-        /* Modal Popup */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            animation: fadeIn 0.3s ease;
-            backdrop-filter: blur(4px);
-        }
+          /* Modal Popup */
+          .modal {
+              display: none;
+              position: fixed;
+              z-index: 2000;
+              left: 0;
+              top: 0;
+              width: 100%;
+              height: 100%;
+              background-color: rgba(0, 0, 0, 0.5);
+              animation: fadeIn 0.3s ease;
+              backdrop-filter: blur(4px);
+          }
 
-        .modal.show {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+          .modal.show {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+          }
 
-        .modal-content {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 2.5rem;
-            max-width: 500px;
-            width: 90%;
-            position: relative;
-            animation: slideInUp 0.4s ease;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        }
+          .modal-content {
+              background: var(--bg-secondary);
+              border: 1px solid var(--border-color);
+              border-radius: 12px;
+              padding: 2.5rem;
+              max-width: 500px;
+              width: 90%;
+              position: relative;
+              animation: slideInUp 0.4s ease;
+              box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+          }
 
-        .modal-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 6px;
-        }
+          .modal-close {
+              position: absolute;
+              top: 1rem;
+              right: 1rem;
+              background: none;
+              border: none;
+              color: var(--text-secondary);
+              font-size: 1.5rem;
+              cursor: pointer;
+              transition: all 0.2s ease;
+              width: 32px;
+              height: 32px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              border-radius: 6px;
+          }
 
-        .modal-close:hover {
-            background: var(--border-color);
-            color: var(--accent);
-        }
+          .modal-close:hover {
+              background: var(--border-color);
+              color: var(--accent);
+          }
 
-        .modal-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: var(--accent);
-        }
+          .modal-title {
+              font-size: 1.5rem;
+              font-weight: 700;
+              margin-bottom: 1rem;
+              color: var(--accent);
+          }
 
-        .modal-description {
-            color: var(--text-secondary);
-            line-height: 1.8;
-            margin-bottom: 1.5rem;
-        }
+          .modal-description {
+              color: var(--text-secondary);
+              line-height: 1.8;
+              margin-bottom: 1.5rem;
+          }
 
-        .modal-status {
-            background: var(--border-color);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-            border-left: 3px solid var(--accent);
-        }
+          .modal-status {
+              background: var(--border-color);
+              padding: 1rem;
+              border-radius: 8px;
+              margin-bottom: 1.5rem;
+              border-left: 3px solid var(--accent);
+          }
 
-        .modal-status-label {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.5rem;
-        }
+          .modal-status-label {
+              font-size: 0.85rem;
+              color: var(--text-secondary);
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+              margin-bottom: 0.5rem;
+          }
 
-        .modal-status-value {
-            color: var(--accent);
-            font-weight: 600;
-            font-size: 1rem;
-        }
+          .modal-status-value {
+              color: var(--accent);
+              font-weight: 600;
+              font-size: 1rem;
+          }
 
-        .modal-footer {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
+          .modal-footer {
+              display: flex;
+              gap: 1rem;
+              margin-top: 2rem;
+          }
 
-        .modal-btn {
-            flex: 1;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
+          .modal-btn {
+              flex: 1;
+              padding: 0.75rem 1.5rem;
+              border: none;
+              border-radius: 8px;
+              font-size: 0.95rem;
+              font-weight: 600;
+              cursor: pointer;
+              transition: all 0.2s ease;
+          }
 
-        .modal-btn-primary {
-            background: var(--accent);
-            color: white;
-        }
+          .modal-btn-primary {
+              background: var(--accent);
+              color: white;
+          }
 
-        .modal-btn-primary:hover {
-            background: var(--accent-hover);
-            transform: translateY(-2px);
-        }
+          .modal-btn-primary:hover {
+              background: var(--accent-hover);
+              transform: translateY(-2px);
+          }
 
-        .modal-btn-secondary {
-            background: var(--border-color);
-            color: var(--text-primary);
-        }
+          .modal-btn-secondary {
+              background: var(--border-color);
+              color: var(--text-primary);
+          }
 
-        .modal-btn-secondary:hover {
-            background: rgba(33, 128, 141, 0.2);
-        }
+          .modal-btn-secondary:hover {
+              background: rgba(33, 128, 141, 0.2);
+          }
 
-        /* Animations */
-        @keyframes typing {
-            0% { width: 0; }
-            100% { width: 100%; }
-        }
+          /* Animations */
+          @keyframes typing {
+              0% { width: 0; }
+              100% { width: 100%; }
+          }
 
-        @keyframes fadeIn {
-            0% {
-                opacity: 0;
-                transform: translateY(-5px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+          @keyframes fadeIn {
+              0% {
+                  opacity: 0;
+                  transform: translateY(-5px);
+              }
+              100% {
+                  opacity: 1;
+                  transform: translateY(0);
+              }
+          }
 
-        @keyframes slideInUp {
-            0% {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+          @keyframes slideInUp {
+              0% {
+                  opacity: 0;
+                  transform: translateY(20px);
+              }
+              100% {
+                  opacity: 1;
+                  transform: translateY(0);
+              }
+          }
 
-        @keyframes blink {
-            0%, 49% { background: #32b8c6; }
-            50%, 100% { background: transparent; }
-        }
+          @keyframes blink {
+              0%, 49% { background: #32b8c6; }
+              50%, 100% { background: transparent; }
+          }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
-        }
+          @keyframes pulse {
+              0%, 100% { opacity: 0.3; }
+              50% { opacity: 1; }
+          }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
+          /* Responsive */
+          @media (max-width: 768px) {
+              .hero h1 {
+                  font-size: 2.5rem;
+              }
 
-            .nav-links {
-                display: none;
-            }
+              .nav-links {
+                  display: none;
+              }
 
-            .about-content {
-                grid-template-columns: 1fr;
-            }
+              .about-content {
+                  grid-template-columns: 1fr;
+              }
 
-            .projects-grid {
-                grid-template-columns: 1fr;
-            }
+              .projects-grid {
+                  grid-template-columns: 1fr;
+              }
 
-            .skills-grid {
-                grid-template-columns: 1fr;
-            }
+              .skills-grid {
+                  grid-template-columns: 1fr;
+              }
 
-            .terminal-section {
-                padding: 1.5rem;
-            }
+              .terminal-section {
+                  padding: 1.5rem;
+              }
 
-            .terminal-content {
-                font-size: 0.8rem;
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Header -->
-    <header>
-        <nav>
-            <a href="#" class="logo">PixRei</a>
-            <div class="nav-right">
-                <ul class="nav-links">
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#projects">Projects</a></li>
-                    <li><a href="#skills">Skills</a></li>
-                </ul>
-                <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
-                    <span id="themeIcon">🌙</span>
-                </button>
-            </div>
-        </nav>
-    </header>
+              .terminal-content {
+                  font-size: 0.8rem;
+              }
+          }
+      </style>
+  </head>
+  <body>
+      <!-- Header -->
+      <header>
+          <nav>
+              <a href="#" class="logo">PixRei</a>
+              <div class="nav-right">
+                  <ul class="nav-links">
+                      <li><a href="#about">About</a></li>
+                      <li><a href="#projects">Projects</a></li>
+                      <li><a href="#skills">Skills</a></li>
+                  </ul>
+                  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                      <span id="themeIcon">🌙</span>
+                  </button>
+              </div>
+          </nav>
+      </header>
 
-    <!-- Main Content -->
-    <main>
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="container">
-                <div class="hero-tag">AI/ML Security Research</div>
-                <h1>PixRei</h1>
-                <p class="subtitle">Building intelligent systems at the intersection of Machine Learning and Cybersecurity</p>
+      <!-- Main Content -->
+      <main>
+          <!-- Hero Section -->
+          <section class="hero">
+              <div class="container">
+                  <div class="hero-tag">AI/ML Security Research</div>
+                  <h1>PixRei</h1>
+                  <p class="subtitle">Building intelligent systems at the intersection of Machine Learning and Cybersecurity</p>
                 <div class="hero-cta">
                     <button class="btn btn-primary" onclick="document.getElementById('projects').scrollIntoView({behavior: 'smooth'})">View Projects</button>
                     <button class="btn btn-secondary" id="blogBtn">Blog</button>
@@ -957,7 +957,7 @@
         <section id="about">
             <div class="container">
                 <h2 class="section-title">About</h2>
-                <p class="section-subtitle">Computer Science Student | AI/ML Researcher | Security Practitioner</p>
+                <p class="section-subtitle">Computer Science Student | AI/ML Researcher | Security Practitioner | E-Commerce Entrepreneur</p>
 
                 <div class="about-content">
                     <div class="about-text">
@@ -965,12 +965,12 @@
 
                         <p>My approach combines rigorous penetration testing experience (25+ CTF boxes, 3+ security certifications) with deep learning research. I'm currently following an intensive 9-month ML mastery roadmap, progressing from fundamentals through production deployment, with a specialized focus on security applications.</p>
 
-                        <p>I believe the future of cybersecurity lies in adaptive, intelligent systems—not static rules. Every line of code and every model I build is designed to make real-world impact.</p>
+                        <p>While currently working on E-Commerce, I believe the future of cybersecurity lies in adaptive, intelligent systems—not static rules. Every line of code and every model I build is designed to make real-world impact.</p>
                     </div>
 
                     <div class="stats-container">
                         <div class="stat-item">
-                            <div class="stat-number">25</div>
+                            <div class="stat-number">25+</div>
                             <div class="stat-label">CTF Boxes Completed</div>
                         </div>
                         <div class="stat-item">
