@@ -1,18 +1,58 @@
-Hey Everyone!
+```
+   ___  _     ___     _
+  / _ \(_)_ _| _ \___(_)
+ | |_) | \ \ /|   / -_) |
+ | .__/|_/_\_\|_|_\___|_|
+ |_|
+```
 
-This is my current website - It is still developing
+## Personal Portfolio
 
-Includes:
-  > About me 
-  
-  > Development Workspace
-  
-  > Featured Projects
-  
-  > Skills
-  
-  > Roadmap
+Minimal, techy portfolio showcasing my journey in AI Security & Red Team research.
 
-If you need anything to ask me you can email me [here](mailto:ahmetefe@pixrei.xyz) or reach me on instagram [here](https://www.instagram.com/pixrei.xyz/).
+### Stack
 
-And you can reach website [here](pixrei.xyz)
+- Pure HTML/CSS/JS
+- JetBrains Mono
+- Zero dependencies
+
+### Features
+
+```
+├── Dark/Light mode toggle
+├── Floating particle effects
+├── Terminal-style UI elements
+├── Scroll animations
+├── Responsive design
+└── Mouse trail sparkles
+```
+
+### Sections
+
+- **About** - Background, stats, live terminal status
+- **Projects** - Security ML applications in progress
+- **Skills** - ML, Offensive Security, Development
+- **Roadmap** - 9-month AI Security journey tracker
+
+### Run Locally
+
+```bash
+# Just open in browser
+xdg-open index.html
+
+# Or serve with Python
+python -m http.server 8000
+```
+
+### Links
+
+- [Live Site](https://pixrei.xyz)
+- [Email](mailto:ahmetefe@pixrei.xyz)
+- [GitHub](https://github.com/Ahmet-sumer)
+- [LinkedIn](https://linkedin.com/in/ahmet-sumer)
+
+---
+
+```
+> Building AI-powered security systems_
+```
