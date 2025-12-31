@@ -1,47 +1,37 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="color-scheme" content="light dark">
-    <title>PixRei - AI/ML Security Research</title>
+    <title>PixRei - AI Security Research</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --color-white: rgba(255, 255, 255, 1);
-            --color-black: rgba(0, 0, 0, 1);
-            --color-cream-50: rgba(252, 252, 249, 1);
-            --color-cream-100: rgba(255, 255, 253, 1);
-            --color-gray-200: rgba(245, 245, 245, 1);
-            --color-gray-300: rgba(167, 169, 169, 1);
-            --color-gray-400: rgba(119, 124, 124, 1);
-            --color-slate-500: rgba(98, 108, 113, 1);
-            --color-slate-900: rgba(19, 52, 59, 1);
-            --color-teal-300: rgba(50, 184, 198, 1);
-            --color-teal-400: rgba(45, 166, 178, 1);
-            --color-teal-500: rgba(33, 128, 141, 1);
-            --color-teal-600: rgba(29, 116, 128, 1);
-            --color-teal-700: rgba(26, 104, 115, 1);
-            --color-charcoal-700: rgba(31, 33, 33, 1);
-            --color-charcoal-800: rgba(38, 40, 40, 1);
-
-            /* Light mode */
-            --bg-primary: var(--color-cream-50);
-            --bg-secondary: var(--color-cream-100);
-            --text-primary: var(--color-slate-900);
-            --text-secondary: var(--color-slate-500);
-            --border-color: rgba(94, 82, 64, 0.15);
-            --accent: var(--color-teal-500);
-            --accent-hover: var(--color-teal-600);
+            --bg-primary: #0a0f0a;
+            --bg-secondary: #0d120d;
+            --bg-card: #111611;
+            --text-primary: #c8d6c8;
+            --text-secondary: #6b7c6b;
+            --text-muted: #3d4a3d;
+            --accent: #00ff88;
+            --accent-dim: #00cc6a;
+            --accent-glow: rgba(0, 255, 136, 0.15);
+            --border: #1a251a;
+            --border-glow: rgba(0, 255, 136, 0.3);
         }
 
-        [data-theme="dark"] {
-            --bg-primary: var(--color-charcoal-700);
-            --bg-secondary: var(--color-charcoal-800);
-            --text-primary: var(--color-gray-200);
-            --text-secondary: var(--color-gray-300);
-            --border-color: rgba(119, 124, 124, 0.2);
-            --accent: var(--color-teal-300);
-            --accent-hover: var(--color-teal-400);
+        [data-theme="light"] {
+            --bg-primary: #f0f4f0;
+            --bg-secondary: #e8ece8;
+            --bg-card: #ffffff;
+            --text-primary: #1a251a;
+            --text-secondary: #4a5a4a;
+            --text-muted: #8a9a8a;
+            --accent: #00994d;
+            --accent-dim: #007a3d;
+            --accent-glow: rgba(0, 153, 77, 0.1);
+            --border: #d0dcd0;
+            --border-glow: rgba(0, 153, 77, 0.2);
         }
 
         * {
@@ -55,44 +45,107 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: var(--bg-primary);
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
             color: var(--text-primary);
             line-height: 1.6;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            overflow-x: hidden;
         }
 
-        /* Header */
-        header {
-            position: sticky;
+        .scanlines {
+            position: fixed;
             top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 0, 0, 0.03) 2px,
+                rgba(0, 0, 0, 0.03) 4px
+            );
+        }
+
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            background-image:
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.3;
+        }
+
+        .glow-orb {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .glow-orb-1 { top: -200px; right: -200px; }
+        .glow-orb-2 { bottom: -200px; left: -200px; animation-delay: -10s; }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-30px, 30px); }
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
             z-index: 1000;
-            background: var(--bg-primary);
-            border-bottom: 1px solid var(--border-color);
-            backdrop-filter: blur(10px);
-            background-color: rgba(255, 255, 255, 0.9);
-            transition: all 0.3s ease;
+            background: rgba(10, 15, 10, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
         }
 
-        [data-theme="dark"] header {
-            background-color: rgba(31, 33, 33, 0.9);
+        [data-theme="light"] header {
+            background: rgba(240, 244, 240, 0.9);
         }
 
-        header nav {
+        nav {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 1.5rem 2rem;
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         .logo {
-            font-size: 1.5rem;
-            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.3rem;
+            font-weight: 700;
             color: var(--accent);
             text-decoration: none;
-            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo::before {
+            content: '>';
+            opacity: 0.5;
+        }
+
+        .logo::after {
+            content: '_';
+            animation: blink 1s infinite;
         }
 
         .nav-right {
@@ -103,16 +156,16 @@
 
         .nav-links {
             display: flex;
-            gap: 2.5rem;
+            gap: 2rem;
             list-style: none;
         }
 
         .nav-links a {
+            font-family: 'JetBrains Mono', monospace;
             color: var(--text-secondary);
             text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 500;
-            transition: color 0.2s ease;
+            font-size: 0.85rem;
+            transition: all 0.2s;
             position: relative;
         }
 
@@ -120,290 +173,378 @@
             color: var(--accent);
         }
 
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--accent);
-            transition: width 0.2s ease;
+        .nav-links a::before {
+            content: './';
+            opacity: 0.4;
         }
 
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-
-        /* Theme Toggle */
         .theme-toggle {
-            background: none;
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            width: 44px;
-            height: 44px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--accent);
+            width: 40px;
+            height: 40px;
             border-radius: 8px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-            transition: all 0.2s ease;
+            font-size: 1rem;
+            transition: all 0.2s;
         }
 
         .theme-toggle:hover {
-            background-color: var(--border-color);
-            color: var(--accent);
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
         }
 
-        /* Container */
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 2rem;
         }
 
-        /* Hero Section */
         .hero {
-            padding: 6rem 0;
-            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 80px;
+            position: relative;
         }
 
-        .hero-tag {
-            display: inline-block;
-            padding: 0.5rem 1.2rem;
-            background: var(--border-color);
-            border-radius: 20px;
+        .hero-content {
+            text-align: center;
+            animation: fadeUp 1s ease;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
             color: var(--accent);
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            letter-spacing: 0.5px;
+            background: var(--accent-glow);
+            border: 1px solid var(--accent);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
         }
 
         .hero h1 {
-            font-size: 3.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 4rem;
             font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero .tagline {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--text-secondary);
             margin-bottom: 0.5rem;
-            line-height: 1.1;
-            letter-spacing: -1px;
         }
 
         .hero .subtitle {
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-            font-weight: 400;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 3rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .hero-cta {
             display: flex;
-            gap: 1.5rem;
+            gap: 1rem;
             justify-content: center;
-            margin-top: 2rem;
         }
 
         .btn {
-            padding: 0.85rem 2rem;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 0.8rem 1.8rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s ease;
-            border: none;
+            transition: all 0.2s;
             text-decoration: none;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .btn-primary {
             background: var(--accent);
-            color: white;
+            color: var(--bg-primary);
+            border: none;
         }
 
         .btn-primary:hover {
-            background: var(--accent-hover);
+            box-shadow: 0 0 30px var(--accent-glow), 0 0 60px var(--accent-glow);
             transform: translateY(-2px);
         }
 
         .btn-secondary {
             background: transparent;
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--border);
             color: var(--text-primary);
         }
 
         .btn-secondary:hover {
-            background: var(--border-color);
+            border-color: var(--accent);
+            color: var(--accent);
         }
 
-        /* Section */
         section {
-            padding: 4rem 0;
-            border-bottom: 1px solid var(--border-color);
+            padding: 6rem 0;
         }
 
-        section:last-of-type {
-            border-bottom: none;
+        .section-header {
+            margin-bottom: 3rem;
+        }
+
+        .section-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            display: block;
         }
 
         .section-title {
+            font-family: 'JetBrains Mono', monospace;
             font-size: 2rem;
-            font-weight: 700;
+            font-weight: 600;
             margin-bottom: 0.5rem;
-            letter-spacing: -0.5px;
         }
 
         .section-subtitle {
-            font-size: 1rem;
             color: var(--text-secondary);
-            margin-bottom: 2.5rem;
+            font-size: 0.95rem;
         }
 
-        /* About Section */
-        .about-content {
+        .about-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            align-items: center;
+            gap: 4rem;
+            align-items: start;
         }
 
         .about-text p {
-            margin-bottom: 1rem;
             color: var(--text-secondary);
+            margin-bottom: 1.5rem;
             line-height: 1.8;
         }
 
-        .about-highlights {
-            display: flex;
-            gap: 1.5rem;
-            margin-top: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .highlight {
-            background: var(--border-color);
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 500;
+        .about-text strong {
             color: var(--text-primary);
-            animation: slideInUp 0.6s ease-out;
         }
 
-        /* Stats */
-        .stats-container {
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-            padding-top: 3rem;
-            border-top: 1px solid var(--border-color);
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
         }
 
-        .stat-item {
-            text-align: center;
-            padding: 1.5rem;
-            background: var(--bg-secondary);
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
             border-radius: 8px;
-            border: 1px solid var(--border-color);
-            animation: slideInUp 0.8s ease-out;
+            padding: 1.5rem;
+            transition: all 0.3s;
         }
 
-        .stat-number {
+        .stat-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace;
             font-size: 2rem;
             font-weight: 700;
             color: var(--accent);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.3rem;
         }
 
         .stat-label {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--text-secondary);
-            font-weight: 500;
         }
 
-        /* Projects Grid */
+        .terminal-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 3rem;
+        }
+
+        .terminal-header {
+            background: var(--bg-card);
+            padding: 0.8rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: #ff5f57; }
+        .terminal-dot.yellow { background: #ffbd2e; }
+        .terminal-dot.green { background: #28c940; }
+
+        .terminal-title {
+            flex: 1;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .terminal-body {
+            padding: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            min-height: 200px;
+        }
+
+        .terminal-line {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .terminal-prompt {
+            color: var(--accent);
+            margin-right: 0.5rem;
+        }
+
+        .terminal-cmd {
+            color: var(--text-primary);
+        }
+
+        .terminal-output {
+            color: var(--text-secondary);
+            margin-left: 1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .terminal-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: var(--accent);
+            animation: blink 1s infinite;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
         .projects-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
         }
 
         .project-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
             border-radius: 12px;
             padding: 2rem;
-            transition: all 0.3s ease;
-            animation: slideInUp 0.6s ease-out;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
         }
 
         .project-card:hover {
             border-color: var(--accent);
             transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(33, 128, 141, 0.1);
+            box-shadow: 0 10px 40px var(--accent-glow);
+        }
+
+        .project-card:hover::before {
+            opacity: 1;
+        }
+
+        .project-status {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .project-status.active {
+            background: var(--accent-glow);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+        }
+
+        .project-status.planned {
+            background: rgba(255, 189, 46, 0.1);
+            color: #ffbd2e;
+            border: 1px solid rgba(255, 189, 46, 0.3);
         }
 
         .project-icon {
-            width: 48px;
-            height: 48px;
-            background: var(--border-color);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-size: 2rem;
             margin-bottom: 1rem;
-            font-size: 1.5rem;
         }
 
         .project-card h3 {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
         }
 
         .project-card p {
             color: var(--text-secondary);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             margin-bottom: 1.5rem;
             line-height: 1.6;
-        }
-
-        /* Project Badge Styling */
-        .project-badge {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-bottom: 1rem;
-            letter-spacing: 0.5px;
-            transition: all 0.3s ease;
-            border: 1.5px solid;
-        }
-
-        .project-badge.in-progress {
-            background: rgba(33, 128, 141, 0.1);
-            color: var(--accent);
-            border-color: var(--accent);
-        }
-
-        .project-badge.in-progress:hover {
-            background: rgba(33, 128, 141, 0.15);
-            box-shadow: 0 0 12px rgba(33, 128, 141, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .project-badge.planning {
-            background: rgba(167, 169, 169, 0.1);
-            color: var(--text-secondary);
-            border-color: var(--color-gray-300);
-        }
-
-        .project-badge.planning:hover {
-            background: rgba(167, 169, 169, 0.15);
-            box-shadow: 0 0 12px rgba(167, 169, 169, 0.2);
-            transform: translateY(-2px);
         }
 
         .project-tags {
@@ -413,48 +554,53 @@
         }
 
         .tag {
-            background: var(--border-color);
-            color: var(--text-secondary);
-            padding: 0.4rem 0.8rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            padding: 0.3rem 0.6rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
             border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
+            color: var(--text-secondary);
+            transition: all 0.2s;
         }
 
         .tag:hover {
-            background: var(--accent);
-            color: white;
-            transform: scale(1.05);
+            border-color: var(--accent);
+            color: var(--accent);
         }
 
-        /* Skills Grid */
         .skills-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
+            gap: 1.5rem;
         }
 
-        .skill-group {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
+        .skill-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
             border-radius: 12px;
             padding: 2rem;
-            transition: all 0.3s ease;
-            animation: slideInUp 0.7s ease-out;
+            transition: all 0.3s;
         }
 
-        .skill-group:hover {
+        .skill-card:hover {
             border-color: var(--accent);
-            box-shadow: 0 8px 24px rgba(33, 128, 141, 0.1);
-            transform: translateY(-4px);
+            box-shadow: 0 0 30px var(--accent-glow);
         }
 
-        .skill-group h3 {
+        .skill-card h3 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
             color: var(--accent);
-            font-size: 1.1rem;
             margin-bottom: 1.5rem;
-            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .skill-card h3::before {
+            content: '#';
+            opacity: 0.5;
         }
 
         .skill-list {
@@ -462,12 +608,14 @@
         }
 
         .skill-list li {
-            padding: 0.6rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
             color: var(--text-secondary);
-            font-size: 0.95rem;
+            padding: 0.5rem 0;
             display: flex;
             align-items: center;
-            transition: all 0.2s ease;
+            gap: 0.8rem;
+            transition: all 0.2s;
         }
 
         .skill-list li:hover {
@@ -478,810 +626,838 @@
         .skill-list li::before {
             content: '→';
             color: var(--accent);
-            margin-right: 0.8rem;
-            font-weight: bold;
+            font-size: 0.8rem;
         }
 
-        /* Terminal Section */
-        .terminal-section {
-            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(15, 25, 35, 0.95));
-            border: 1px solid rgba(50, 184, 198, 0.2);
+        .roadmap-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 2rem;
-            margin-top: 2rem;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            overflow: hidden;
-            position: relative;
-            animation: slideInUp 0.8s ease-out;
+            padding: 2.5rem;
+            margin-top: 3rem;
         }
 
-        .terminal-header {
+        .roadmap-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 0.8rem;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid rgba(50, 184, 198, 0.2);
+            margin-bottom: 2rem;
         }
 
-        .terminal-dots {
-            display: flex;
-            gap: 0.5rem;
+        .roadmap-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
         }
 
-        .dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: rgba(50, 184, 198, 0.6);
-        }
-
-        .dot:nth-child(1) {
-            background: #ff5f57;
-        }
-
-        .dot:nth-child(2) {
-            background: #ffbd2e;
-        }
-
-        .dot:nth-child(3) {
-            background: #28c940;
-        }
-
-        .terminal-title {
-            color: #a0a0a0;
-            font-size: 0.85rem;
-            flex: 1;
-            text-align: center;
-            font-weight: 500;
-        }
-
-        .terminal-content {
-            color: #32b8c6;
+        .roadmap-progress-text {
+            font-family: 'JetBrains Mono', monospace;
             font-size: 0.9rem;
-            line-height: 1.8;
-            min-height: 250px;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .terminal-line {
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-        }
-
-        .terminal-prompt {
-            color: #32b8c6;
-            margin-right: 0.8rem;
-            font-weight: bold;
-        }
-
-        .terminal-command {
-            color: #ffffff;
-            animation: typing 1.5s steps(40, end);
-        }
-
-        .terminal-output {
-            color: #00d084;
-            margin-top: 0.3rem;
-            margin-left: 1.8rem;
-            animation: fadeIn 0.8s ease 1.5s backwards;
-        }
-
-        .terminal-progress {
-            margin-left: 1.8rem;
-            margin-top: 0.3rem;
-        }
-
-        .progress-segment {
-            display: inline-block;
-            width: 2px;
-            height: 1.2em;
-            background: #32b8c6;
-            margin-right: 2px;
-            animation: pulse 0.8s ease infinite;
-        }
-
-        .progress-segment:nth-child(1) {
-            animation-delay: 0s;
-        }
-
-        .progress-segment:nth-child(2) {
-            animation-delay: 0.1s;
-        }
-
-        .progress-segment:nth-child(3) {
-            animation-delay: 0.2s;
-        }
-
-        .progress-segment:nth-child(4) {
-            animation-delay: 0.3s;
-        }
-
-        .progress-segment:nth-child(5) {
-            animation-delay: 0.4s;
-        }
-
-        .cursor {
-            display: inline-block;
-            width: 8px;
-            height: 1em;
-            background: #32b8c6;
-            animation: blink 1s infinite;
-            margin-left: 2px;
-        }
-
-        /* Learning Status */
-        .learning-status {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 2rem;
-            text-align: center;
-            margin-top: 2rem;
-            animation: slideInUp 0.8s ease-out;
-        }
-
-        .status-badge {
-            display: inline-block;
-            background: var(--border-color);
             color: var(--accent);
-            padding: 0.8rem 1.5rem;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-dim), var(--accent));
+            border-radius: 2px;
+            width: 12.6%;
+            transition: width 0.5s;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .roadmap-phases {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+
+        .phase {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
             border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.9rem;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .phase.active {
+            border-color: var(--accent);
+            background: var(--accent-glow);
+        }
+
+        .phase.completed {
+            border-color: var(--accent-dim);
+        }
+
+        .phase.completed::after {
+            content: ' ✓';
+            color: var(--accent);
+        }
+
+        .phase-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.3rem;
+        }
+
+        .phase-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+        }
+
+        .phase.active .phase-name {
+            color: var(--accent);
+        }
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links a {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        .footer-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2.5rem;
+            max-width: 450px;
+            width: 90%;
+            position: relative;
+            animation: fadeUp 0.3s ease;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: var(--border);
+            color: var(--accent);
+        }
+
+        .modal-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.3rem;
+            color: var(--accent);
             margin-bottom: 1rem;
         }
 
-        .learning-status h3 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
+        .modal-text {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
         }
 
-          .learning-status p {
-              color: var(--text-secondary);
-              margin-bottom: 1.5rem;
-          }
+        .modal-btn {
+            width: 100%;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 0.8rem;
+            background: var(--accent);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
 
-          .progress-bar {
-              background: var(--border-color);
-              height: 8px;
-              border-radius: 4px;
-              overflow: hidden;
-              margin: 1.5rem 0;
-          }
+        .modal-btn:hover {
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
 
-          .progress-fill {
-              background: linear-gradient(90deg, var(--accent), var(--color-teal-400));
-              height: 100%;
-              width: 27.5%;
-              border-radius: 4px;
-              transition: width 0.5s ease;
-          }
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
 
-          .roadmap-phases {
-              display: grid;
-              grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-              gap: 1rem;
-              margin-top: 2rem;
-          }
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--accent);
+            border-radius: 50%;
+            opacity: 0;
+            animation: sparkle 4s ease-in-out infinite;
+        }
 
-          .phase-item {
-              background: var(--bg-primary);
-              border: 1px solid var(--border-color);
-              border-radius: 6px;
-              padding: 1rem;
-              text-align: center;
-              font-size: 0.85rem;
-              transition: all 0.2s ease;
-          }
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: translateY(0) scale(0); }
+            50% { opacity: 0.8; transform: translateY(-20px) scale(1); }
+        }
 
-          .phase-item:hover {
-              border-color: var(--accent);
-              background: var(--border-color);
-          }
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+        }
 
-          .phase-item.active {
-              border-color: var(--accent);
-              background: var(--border-color);
-          }
+        .logo:hover {
+            animation: glitch 0.3s ease;
+        }
 
-          .phase-item strong {
-              display: block;
-              margin-top: 0.5rem;
-              color: var(--accent);
-          }
+        @keyframes glitch {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(2px, -2px); }
+            60% { transform: translate(-2px, -2px); }
+            80% { transform: translate(2px, 2px); }
+        }
 
-          /* Footer */
-          footer {
-              background: var(--bg-secondary);
-              border-top: 1px solid var(--border-color);
-              padding: 3rem 0;
-              text-align: center;
-          }
+        .hero h1 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 4.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--accent);
+            text-shadow: 0 0 40px var(--accent-glow), 0 0 80px var(--accent-glow);
+            letter-spacing: -2px;
+        }
 
-          .footer-links {
-              display: flex;
-              justify-content: center;
-              gap: 2rem;
-              margin-bottom: 1.5rem;
-              flex-wrap: wrap;
-          }
+        .typing-text {
+            display: inline;
+            border-right: 2px solid var(--accent);
+            animation: typing-cursor 0.8s infinite;
+        }
 
-          .footer-links a {
-              color: var(--text-secondary);
-              text-decoration: none;
-              font-size: 0.95rem;
-              transition: color 0.2s ease;
-          }
+        @keyframes typing-cursor {
+            0%, 100% { border-color: var(--accent); }
+            50% { border-color: transparent; }
+        }
 
-          .footer-links a:hover {
-              color: var(--accent);
-          }
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
 
-          .footer-text {
-              color: var(--text-secondary);
-              font-size: 0.9rem;
-          }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
+            transition: left 0.5s;
+        }
 
-          /* Modal Popup */
-          .modal {
-              display: none;
-              position: fixed;
-              z-index: 2000;
-              left: 0;
-              top: 0;
-              width: 100%;
-              height: 100%;
-              background-color: rgba(0, 0, 0, 0.5);
-              animation: fadeIn 0.3s ease;
-              backdrop-filter: blur(4px);
-          }
+        .stat-card:hover::before {
+            left: 100%;
+        }
 
-          .modal.show {
-              display: flex;
-              align-items: center;
-              justify-content: center;
-          }
+        .skill-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
 
-          .modal-content {
-              background: var(--bg-secondary);
-              border: 1px solid var(--border-color);
-              border-radius: 12px;
-              padding: 2.5rem;
-              max-width: 500px;
-              width: 90%;
-              position: relative;
-              animation: slideInUp 0.4s ease;
-              box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-          }
+        .skill-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 12px;
+            padding: 1px;
+            background: linear-gradient(135deg, var(--accent), transparent, var(--accent));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
 
-          .modal-close {
-              position: absolute;
-              top: 1rem;
-              right: 1rem;
-              background: none;
-              border: none;
-              color: var(--text-secondary);
-              font-size: 1.5rem;
-              cursor: pointer;
-              transition: all 0.2s ease;
-              width: 32px;
-              height: 32px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              border-radius: 6px;
-          }
+        .skill-card:hover::before {
+            opacity: 1;
+        }
 
-          .modal-close:hover {
-              background: var(--border-color);
-              color: var(--accent);
-          }
+        .project-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
 
-          .modal-title {
-              font-size: 1.5rem;
-              font-weight: 700;
-              margin-bottom: 1rem;
-              color: var(--accent);
-          }
+        .project-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, var(--accent-glow), transparent, transparent);
+            animation: rotate-border 4s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
 
-          .modal-description {
-              color: var(--text-secondary);
-              line-height: 1.8;
-              margin-bottom: 1.5rem;
-          }
+        .project-card:hover::after {
+            opacity: 1;
+        }
 
-          .modal-status {
-              background: var(--border-color);
-              padding: 1rem;
-              border-radius: 8px;
-              margin-bottom: 1.5rem;
-              border-left: 3px solid var(--accent);
-          }
+        .project-card > * {
+            position: relative;
+            z-index: 2;
+        }
 
-          .modal-status-label {
-              font-size: 0.85rem;
-              color: var(--text-secondary);
-              text-transform: uppercase;
-              letter-spacing: 0.5px;
-              margin-bottom: 0.5rem;
-          }
+        @keyframes rotate-border {
+            100% { transform: rotate(360deg); }
+        }
 
-          .modal-status-value {
-              color: var(--accent);
-              font-weight: 600;
-              font-size: 1rem;
-          }
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg-primary);
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
 
-          .modal-footer {
-              display: flex;
-              gap: 1rem;
-              margin-top: 2rem;
-          }
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
 
-          .modal-btn {
-              flex: 1;
-              padding: 0.75rem 1.5rem;
-              border: none;
-              border-radius: 8px;
-              font-size: 0.95rem;
-              font-weight: 600;
-              cursor: pointer;
-              transition: all 0.2s ease;
-          }
+        .btn-primary:hover::before {
+            width: 300px;
+            height: 300px;
+        }
 
-          .modal-btn-primary {
-              background: var(--accent);
-              color: white;
-          }
+        .terminal-body {
+            padding: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            min-height: 200px;
+            position: relative;
+        }
 
-          .modal-btn-primary:hover {
-              background: var(--accent-hover);
-              transform: translateY(-2px);
-          }
+        .terminal-body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background: linear-gradient(180deg, var(--bg-secondary), transparent);
+            pointer-events: none;
+            opacity: 0.5;
+        }
 
-          .modal-btn-secondary {
-              background: var(--border-color);
-              color: var(--text-primary);
-          }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--accent);
+            background: var(--accent-glow);
+            border: 1px solid var(--accent);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+            animation: badge-glow 2s ease-in-out infinite;
+        }
 
-          .modal-btn-secondary:hover {
-              background: rgba(33, 128, 141, 0.2);
-          }
+        @keyframes badge-glow {
+            0%, 100% { box-shadow: 0 0 5px var(--accent-glow); }
+            50% { box-shadow: 0 0 20px var(--accent-glow), 0 0 30px var(--accent-glow); }
+        }
 
-          /* Animations */
-          @keyframes typing {
-              0% { width: 0; }
-              100% { width: 100%; }
-          }
+        .phase {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: default;
+        }
 
-          @keyframes fadeIn {
-              0% {
-                  opacity: 0;
-                  transform: translateY(-5px);
-              }
-              100% {
-                  opacity: 1;
-                  transform: translateY(0);
-              }
-          }
+        .phase:hover {
+            transform: translateY(-2px);
+            border-color: var(--text-muted);
+        }
 
-          @keyframes slideInUp {
-              0% {
-                  opacity: 0;
-                  transform: translateY(20px);
-              }
-              100% {
-                  opacity: 1;
-                  transform: translateY(0);
-              }
-          }
+        .phase.active {
+            border-color: var(--accent);
+            background: var(--accent-glow);
+            animation: active-pulse 2s ease-in-out infinite;
+        }
 
-          @keyframes blink {
-              0%, 49% { background: #32b8c6; }
-              50%, 100% { background: transparent; }
-          }
+        @keyframes active-pulse {
+            0%, 100% { box-shadow: 0 0 0 0 var(--accent-glow); }
+            50% { box-shadow: 0 0 20px 5px var(--accent-glow); }
+        }
 
-          @keyframes pulse {
-              0%, 100% { opacity: 0.3; }
-              50% { opacity: 1; }
-          }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-dim), var(--accent));
+            border-radius: 2px;
+            width: 12.6%;
+            transition: width 0.5s;
+            box-shadow: 0 0 10px var(--accent-glow);
+            position: relative;
+            overflow: hidden;
+        }
 
-          /* Responsive */
-          @media (max-width: 768px) {
-              .hero h1 {
-                  font-size: 2.5rem;
-              }
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: progress-shine 2s ease-in-out infinite;
+        }
 
-              .nav-links {
-                  display: none;
-              }
+        @keyframes progress-shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
 
-              .about-content {
-                  grid-template-columns: 1fr;
-              }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
 
-              .projects-grid {
-                  grid-template-columns: 1fr;
-              }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
-              .skills-grid {
-                  grid-template-columns: 1fr;
-              }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .nav-links { display: none; }
+            .about-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .projects-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="scanlines"></div>
+    <div class="grid-bg"></div>
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+    <div class="particles" id="particles"></div>
 
-              .terminal-section {
-                  padding: 1.5rem;
-              }
+    <header>
+        <nav>
+            <a href="#" class="logo">PixRei</a>
+            <div class="nav-right">
+                <ul class="nav-links">
+                    <li><a href="#about">about</a></li>
+                    <li><a href="#projects">projects</a></li>
+                    <li><a href="#skills">skills</a></li>
+                </ul>
+                <button class="theme-toggle" id="themeToggle">◐</button>
+            </div>
+        </nav>
+    </header>
 
-              .terminal-content {
-                  font-size: 0.8rem;
-              }
-          }
-      </style>
-  </head>
-  <body>
-      <!-- Header -->
-      <header>
-          <nav>
-              <a href="#" class="logo">PixRei</a>
-              <div class="nav-right">
-                  <ul class="nav-links">
-                      <li><a href="#about">About</a></li>
-                      <li><a href="#projects">Projects</a></li>
-                      <li><a href="#skills">Skills</a></li>
-                  </ul>
-                  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
-                      <span id="themeIcon">🌙</span>
-                  </button>
-              </div>
-          </nav>
-      </header>
-
-      <!-- Main Content -->
-      <main>
-          <!-- Hero Section -->
-          <section class="hero">
-              <div class="container">
-                  <div class="hero-tag">AI/ML Security Research</div>
-                  <h1>PixRei</h1>
-                  <p class="subtitle">Building intelligent systems at the intersection of Machine Learning and Cybersecurity</p>
-                <div class="hero-cta">
-                    <button class="btn btn-primary" onclick="document.getElementById('projects').scrollIntoView({behavior: 'smooth'})">View Projects</button>
-                    <button class="btn btn-secondary" id="blogBtn">Blog</button>
+    <main>
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="status-badge">
+                        <span class="status-dot"></span>
+                        <span>MONTH 2 // PYTORCH FUNDAMENTALS</span>
+                    </div>
+                    <h1>PixRei</h1>
+                    <p class="tagline">AI Security Researcher & Red Team Engineer</p>
+                    <p class="subtitle">Building intelligent systems at the intersection of ML and offensive security</p>
+                    <div class="hero-cta">
+                        <button class="btn btn-primary" onclick="document.getElementById('projects').scrollIntoView({behavior: 'smooth'})">
+                            <span>View Projects</span>
+                        </button>
+                        <button class="btn btn-secondary" id="blogBtn">
+                            <span>./blog</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- About Section -->
         <section id="about">
             <div class="container">
-                <h2 class="section-title">About</h2>
-                <p class="section-subtitle">Computer Science Student | AI/ML Researcher | Security Practitioner | E-Commerce Entrepreneur</p>
+                <div class="section-header">
+                    <span class="section-tag">// who am i</span>
+                    <h2 class="section-title">About</h2>
+                </div>
 
-                <div class="about-content">
+                <div class="about-grid">
                     <div class="about-text">
-                        <p><strong>Building intelligent systems at the intersection of Machine Learning and Cybersecurity.</strong> I'm a Computer Science student with hands-on expertise in both domains, focusing on practical solutions that detect, prevent, and respond to security threats using advanced ML techniques.</p>
-
-                        <p>My approach combines rigorous penetration testing experience (25+ CTF boxes, 3+ security certifications) with deep learning research. I'm currently following an intensive 9-month ML mastery roadmap, progressing from fundamentals through production deployment, with a specialized focus on security applications.</p>
-
-                        <p>While currently working on E-Commerce, I believe the future of cybersecurity lies in adaptive, intelligent systems—not static rules. Every line of code and every model I build is designed to make real-world impact.</p>
+                        <p><strong>Computer Science student</strong> with hands-on expertise in ML and cybersecurity. Currently on an intensive 9-month roadmap to become a Remote AI Security / Red Team Engineer.</p>
+                        <p>My approach combines <strong>penetration testing experience</strong> (45+ CTF boxes, 3 security certifications) with deep learning research. I believe the future of security lies in adaptive, intelligent systems—not static rules.</p>
+                        <p>Every model I build, every line of code I write is designed for <strong>real-world impact</strong>. Currently focused on PyTorch fundamentals and security ML applications.</p>
                     </div>
 
-                    <div class="stats-container">
-                        <div class="stat-item">
-                            <div class="stat-number">45+</div>
-                            <div class="stat-label">CTF Boxes Completed</div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">45+</div>
+                            <div class="stat-label">CTF Boxes Pwned</div>
                         </div>
-                        <div class="stat-item">
-                            <div class="stat-number">2</div>
-                            <div class="stat-label">ML Products Developing</div>
+                        <div class="stat-card">
+                            <div class="stat-value">6%</div>
+                            <div class="stat-label">THM Global Rank</div>
                         </div>
-                        <div class="stat-item">
-                            <div class="stat-number">6%</div>
-                            <div class="stat-label">THM Rank</div>
+                        <div class="stat-card">
+                            <div class="stat-value">3</div>
+                            <div class="stat-label">Security Certs</div>
                         </div>
-                        <div class="stat-item">
-                            <div class="stat-number">3</div>
-                            <div class="stat-label">Security Courses</div>
+                        <div class="stat-card">
+                            <div class="stat-value">12.6%</div>
+                            <div class="stat-label">Roadmap Progress</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="terminal-card">
+                    <div class="terminal-header">
+                        <div class="terminal-dot red"></div>
+                        <div class="terminal-dot yellow"></div>
+                        <div class="terminal-dot green"></div>
+                        <div class="terminal-title">pixrei@arch:~/ai-security</div>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">$</span>
+                            <span class="terminal-cmd">cat current_status.txt</span>
+                        </div>
+                        <div class="terminal-output">→ Month: 2/9 | Day: 34/270</div>
+                        <div class="terminal-output">→ Focus: PyTorch + CNN Foundations</div>
+                        <div class="terminal-output">→ Status: IN_PROGRESS</div>
+                        <div class="terminal-line" style="margin-top: 1rem;">
+                            <span class="terminal-prompt">$</span>
+                            <span class="terminal-cmd">./train_model.py --target red_team</span>
+                        </div>
+                        <div class="terminal-output" style="color: var(--accent);">→ Initializing deep learning pipeline...</div>
+                        <div class="terminal-output" style="color: var(--accent);">→ Loading security datasets...</div>
+                        <div class="terminal-line" style="margin-top: 0.5rem;">
+                            <span class="terminal-prompt">$</span>
+                            <span class="terminal-cursor"></span>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Projects Section -->
         <section id="projects">
             <div class="container">
-                <h2 class="section-title">Featured Projects</h2>
-                <p class="section-subtitle">ML + Security in Action</p>
+                <div class="section-header">
+                    <span class="section-tag">// what i build</span>
+                    <h2 class="section-title">Projects</h2>
+                    <p class="section-subtitle">Security-focused ML applications</p>
+                </div>
 
                 <div class="projects-grid">
                     <div class="project-card">
-                        <div class="project-badge in-progress">📍 In Progress</div>
-                        <div class="project-icon">🔍</div>
+                        <div class="project-status active">IN_PROGRESS</div>
+                        <div class="project-icon">⚡</div>
                         <h3>Network Intrusion Detection</h3>
-                        <p>Building a Flask-based ML system for real-time network anomaly detection. Developing ensemble models using Scikit-learn to identify suspicious patterns in network traffic. Focus: accuracy, latency optimization, and practical deployment architecture.</p>
+                        <p>Real-time ML system for network anomaly detection. Building ensemble models with Flask backend for identifying suspicious traffic patterns.</p>
                         <div class="project-tags">
                             <span class="tag">Flask</span>
                             <span class="tag">Scikit-learn</span>
-                            <span class="tag">Network Analysis</span>
-                            <span class="tag">Python</span>
+                            <span class="tag">Network</span>
                         </div>
                     </div>
 
                     <div class="project-card">
-                        <div class="project-badge in-progress">📍 In Progress</div>
-                        <div class="project-icon">📧</div>
+                        <div class="project-status active">IN_PROGRESS</div>
+                        <div class="project-icon">🎣</div>
                         <h3>Phishing Detection System</h3>
-                        <p>Developing an intelligent phishing detection system combining NLP and ML. Designing models to identify malicious URLs, phishing emails, and credential harvesting attempts. Targeting lightweight architecture for browser extension or API deployment.</p>
+                        <p>Intelligent phishing detection combining NLP and ML. Identifying malicious URLs and credential harvesting attempts.</p>
                         <div class="project-tags">
                             <span class="tag">NLP</span>
                             <span class="tag">TensorFlow</span>
-                            <span class="tag">JavaScript</span>
                             <span class="tag">Security</span>
                         </div>
                     </div>
 
                     <div class="project-card">
-                        <div class="project-badge planning">📋 Planning</div>
-                        <div class="project-icon">🎯</div>
-                        <h3>Advanced Security ML Research</h3>
-                        <p>Planned research into adversarial robustness and concept drift in security ML models. Investigating production deployment challenges, model interpretability, and adaptive learning systems for real-world threat detection scenarios.</p>
+                        <div class="project-status planned">PLANNED</div>
+                        <div class="project-icon">🔓</div>
+                        <h3>Adversarial ML Research</h3>
+                        <p>Research into adversarial robustness and evasion techniques. Model interpretability for security applications.</p>
                         <div class="project-tags">
+                            <span class="tag">PyTorch</span>
+                            <span class="tag">Adversarial</span>
                             <span class="tag">Research</span>
-                            <span class="tag">TensorFlow/PyTorch</span>
-                            <span class="tag">Adversarial ML</span>
-                            <span class="tag">Production ML</span>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Terminal Workspace -->
-        <section>
-            <div class="container">
-                <h2 class="section-title" style="margin-bottom: 2rem;">Development Workspace</h2>
-
-                <div class="terminal-section">
-                    <div class="terminal-header">
-                        <div class="terminal-dots">
-                            <div class="dot"></div>
-                            <div class="dot"></div>
-                            <div class="dot"></div>
-                        </div>
-                        <div class="terminal-title">pixrei@ml-researcher:~/projects</div>
-                    </div>
-
-                    <div class="terminal-content">
-                        <div class="terminal-line">
-                            <span class="terminal-prompt">$</span>
-                            <span class="terminal-command">python train_model.py --phase deep_learning</span>
-                        </div>
-
-                        <div class="terminal-output">Initializing Deep Learning Phase...</div>
-                        <div class="terminal-output">Loading Scikit-learn & First ML Project</div>
-                        <div class="terminal-output">Current Week 5-6 Focus: Scikit-learn</div>
-
-                        <div style="margin-top: 1rem; margin-left: 1.8rem;">
-                            <div style="color: #a0a0a0; font-size: 0.85rem;">Training Progress</div>
-                            <div class="terminal-progress">
-                                <span class="progress-segment"></span>
-                                <span class="progress-segment"></span>
-                                <span class="progress-segment"></span>
-                                <span class="progress-segment"></span>
-                                <span class="progress-segment"></span>
-                            </div>
-                        </div>
-
-                        <div class="terminal-output" style="margin-top: 1.5rem;">Next Phase: House Price & Customer Analysis</div>
-
-                        <div class="terminal-line" style="margin-top: 1rem;">
-                            <span class="terminal-prompt">$</span>
-                            <span class="cursor"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Skills Section -->
         <section id="skills">
             <div class="container">
-                <h2 class="section-title">Skills & Expertise</h2>
-                <p class="section-subtitle">Tools and technologies I work with</p>
+                <div class="section-header">
+                    <span class="section-tag">// my stack</span>
+                    <h2 class="section-title">Skills</h2>
+                </div>
 
                 <div class="skills-grid">
-                    <div class="skill-group">
+                    <div class="skill-card">
                         <h3>Machine Learning</h3>
                         <ul class="skill-list">
                             <li>NumPy & Pandas</li>
                             <li>Scikit-learn</li>
-                            <li>TensorFlow / PyTorch</li>
+                            <li>PyTorch / TensorFlow</li>
                             <li>Model Deployment</li>
-                            <li>Feature Engineering</li>
                         </ul>
                     </div>
 
-                    <div class="skill-group">
-                        <h3>Cybersecurity</h3>
+                    <div class="skill-card">
+                        <h3>Offensive Security</h3>
                         <ul class="skill-list">
                             <li>Penetration Testing</li>
                             <li>Network Analysis</li>
-                            <li>Security Research</li>
                             <li>Threat Detection</li>
-                            <li>System Hardening</li>
+                            <li>CTF / HTB / THM</li>
                         </ul>
                     </div>
 
-                    <div class="skill-group">
-                        <h3>Programming</h3>
+                    <div class="skill-card">
+                        <h3>Development</h3>
                         <ul class="skill-list">
                             <li>Python</li>
-                            <li>JavaScript / HTML / CSS</li>
                             <li>Flask / FastAPI</li>
-                            <li>Linux (I use Arch BTW)</li>
-                            <li>Docker & Deployment</li>
+                            <li>Linux (Arch BTW)</li>
+                            <li>Docker</li>
                         </ul>
                     </div>
                 </div>
-            </div>
-        </section>
 
-        <!-- Learning Status -->
-        <section>
-            <div class="container">
-                <div class="learning-status">
-                    <div class="status-badge">In Progress</div>
-                    <h3>9-Month AI/ML + Security Roadmap</h3>
-                    <p>Intensive learning path combining ML fundamentals with security specialization. Structured progression from theory to production-ready systems.</p>
-
+                <div class="roadmap-section">
+                    <div class="roadmap-header">
+                        <div class="roadmap-title">9-Month AI Security Roadmap</div>
+                        <div class="roadmap-progress-text">34/270 days (12.6%)</div>
+                    </div>
                     <div class="progress-bar">
                         <div class="progress-fill"></div>
                     </div>
-
-                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-secondary);">Phase 2 (Month 2/9) - Current: Scikit-learn & ML Project (Week 5-6)</p>
-
                     <div class="roadmap-phases">
-                        <div class="phase-item">
-                            <div>Phase 1</div>
-                            <strong>ML Fundamentals</strong>
+                        <div class="phase completed">
+                            <div class="phase-label">Month 1</div>
+                            <div class="phase-name">ML Basics</div>
                         </div>
-                        <div class="phase-item active">
-                            <div>Phase 2-3</div>
-                            <strong>Deep Learning</strong>
+                        <div class="phase active">
+                            <div class="phase-label">Month 2</div>
+                            <div class="phase-name">PyTorch</div>
                         </div>
-                        <div class="phase-item">
-                            <div>Phase 4-5</div>
-                            <strong>Security ML</strong>
+                        <div class="phase">
+                            <div class="phase-label">Month 3</div>
+                            <div class="phase-name">Adversarial</div>
                         </div>
-                        <div class="phase-item">
-                            <div>Phase 6-7</div>
-                            <strong>Deployment</strong>
+                        <div class="phase">
+                            <div class="phase-label">Month 4</div>
+                            <div class="phase-name">LLM Red Team</div>
                         </div>
-                        <div class="phase-item">
-                            <div>Phase 8-9</div>
-                            <strong>Polish & Launch</strong>
+                        <div class="phase">
+                            <div class="phase-label">Month 5-6</div>
+                            <div class="phase-name">Advanced</div>
                         </div>
-                    </div>
-
-                    <div style="margin-top: 2rem; padding: 1.5rem; background: var(--border-color); border-radius: 8px; text-align: left;">
-                        <h4 style="color: var(--accent); margin-bottom: 0.8rem;">Learning Focus Areas</h4>
-                        <ul style="list-style: none; color: var(--text-secondary); font-size: 0.9rem;">
-                            <li>✓ <strong>ML Foundations:</strong> NumPy, Pandas, Scikit-learn, Feature Engineering</li>
-                            <li>✓ <strong>Deep Learning:</strong> TensorFlow, PyTorch, CNN, RNN, Transformers</li>
-                            <li>✓ <strong>Security Applications:</strong> Malware detection, Intrusion detection, Adversarial ML</li>
-                            <li>✓ <strong>Production Systems:</strong> Flask, Docker, Model deployment, API design</li>
-                        </ul>
+                        <div class="phase">
+                            <div class="phase-label">Month 7-9</div>
+                            <div class="phase-name">Deploy</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Footer -->
     <footer>
         <div class="container">
             <div class="footer-links">
-                <a href="https://github.com/Ahmet-sumer" target="_blank" rel="noopener">GitHub</a>
-                <a href="https://linkedin.com/in/ahmet-sumer" target="_blank" rel="noopener">LinkedIn</a>
+                <a href="https://github.com/Ahmet-sumer" target="_blank">GitHub</a>
+                <a href="https://linkedin.com/in/ahmet-sumer" target="_blank">LinkedIn</a>
                 <a href="mailto:ahmetefe@pixrei.xyz">Email</a>
             </div>
-            <p class="footer-text">Building intelligent security systems at the intersection of ML & Cybersecurity. © 2025 PixRei.</p>
+            <p class="footer-text">© 2025 PixRei // Building AI-powered security systems</p>
         </div>
     </footer>
 
-    <!-- Blog Modal -->
     <div class="modal" id="blogModal">
         <div class="modal-content">
-            <button class="modal-close" id="closeModal">&times;</button>
-            <h2 class="modal-title">📝 Blog</h2>
-            <p class="modal-description">Detailed articles about machine learning, cybersecurity research, and my learning journey are coming soon. Stay tuned for in-depth technical posts and security insights!</p>
-            
-            <div class="modal-status">
-                <div class="modal-status-label">Current Status</div>
-                <div class="modal-status-value">🚧 Under Construction</div>
-            </div>
-
-            <p class="modal-description" style="font-size: 0.9rem;">Expected topics:</p>
-            <ul style="list-style: none; color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;">
-                <li>✓ ML Fundamentals & Implementation</li>
-                <li>✓ Security Research & Analysis</li>
-                <li>✓ Project Walkthroughs</li>
-                <li>✓ Learning Progress & Insights</li>
-            </ul>
-
-            <div class="modal-footer">
-                <button class="modal-btn modal-btn-primary" id="notifyBtn">Notify Me</button>
-                <button class="modal-btn modal-btn-secondary" id="closeModalBtn">Close</button>
-            </div>
+            <button class="modal-close" id="closeModal">×</button>
+            <h2 class="modal-title">./blog</h2>
+            <p class="modal-text">Technical write-ups on ML, security research, and red team operations coming soon. Currently focused on building—content drops when projects ship.</p>
+            <button class="modal-btn" id="closeModalBtn">Got it</button>
         </div>
     </div>
 
     <script>
-        // Blog Modal Functions
-        const blogBtn = document.getElementById('blogBtn');
-        const blogModal = document.getElementById('blogModal');
-        const closeModal = document.getElementById('closeModal');
-        const closeModalBtn = document.getElementById('closeModalBtn');
-        const notifyBtn = document.getElementById('notifyBtn');
-
-        blogBtn.addEventListener('click', () => {
-            blogModal.classList.add('show');
-        });
-
-        closeModal.addEventListener('click', () => {
-            blogModal.classList.remove('show');
-        });
-
-        closeModalBtn.addEventListener('click', () => {
-            blogModal.classList.remove('show');
-        });
-
-        notifyBtn.addEventListener('click', () => {
-            notifyBtn.textContent = '✓ Notification enabled';
-            notifyBtn.style.background = 'var(--accent)';
-            notifyBtn.disabled = true;
-            setTimeout(() => {
-                blogModal.classList.remove('show');
-            }, 1500);
-        });
-
-        // Close modal when clicking outside
-        blogModal.addEventListener('click', (e) => {
-            if (e.target === blogModal) {
-                blogModal.classList.remove('show');
-            }
-        });
-
-        // Dark/Light Mode Toggle
         const themeToggle = document.getElementById('themeToggle');
-        const themeIcon = document.getElementById('themeIcon');
         const html = document.documentElement;
-
-        // Check saved theme or system preference
-        function initTheme() {
-            const savedTheme = localStorage.getItem('theme');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
-            setTheme(theme);
-        }
 
         function setTheme(theme) {
             html.setAttribute('data-theme', theme);
             localStorage.setItem('theme', theme);
-            themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
+            themeToggle.textContent = theme === 'dark' ? '◐' : '◑';
         }
 
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        setTheme(savedTheme);
+
         themeToggle.addEventListener('click', () => {
-            const currentTheme = html.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            setTheme(newTheme);
+            const current = html.getAttribute('data-theme');
+            setTheme(current === 'dark' ? 'light' : 'dark');
         });
 
-        // Initialize theme on page load
-        initTheme();
+        const blogBtn = document.getElementById('blogBtn');
+        const blogModal = document.getElementById('blogModal');
+        const closeModal = document.getElementById('closeModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+        blogBtn.addEventListener('click', () => blogModal.classList.add('show'));
+        closeModal.addEventListener('click', () => blogModal.classList.remove('show'));
+        closeModalBtn.addEventListener('click', () => blogModal.classList.remove('show'));
+        blogModal.addEventListener('click', (e) => {
+            if (e.target === blogModal) blogModal.classList.remove('show');
+        });
+
+        const particlesContainer = document.getElementById('particles');
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 4 + 's';
+            particle.style.animationDuration = (3 + Math.random() * 3) + 's';
+            const size = 1 + Math.random() * 3;
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            particlesContainer.appendChild(particle);
+        }
+        for (let i = 0; i < 50; i++) createParticle();
+
+        const fadeElements = document.querySelectorAll('.project-card, .skill-card, .stat-card, .terminal-card, .roadmap-section');
+        fadeElements.forEach(el => el.classList.add('fade-in'));
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        fadeElements.forEach(el => observer.observe(el));
+
+        document.addEventListener('mousemove', (e) => {
+            if (Math.random() > 0.97) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'particle';
+                sparkle.style.left = e.pageX + 'px';
+                sparkle.style.top = e.pageY + 'px';
+                sparkle.style.position = 'absolute';
+                sparkle.style.pointerEvents = 'none';
+                document.body.appendChild(sparkle);
+                setTimeout(() => sparkle.remove(), 2000);
+            }
+        });
     </script>
 </body>
 </html>
