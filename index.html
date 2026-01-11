@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PixRei - AI Security Research</title>
+    <title>PixRei - Security Researcher & Penetration Tester</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -18,6 +18,8 @@
             --accent-glow: rgba(0, 255, 136, 0.15);
             --border: #1a251a;
             --border-glow: rgba(0, 255, 136, 0.3);
+            --warning: #ffbd2e;
+            --success: #28c940;
         }
 
         [data-theme="light"] {
@@ -278,6 +280,7 @@
             display: flex;
             gap: 1rem;
             justify-content: center;
+            flex-wrap: wrap;
         }
 
         .btn {
@@ -470,6 +473,79 @@
             50%, 100% { opacity: 0; }
         }
 
+        /* Certifications Section */
+        .certs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .cert-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .cert-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        .cert-card.completed {
+            border-color: var(--success);
+        }
+
+        .cert-card.in-progress {
+            border-color: var(--warning);
+        }
+
+        .cert-status {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .cert-status.completed {
+            background: rgba(40, 201, 64, 0.2);
+            color: var(--success);
+        }
+
+        .cert-status.in-progress {
+            background: rgba(255, 189, 46, 0.2);
+            color: var(--warning);
+        }
+
+        .cert-status.planned {
+            background: var(--accent-glow);
+            color: var(--accent);
+        }
+
+        .cert-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .cert-card h3 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cert-card p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Projects Section */
         .projects-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -500,7 +576,7 @@
 
         .project-card:hover {
             border-color: var(--accent);
-            transform: translateY(-4px);
+            transform: translateY(-5px);
             box-shadow: 0 10px 40px var(--accent-glow);
         }
 
@@ -513,20 +589,23 @@
             font-size: 0.7rem;
             padding: 0.3rem 0.6rem;
             border-radius: 4px;
-            margin-bottom: 1rem;
             display: inline-block;
+            margin-bottom: 1rem;
         }
 
         .project-status.active {
-            background: var(--accent-glow);
-            color: var(--accent);
-            border: 1px solid var(--accent);
+            background: rgba(255, 189, 46, 0.2);
+            color: var(--warning);
+        }
+
+        .project-status.completed {
+            background: rgba(40, 201, 64, 0.2);
+            color: var(--success);
         }
 
         .project-status.planned {
-            background: rgba(255, 189, 46, 0.1);
-            color: #ffbd2e;
-            border: 1px solid rgba(255, 189, 46, 0.3);
+            background: var(--accent-glow);
+            color: var(--accent);
         }
 
         .project-icon {
@@ -543,14 +622,14 @@
         .project-card p {
             color: var(--text-secondary);
             font-size: 0.9rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             line-height: 1.6;
         }
 
         .project-tags {
             display: flex;
-            gap: 0.5rem;
             flex-wrap: wrap;
+            gap: 0.5rem;
         }
 
         .tag {
@@ -561,17 +640,12 @@
             border: 1px solid var(--border);
             border-radius: 4px;
             color: var(--text-secondary);
-            transition: all 0.2s;
         }
 
-        .tag:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
+        /* Skills Section */
         .skills-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1.5rem;
         }
 
@@ -579,7 +653,7 @@
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 2rem;
+            padding: 1.5rem;
             transition: all 0.3s;
         }
 
@@ -592,15 +666,7 @@
             font-family: 'JetBrains Mono', monospace;
             font-size: 1rem;
             color: var(--accent);
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .skill-card h3::before {
-            content: '#';
-            opacity: 0.5;
+            margin-bottom: 1rem;
         }
 
         .skill-list {
@@ -608,32 +674,28 @@
         }
 
         .skill-list li {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
             color: var(--text-secondary);
-            padding: 0.5rem 0;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            transition: all 0.2s;
+            font-size: 0.9rem;
+            padding: 0.4rem 0;
+            border-bottom: 1px solid var(--border);
         }
 
-        .skill-list li:hover {
-            color: var(--accent);
-            transform: translateX(4px);
+        .skill-list li:last-child {
+            border-bottom: none;
         }
 
         .skill-list li::before {
-            content: '→';
+            content: '→ ';
             color: var(--accent);
-            font-size: 0.8rem;
+            opacity: 0.5;
         }
 
+        /* Roadmap Section */
         .roadmap-section {
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 2.5rem;
+            padding: 2rem;
             margin-top: 3rem;
         }
 
@@ -641,461 +703,37 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .roadmap-title {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
+            color: var(--accent);
         }
 
         .roadmap-progress-text {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-            color: var(--accent);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
         }
 
         .progress-bar {
-            height: 4px;
-            background: var(--border);
-            border-radius: 2px;
-            overflow: hidden;
-            margin-bottom: 2rem;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent-dim), var(--accent));
-            border-radius: 2px;
-            width: 12.6%;
-            transition: width 0.5s;
-            box-shadow: 0 0 10px var(--accent-glow);
-        }
-
-        .roadmap-phases {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 1rem;
-        }
-
-        .phase {
+            height: 8px;
             background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1rem;
-            text-align: center;
-            transition: all 0.3s;
-        }
-
-        .phase.active {
-            border-color: var(--accent);
-            background: var(--accent-glow);
-        }
-
-        .phase.completed {
-            border-color: var(--accent-dim);
-        }
-
-        .phase.completed::after {
-            content: ' ✓';
-            color: var(--accent);
-        }
-
-        .phase-label {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-bottom: 0.3rem;
-        }
-
-        .phase-name {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            color: var(--text-primary);
-        }
-
-        .phase.active .phase-name {
-            color: var(--accent);
-        }
-
-        footer {
-            border-top: 1px solid var(--border);
-            padding: 3rem 0;
-            text-align: center;
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .footer-links a {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        .footer-links a:hover {
-            color: var(--accent);
-        }
-
-        .footer-text {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.show {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 2.5rem;
-            max-width: 450px;
-            width: 90%;
-            position: relative;
-            animation: fadeUp 0.3s ease;
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 1.5rem;
-            cursor: pointer;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 6px;
-            transition: all 0.2s;
-        }
-
-        .modal-close:hover {
-            background: var(--border);
-            color: var(--accent);
-        }
-
-        .modal-title {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1.3rem;
-            color: var(--accent);
-            margin-bottom: 1rem;
-        }
-
-        .modal-text {
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-            line-height: 1.7;
-        }
-
-        .modal-btn {
-            width: 100%;
-            font-family: 'JetBrains Mono', monospace;
-            padding: 0.8rem;
-            background: var(--accent);
-            color: var(--bg-primary);
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.2s;
-        }
-
-        .modal-btn:hover {
-            box-shadow: 0 0 30px var(--accent-glow);
-        }
-
-        .particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-            overflow: hidden;
-        }
-
-        .particle {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: var(--accent);
-            border-radius: 50%;
-            opacity: 0;
-            animation: sparkle 4s ease-in-out infinite;
-        }
-
-        @keyframes sparkle {
-            0%, 100% { opacity: 0; transform: translateY(0) scale(0); }
-            50% { opacity: 0.8; transform: translateY(-20px) scale(1); }
-        }
-
-        .logo {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--accent);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            position: relative;
-        }
-
-        .logo:hover {
-            animation: glitch 0.3s ease;
-        }
-
-        @keyframes glitch {
-            0%, 100% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(2px, -2px); }
-            60% { transform: translate(-2px, -2px); }
-            80% { transform: translate(2px, 2px); }
-        }
-
-        .hero h1 {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 4.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: var(--accent);
-            text-shadow: 0 0 40px var(--accent-glow), 0 0 80px var(--accent-glow);
-            letter-spacing: -2px;
-        }
-
-        .typing-text {
-            display: inline;
-            border-right: 2px solid var(--accent);
-            animation: typing-cursor 0.8s infinite;
-        }
-
-        @keyframes typing-cursor {
-            0%, 100% { border-color: var(--accent); }
-            50% { border-color: transparent; }
-        }
-
-        .stat-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1.5rem;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
-            transition: left 0.5s;
-        }
-
-        .stat-card:hover::before {
-            left: 100%;
-        }
-
-        .skill-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 2rem;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .skill-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border-radius: 12px;
-            padding: 1px;
-            background: linear-gradient(135deg, var(--accent), transparent, var(--accent));
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .skill-card:hover::before {
-            opacity: 1;
-        }
-
-        .project-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 2rem;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .project-card::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: conic-gradient(from 0deg, transparent, var(--accent-glow), transparent, transparent);
-            animation: rotate-border 4s linear infinite;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .project-card:hover::after {
-            opacity: 1;
-        }
-
-        .project-card > * {
-            position: relative;
-            z-index: 2;
-        }
-
-        @keyframes rotate-border {
-            100% { transform: rotate(360deg); }
-        }
-
-        .btn-primary {
-            background: var(--accent);
-            color: var(--bg-primary);
-            border: none;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-primary::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .btn-primary:hover::before {
-            width: 300px;
-            height: 300px;
-        }
-
-        .terminal-body {
-            padding: 1.5rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            min-height: 200px;
-            position: relative;
-        }
-
-        .terminal-body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 50px;
-            background: linear-gradient(180deg, var(--bg-secondary), transparent);
-            pointer-events: none;
-            opacity: 0.5;
-        }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            color: var(--accent);
-            background: var(--accent-glow);
-            border: 1px solid var(--accent);
-            padding: 0.5rem 1rem;
             border-radius: 4px;
+            overflow: hidden;
             margin-bottom: 2rem;
-            animation: badge-glow 2s ease-in-out infinite;
-        }
-
-        @keyframes badge-glow {
-            0%, 100% { box-shadow: 0 0 5px var(--accent-glow); }
-            50% { box-shadow: 0 0 20px var(--accent-glow), 0 0 30px var(--accent-glow); }
-        }
-
-        .phase {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1rem;
-            text-align: center;
-            transition: all 0.3s;
-            cursor: default;
-        }
-
-        .phase:hover {
-            transform: translateY(-2px);
-            border-color: var(--text-muted);
-        }
-
-        .phase.active {
-            border-color: var(--accent);
-            background: var(--accent-glow);
-            animation: active-pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes active-pulse {
-            0%, 100% { box-shadow: 0 0 0 0 var(--accent-glow); }
-            50% { box-shadow: 0 0 20px 5px var(--accent-glow); }
         }
 
         .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, var(--accent-dim), var(--accent));
-            border-radius: 2px;
-            width: 12.6%;
-            transition: width 0.5s;
-            box-shadow: 0 0 10px var(--accent-glow);
+            border-radius: 4px;
+            width: 5%;
             position: relative;
-            overflow: hidden;
         }
 
         .progress-fill::after {
@@ -1112,6 +750,175 @@
         @keyframes progress-shine {
             0% { transform: translateX(-100%); }
             100% { transform: translateX(100%); }
+        }
+
+        .roadmap-phases {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+
+        .phase {
+            text-align: center;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .phase.completed {
+            border-color: var(--success);
+            background: rgba(40, 201, 64, 0.1);
+        }
+
+        .phase.active {
+            border-color: var(--accent);
+            background: var(--accent-glow);
+        }
+
+        .phase-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 0.3rem;
+        }
+
+        .phase-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .phase.active .phase-name,
+        .phase.completed .phase-name {
+            color: var(--text-primary);
+        }
+
+        /* Footer */
+        footer {
+            padding: 3rem 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links a {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        .footer-text {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .modal.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.3rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .modal-text {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-btn {
+            background: var(--accent);
+            color: var(--bg-primary);
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-btn:hover {
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        /* Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--accent);
+            border-radius: 50%;
+            opacity: 0;
+            animation: particle-float 4s ease-in-out infinite;
+        }
+
+        @keyframes particle-float {
+            0%, 100% { opacity: 0; transform: translateY(0); }
+            50% { opacity: 0.5; transform: translateY(-20px); }
         }
 
         .fade-in {
@@ -1131,6 +938,7 @@
             .about-grid { grid-template-columns: 1fr; }
             .stats-grid { grid-template-columns: 1fr; }
             .projects-grid { grid-template-columns: 1fr; }
+            .certs-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -1147,6 +955,7 @@
             <div class="nav-right">
                 <ul class="nav-links">
                     <li><a href="#about">about</a></li>
+                    <li><a href="#certs">certifications</a></li>
                     <li><a href="#projects">projects</a></li>
                     <li><a href="#skills">skills</a></li>
                 </ul>
@@ -1161,18 +970,21 @@
                 <div class="hero-content">
                     <div class="status-badge">
                         <span class="status-dot"></span>
-                        <span>MONTH 2 // PYTORCH FUNDAMENTALS</span>
+                        <span>Security Researcher & Penetration Tester</span>
                     </div>
                     <h1>PixRei</h1>
-                    <p class="tagline">AI Security Researcher & Red Team Engineer</p>
-                    <p class="subtitle">Building intelligent systems at the intersection of ML and offensive security</p>
+                    <p class="tagline">Developing Skills</p>
+                    <p class="subtitle">Offensive security specialist CTF challenges ,Building portfolio, Hunting for opportunities.</p>
                     <div class="hero-cta">
-                        <button class="btn btn-primary" onclick="document.getElementById('projects').scrollIntoView({behavior: 'smooth'})">
+                        <a href="#projects" class="btn btn-primary">
                             <span>View Projects</span>
-                        </button>
-                        <button class="btn btn-secondary" id="blogBtn">
-                            <span>./blog</span>
-                        </button>
+                        </a>
+                        <a href="https://tryhackme.com/p/Pixrei" target="_blank" class="btn btn-secondary">
+                            <span>TryHackMe</span>
+                        </a>
+                        <a href="https://app.hackthebox.com/public/users/2190520" target="_blank" class="btn btn-secondary">
+                            <span>HackTheBox</span>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -1187,27 +999,27 @@
 
                 <div class="about-grid">
                     <div class="about-text">
-                        <p><strong>Computer Science student</strong> with hands-on expertise in ML and cybersecurity. Currently on an intensive 9-month roadmap to become a Remote AI Security / Red Team Engineer.</p>
-                        <p>My approach combines <strong>penetration testing experience</strong> (45+ CTF boxes, 3 security certifications) with deep learning research. I believe the future of security lies in adaptive, intelligent systems—not static rules.</p>
-                        <p>Every model I build, every line of code I write is designed for <strong>real-world impact</strong>. Currently focused on PyTorch fundamentals and security ML applications.</p>
+                        <p><strong>Security enthusiast</strong> with hands-on penetration testing experience. Currently on a roadmap to land my first cybersecurity role.</p>
+                        <p>My approach combines <strong>practical offensive security skills</strong> ( Top 6% TryHackMe, 45+ HackTheBox machines) with real-world business experience from running an international e-commerce operation.</p>
+                        <p>I bring a unique perspective: understanding both <strong>how to break systems</strong> and <strong>how businesses actually work</strong>. Currently building portfolio, pursuing certifications, and actively seeking junior security roles.</p>
                     </div>
 
                     <div class="stats-grid">
                         <div class="stat-card">
-                            <div class="stat-value">45+</div>
-                            <div class="stat-label">CTF Boxes Pwned</div>
+                            <div class="stat-value">3+</div>
+                            <div class="stat-label">Upcoming Projects</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value">6%</div>
+                            <div class="stat-value">Top 6%</div>
                             <div class="stat-label">THM Global Rank</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value">3</div>
-                            <div class="stat-label">Security Certs</div>
+                            <div class="stat-value">45+</div>
+                            <div class="stat-label">HTB Machines Pwned</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value">12.6%</div>
-                            <div class="stat-label">Roadmap Progress</div>
+                            <div class="stat-value">2+</div>
+                            <div class="stat-label">Learning Paths Done</div>
                         </div>
                     </div>
                 </div>
@@ -1217,26 +1029,66 @@
                         <div class="terminal-dot red"></div>
                         <div class="terminal-dot yellow"></div>
                         <div class="terminal-dot green"></div>
-                        <div class="terminal-title">pixrei@arch:~/ai-security</div>
+                        <div class="terminal-title">pixrei@arch:~/security</div>
                     </div>
                     <div class="terminal-body">
                         <div class="terminal-line">
                             <span class="terminal-prompt">$</span>
                             <span class="terminal-cmd">cat current_status.txt</span>
                         </div>
-                        <div class="terminal-output">→ Month: 2/9 | Day: 34/270</div>
-                        <div class="terminal-output">→ Focus: PyTorch + CNN Foundations</div>
-                        <div class="terminal-output">→ Status: IN_PROGRESS</div>
+                        <div class="terminal-output">→ Phase: 0 | Stage: Portfolio Building</div>
+                        <div class="terminal-output">→ Focus: Writeups + Visibility + Networking</div>
+                        <div class="terminal-output">→ Target: Junior Security Role (Remote)</div>
                         <div class="terminal-line" style="margin-top: 1rem;">
                             <span class="terminal-prompt">$</span>
-                            <span class="terminal-cmd">./train_model.py --target red_team</span>
+                            <span class="terminal-cmd">ls ./completed_paths/</span>
                         </div>
-                        <div class="terminal-output" style="color: var(--accent);">→ Initializing deep learning pipeline...</div>
-                        <div class="terminal-output" style="color: var(--accent);">→ Loading security datasets...</div>
+                        <div class="terminal-output" style="color: var(--accent);">→ Jr_Pentester.path</div>
+                        <div class="terminal-output" style="color: var(--accent);">→ Red_Teamer.path</div>
                         <div class="terminal-line" style="margin-top: 0.5rem;">
                             <span class="terminal-prompt">$</span>
                             <span class="terminal-cursor"></span>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="certs">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">// credentials</span>
+                    <h2 class="section-title">Certifications</h2>
+                    <p class="section-subtitle">Building verified proof of skills</p>
+                </div>
+
+                <div class="certs-grid">
+                    <div class="cert-card in-progress">
+                        <div class="cert-status in-progress">Soon</div>
+                        <div class="cert-icon">🎯</div>
+                        <h3>CAP - Certified AppSec Practitioner</h3>
+                        <p>SecOps Group certification covering OWASP Top 10 and web application security fundamentals.</p>
+                    </div>
+
+                    <div class="cert-card">
+                        <div class="cert-status planned">Planned</div>
+                        <div class="cert-icon">🔓</div>
+                        <h3>eJPT - Junior Penetration Tester</h3>
+                        <p>INE Security hands-on certification. 72-hour practical exam proving real pentesting skills.</p>
+                    </div>
+
+                    <div class="cert-card completed">
+                        <div class="cert-status completed">Completed</div>
+                        <div class="cert-icon">🏆</div>
+                        <h3>TryHackMe Jr Pentester Path</h3>
+                        <p>Comprehensive learning path covering penetration testing methodology and tools.</p>
+                    </div>
+
+                    <div class="cert-card completed">
+                        <div class="cert-status completed">Completed</div>
+                        <div class="cert-icon">🔴</div>
+                        <h3>TryHackMe Red Teamer Path</h3>
+                        <p>Advanced path covering red team operations, C2 frameworks, and adversary emulation.</p>
                     </div>
                 </div>
             </div>
@@ -1247,43 +1099,55 @@
                 <div class="section-header">
                     <span class="section-tag">// what i build</span>
                     <h2 class="section-title">Projects</h2>
-                    <p class="section-subtitle">Security-focused ML applications</p>
+                    <p class="section-subtitle">Security tools and writeups</p>
                 </div>
 
                 <div class="projects-grid">
                     <div class="project-card">
                         <div class="project-status active">IN_PROGRESS</div>
-                        <div class="project-icon">⚡</div>
-                        <h3>Network Intrusion Detection</h3>
-                        <p>Real-time ML system for network anomaly detection. Building ensemble models with Flask backend for identifying suspicious traffic patterns.</p>
+                        <div class="project-icon">📝</div>
+                        <h3>HTB/THM Writeups</h3>
+                        <p>Detailed writeups documenting methodology, tools, and lessons learned from solving machines. Building public proof of practical skills.</p>
                         <div class="project-tags">
-                            <span class="tag">Flask</span>
-                            <span class="tag">Scikit-learn</span>
-                            <span class="tag">Network</span>
-                        </div>
-                    </div>
-
-                    <div class="project-card">
-                        <div class="project-status active">IN_PROGRESS</div>
-                        <div class="project-icon">🎣</div>
-                        <h3>Phishing Detection System</h3>
-                        <p>Intelligent phishing detection combining NLP and ML. Identifying malicious URLs and credential harvesting attempts.</p>
-                        <div class="project-tags">
-                            <span class="tag">NLP</span>
-                            <span class="tag">TensorFlow</span>
-                            <span class="tag">Security</span>
+                            <span class="tag">Pentesting</span>
+                            <span class="tag">Documentation</span>
+                            <span class="tag">Methodology</span>
                         </div>
                     </div>
 
                     <div class="project-card">
                         <div class="project-status planned">PLANNED</div>
-                        <div class="project-icon">🔓</div>
-                        <h3>Adversarial ML Research</h3>
-                        <p>Research into adversarial robustness and evasion techniques. Model interpretability for security applications.</p>
+                        <div class="project-icon">🔍</div>
+                        <h3>Port Scanner</h3>
+                        <p>Custom Python port scanner with service detection. Building fundamental security tooling from scratch.</p>
                         <div class="project-tags">
-                            <span class="tag">PyTorch</span>
-                            <span class="tag">Adversarial</span>
-                            <span class="tag">Research</span>
+                            <span class="tag">Python</span>
+                            <span class="tag">Networking</span>
+                            <span class="tag">Tool Dev</span>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-status planned">PLANNED</div>
+                        <div class="project-icon">🛒</div>
+                        <h3>E-commerce Security Audit</h3>
+                        <p>Security assessment framework for Shopify stores. Combining business experience with security knowledge.</p>
+                        <div class="project-tags">
+                            <span class="tag">E-commerce</span>
+                            <span class="tag">Audit</span>
+                            <span class="tag">OWASP</span>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-status planned">PLANNED</div>
+                        <div class="project-icon">🎣</div>
+                        <h3>Phishing Analysis Reports</h3>
+                        <p>Analysis of real phishing attempts with IOC extraction. Documenting threat intelligence from actual attacks.</p>
+                        <div class="project-tags">
+                            <span class="tag">Threat Intel</span>
+                            <span class="tag">Analysis</span>
+                            <span class="tag">IOCs</span>
                         </div>
                     </div>
                 </div>
@@ -1299,68 +1163,74 @@
 
                 <div class="skills-grid">
                     <div class="skill-card">
-                        <h3>Machine Learning</h3>
+                        <h3>Offensive Security</h3>
                         <ul class="skill-list">
-                            <li>NumPy & Pandas</li>
-                            <li>Scikit-learn</li>
-                            <li>PyTorch / TensorFlow</li>
-                            <li>Model Deployment</li>
+                            <li>Penetration Testing Methodology</li>
+                            <li>Web Application Security</li>
+                            <li>Network Enumeration</li>
+                            <li>Privilege Escalation</li>
+                            <li>Active Directory Attacks</li>
                         </ul>
                     </div>
 
                     <div class="skill-card">
-                        <h3>Offensive Security</h3>
+                        <h3>Tools</h3>
                         <ul class="skill-list">
-                            <li>Penetration Testing</li>
-                            <li>Network Analysis</li>
-                            <li>Threat Detection</li>
-                            <li>CTF / HTB / THM</li>
+                            <li>Nmap / Masscan</li>
+                            <li>Burp Suite</li>
+                            <li>Metasploit</li>
+                            <li>Gobuster / Ffuf</li>
+                            <li>Wireshark</li>
                         </ul>
                     </div>
 
                     <div class="skill-card">
                         <h3>Development</h3>
                         <ul class="skill-list">
-                            <li>Python</li>
-                            <li>Flask / FastAPI</li>
+                            <li>Python Scripting</li>
+                            <li>Bash Automation</li>
+                            <li>Linux Administration</li>
+                            <li>Git / GitHub</li>
+                            <li>Docker Basics</li>
+                        </ul>
+                    </div>
+
+                    <div class="skill-card">
+                        <h3>Platforms</h3>
+                        <ul class="skill-list">
+                            <li>TryHackMe (Top 6%)</li>
+                            <li>HackTheBox</li>
                             <li>Linux (Arch BTW)</li>
-                            <li>Docker</li>
+                            <li>Windows Server</li>
+                            <li>Kali Linux</li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="roadmap-section">
                     <div class="roadmap-header">
-                        <div class="roadmap-title">9-Month AI Security Roadmap</div>
-                        <div class="roadmap-progress-text">34/270 days (12.6%)</div>
+                        <div class="roadmap-title">Roadmap of Jr_Pentester to Red_Teamer</div>
+                        <div class="roadmap-progress-text">Phase 0</div>
                     </div>
                     <div class="progress-bar">
                         <div class="progress-fill"></div>
                     </div>
                     <div class="roadmap-phases">
-                        <div class="phase completed">
-                            <div class="phase-label">Month 1</div>
-                            <div class="phase-name">ML Basics</div>
-                        </div>
                         <div class="phase active">
-                            <div class="phase-label">Month 2</div>
-                            <div class="phase-name">PyTorch</div>
+                            <div class="phase-label">Stage - 1</div>
+                            <div class="phase-name">CAP Cert</div>
                         </div>
                         <div class="phase">
-                            <div class="phase-label">Month 3</div>
-                            <div class="phase-name">Adversarial</div>
+                            <div class="phase-label">Stage - 2</div>
+                            <div class="phase-name">Portfolio</div>
                         </div>
                         <div class="phase">
-                            <div class="phase-label">Month 4</div>
-                            <div class="phase-name">LLM Red Team</div>
+                            <div class="phase-label">Stage - 3</div>
+                            <div class="phase-name">eJPT</div>
                         </div>
                         <div class="phase">
-                            <div class="phase-label">Month 5-6</div>
-                            <div class="phase-name">Advanced</div>
-                        </div>
-                        <div class="phase">
-                            <div class="phase-label">Month 7-9</div>
-                            <div class="phase-name">Deploy</div>
+                            <div class="phase-label">Stage - 4</div>
+                            <div class="phase-name">Job Hunt</div>
                         </div>
                     </div>
                 </div>
@@ -1371,11 +1241,12 @@
     <footer>
         <div class="container">
             <div class="footer-links">
-                <a href="https://github.com/Ahmet-sumer" target="_blank">GitHub</a>
-                <a href="https://linkedin.com/in/ahmet-sumer" target="_blank">LinkedIn</a>
-                <a href="mailto:ahmetefe@pixrei.xyz">Email</a>
+                <a href="https://github.com/Pixrei" target="_blank">GitHub</a>
+                <a href="https://linkedin.com/in/pixrei" target="_blank">LinkedIn</a>
+                <a href="https://tryhackme.com/p/Pixrei" target="_blank">TryHackMe</a>
+                <a href="https://app.hackthebox.com/profile/Pixrei" target="_blank">HackTheBox</a>
             </div>
-            <p class="footer-text">© 2025 PixRei // Building AI-powered security systems</p>
+            <p class="footer-text">© 2025 PixRei // Aspiring Penetration Tester | Open to Opportunities</p>
         </div>
     </footer>
 
@@ -1383,7 +1254,7 @@
         <div class="modal-content">
             <button class="modal-close" id="closeModal">×</button>
             <h2 class="modal-title">./blog</h2>
-            <p class="modal-text">Technical write-ups on ML, security research, and red team operations coming soon. Currently focused on building—content drops when projects ship.</p>
+            <p class="modal-text">Technical writeups on HTB/THM machines and security research coming soon. Currently building portfolio content.</p>
             <button class="modal-btn" id="closeModalBtn">Got it</button>
         </div>
     </div>
@@ -1406,15 +1277,13 @@
             setTheme(current === 'dark' ? 'light' : 'dark');
         });
 
-        const blogBtn = document.getElementById('blogBtn');
         const blogModal = document.getElementById('blogModal');
         const closeModal = document.getElementById('closeModal');
         const closeModalBtn = document.getElementById('closeModalBtn');
 
-        blogBtn.addEventListener('click', () => blogModal.classList.add('show'));
-        closeModal.addEventListener('click', () => blogModal.classList.remove('show'));
-        closeModalBtn.addEventListener('click', () => blogModal.classList.remove('show'));
-        blogModal.addEventListener('click', (e) => {
+        if (closeModal) closeModal.addEventListener('click', () => blogModal.classList.remove('show'));
+        if (closeModalBtn) closeModalBtn.addEventListener('click', () => blogModal.classList.remove('show'));
+        if (blogModal) blogModal.addEventListener('click', (e) => {
             if (e.target === blogModal) blogModal.classList.remove('show');
         });
 
@@ -1433,7 +1302,7 @@
         }
         for (let i = 0; i < 50; i++) createParticle();
 
-        const fadeElements = document.querySelectorAll('.project-card, .skill-card, .stat-card, .terminal-card, .roadmap-section');
+        const fadeElements = document.querySelectorAll('.project-card, .skill-card, .stat-card, .terminal-card, .roadmap-section, .cert-card');
         fadeElements.forEach(el => el.classList.add('fade-in'));
 
         const observer = new IntersectionObserver((entries) => {
@@ -1445,19 +1314,6 @@
         }, { threshold: 0.1 });
 
         fadeElements.forEach(el => observer.observe(el));
-
-        document.addEventListener('mousemove', (e) => {
-            if (Math.random() > 0.97) {
-                const sparkle = document.createElement('div');
-                sparkle.className = 'particle';
-                sparkle.style.left = e.pageX + 'px';
-                sparkle.style.top = e.pageY + 'px';
-                sparkle.style.position = 'absolute';
-                sparkle.style.pointerEvents = 'none';
-                document.body.appendChild(sparkle);
-                setTimeout(() => sparkle.remove(), 2000);
-            }
-        });
     </script>
 </body>
 </html>
