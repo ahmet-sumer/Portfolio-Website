@@ -33,7 +33,7 @@ Minimal, techy portfolio showcasing my journey in AI Security & Red Team researc
 - **About** - Background, stats, live terminal status
 - **Projects** - Security ML applications in progress
 - **Skills** - ML, Offensive Security, Development
-- **Roadmap** - 9-month AI Security journey tracker
+- **Roadmap** - AI Security journey tracker
 
 ### Run Locally
 
