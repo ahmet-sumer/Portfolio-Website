@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PixRei Blog - Security Writeups</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0f0a;
+            --bg-secondary: #0d120d;
+            --bg-card: #111611;
+            --text-primary: #c8d6c8;
+            --text-secondary: #6b7c6b;
+            --text-muted: #3d4a3d;
+            --accent: #00ff88;
+            --accent-dim: #00cc6a;
+            --accent-glow: rgba(0, 255, 136, 0.15);
+            --border: #1a251a;
+            --border-glow: rgba(0, 255, 136, 0.3);
+            --htb-green: #9fef00;
+            --thm-red: #ff4444;
+            --easy: #4ade80;
+            --medium: #fbbf24;
+            --hard: #ef4444;
+            --insane: #a855f7;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f0f4f0;
+            --bg-secondary: #e8ece8;
+            --bg-card: #ffffff;
+            --text-primary: #1a251a;
+            --text-secondary: #4a5a4a;
+            --text-muted: #8a9a8a;
+            --accent: #00994d;
+            --accent-dim: #007a3d;
+            --accent-glow: rgba(0, 153, 77, 0.1);
+            --border: #d0dcd0;
+            --border-glow: rgba(0, 153, 77, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            background-image:
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.3;
+        }
+
+        .glow-orb {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .glow-orb-1 { top: -200px; right: -200px; }
+        .glow-orb-2 { bottom: -200px; left: -200px; animation-delay: -10s; }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-30px, 30px); }
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 15, 10, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        [data-theme="light"] header {
+            background: rgba(240, 244, 240, 0.9);
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo::before {
+            content: '>';
+            opacity: 0.5;
+        }
+
+        .logo::after {
+            content: '_';
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        .nav-right {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .nav-links a::before {
+            content: './';
+            opacity: 0.4;
+        }
+
+        .theme-toggle {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--accent);
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .blog-hero {
+            padding: 8rem 0 4rem;
+            text-align: center;
+        }
+
+        .blog-hero h1 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .blog-hero p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 3rem;
+        }
+
+        .filter-container {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            padding: 0.6rem 1.2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-glow);
+        }
+
+        .filter-btn.htb {
+            border-color: var(--htb-green);
+        }
+
+        .filter-btn.htb:hover,
+        .filter-btn.htb.active {
+            color: var(--htb-green);
+            background: rgba(159, 239, 0, 0.1);
+        }
+
+        .filter-btn.thm {
+            border-color: var(--thm-red);
+        }
+
+        .filter-btn.thm:hover,
+        .filter-btn.thm.active {
+            color: var(--thm-red);
+            background: rgba(255, 68, 68, 0.1);
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            padding: 1.5rem 0;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-item .value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat-item .label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Writeups Grid */
+        .writeups-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            padding-bottom: 4rem;
+        }
+
+        .writeup-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .writeup-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px var(--accent-glow);
+        }
+
+        .writeup-card.htb:hover {
+            border-color: var(--htb-green);
+            box-shadow: 0 10px 40px rgba(159, 239, 0, 0.15);
+        }
+
+        .writeup-card.thm:hover {
+            border-color: var(--thm-red);
+            box-shadow: 0 10px 40px rgba(255, 68, 68, 0.15);
+        }
+
+        .writeup-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .platform-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .platform-badge.htb {
+            background: rgba(159, 239, 0, 0.2);
+            color: var(--htb-green);
+        }
+
+        .platform-badge.thm {
+            background: rgba(255, 68, 68, 0.2);
+            color: var(--thm-red);
+        }
+
+        .difficulty-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .difficulty-badge.easy {
+            background: rgba(74, 222, 128, 0.2);
+            color: var(--easy);
+        }
+
+        .difficulty-badge.medium {
+            background: rgba(251, 191, 36, 0.2);
+            color: var(--medium);
+        }
+
+        .difficulty-badge.hard {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--hard);
+        }
+
+        .difficulty-badge.insane {
+            background: rgba(168, 85, 247, 0.2);
+            color: var(--insane);
+        }
+
+        .writeup-body {
+            padding: 1.5rem;
+        }
+
+        .writeup-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .writeup-title .os-icon {
+            font-size: 1rem;
+        }
+
+        .writeup-meta {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .writeup-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .writeup-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            padding: 0.3rem 0.6rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text-secondary);
+        }
+
+        .writeup-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .read-more {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .read-more::after {
+            content: '→';
+            transition: transform 0.2s;
+        }
+
+        .writeup-card:hover .read-more::after {
+            transform: translateX(5px);
+        }
+
+        .writeup-date {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Footer */
+        footer {
+            padding: 3rem 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        .footer-text {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .blog-hero h1 { font-size: 2rem; }
+            .nav-links { display: none; }
+            .writeups-grid { grid-template-columns: 1fr; }
+            .stats-bar { gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+
+    <header>
+        <nav>
+            <a href="index.html" class="logo">PixRei</a>
+            <div class="nav-right">
+                <ul class="nav-links">
+                    <li><a href="index.html">home</a></li>
+                    <li><a href="blog/index.html">writeups</a></li>
+                    <li><a href="index.html#projects">projects</a></li>
+                    <li><a href="index.html#skills">skills</a></li>
+                </ul>
+                <button class="theme-toggle" id="themeToggle">◐</button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="blog-hero">
+            <div class="container">
+                <h1>./writeups</h1>
+                <p>Detailed walkthroughs of HTB and TryHackMe machines. Learning in public, documenting everything.</p>
+            </div>
+        </section>
+
+        <section class="filter-section">
+            <div class="container">
+                <div class="filter-container">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn htb" data-filter="htb">HackTheBox</button>
+                    <button class="filter-btn thm" data-filter="thm">TryHackMe</button>
+                    <button class="filter-btn" data-filter="easy">Easy</button>
+                    <button class="filter-btn" data-filter="medium">Medium</button>
+                    <button class="filter-btn" data-filter="hard">Hard</button>
+                    <button class="filter-btn" data-filter="linux">Linux</button>
+                    <button class="filter-btn" data-filter="windows">Windows</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="container">
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="value" id="totalWriteups">0</div>
+                    <div class="label">Writeups</div>
+                </div>
+                <div class="stat-item">
+                    <div class="value" id="htbCount">0</div>
+                    <div class="label">HackTheBox</div>
+                </div>
+                <div class="stat-item">
+                    <div class="value" id="thmCount">0</div>
+                    <div class="label">TryHackMe</div>
+                </div>
+            </div>
+
+            <div class="writeups-grid" id="writeupsGrid">
+                <!-- Writeups will be dynamically inserted here -->
+            </div>
+
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="icon">🔍</div>
+                <h3>No writeups found</h3>
+                <p>Try adjusting your filters</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="https://github.com/Pixrei" target="_blank">GitHub</a>
+                <a href="https://linkedin.com/in/pixrei" target="_blank">LinkedIn</a>
+                <a href="https://tryhackme.com/p/Pixrei" target="_blank">TryHackMe</a>
+                <a href="https://app.hackthebox.com/profile/Pixrei" target="_blank">HackTheBox</a>
+            </div>
+            <p class="footer-text">© 2025 PixRei // Security Writeups & Research</p>
+        </div>
+    </footer>
+
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+
+        function setTheme(theme) {
+            html.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            themeToggle.textContent = theme === 'dark' ? '◐' : '◑';
+        }
+
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        setTheme(savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const current = html.getAttribute('data-theme');
+            setTheme(current === 'dark' ? 'light' : 'dark');
+        });
+
+        // Writeups Data - ADD YOUR WRITEUPS HERE
+        const writeups = [
+            // Example writeup - copy this format for each new writeup
+            {
+                id: 'example-box',
+                title: 'Example Box',
+                platform: 'htb', // 'htb' or 'thm'
+                difficulty: 'easy', // 'easy', 'medium', 'hard', 'insane'
+                os: 'linux', // 'linux' or 'windows'
+                date: '2025-01-15',
+                description: 'This is an example writeup. Replace this with your actual writeups by editing the writeups array in the JavaScript.',
+                tags: ['web', 'privesc', 'enumeration'],
+                url: 'writeups/example-box.html' // Link to the actual writeup page
+            },
+            // Add more writeups below:
+            /*
+            {
+                id: 'lame',
+                title: 'Lame',
+                platform: 'htb',
+                difficulty: 'easy',
+                os: 'linux',
+                date: '2025-01-16',
+                description: 'Classic beginner box exploiting Samba vulnerability. Great for learning basic enumeration and exploitation.',
+                tags: ['samba', 'cve', 'metasploit'],
+                url: 'writeups/lame.html'
+            },
+            {
+                id: 'blue',
+                title: 'Blue',
+                platform: 'htb',
+                difficulty: 'easy',
+                os: 'windows',
+                date: '2025-01-17',
+                description: 'EternalBlue exploitation on Windows. Introduction to famous MS17-010 vulnerability.',
+                tags: ['eternalblue', 'smb', 'windows'],
+                url: 'writeups/blue.html'
+            },
+            */
+        ];
+
+        // Render Writeups
+        const writeupsGrid = document.getElementById('writeupsGrid');
+        const emptyState = document.getElementById('emptyState');
+        let currentFilter = 'all';
+
+        function renderWriteups(filter = 'all') {
+            currentFilter = filter;
+            
+            let filtered = writeups;
+            
+            if (filter !== 'all') {
+                filtered = writeups.filter(w => {
+                    if (filter === 'htb' || filter === 'thm') return w.platform === filter;
+                    if (filter === 'easy' || filter === 'medium' || filter === 'hard' || filter === 'insane') return w.difficulty === filter;
+                    if (filter === 'linux' || filter === 'windows') return w.os === filter;
+                    return true;
+                });
+            }
+
+            if (filtered.length === 0) {
+                writeupsGrid.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+
+            writeupsGrid.innerHTML = filtered.map(w => `
+                <a href="${w.url}" class="writeup-card ${w.platform}">
+                    <div class="writeup-header">
+                        <span class="platform-badge ${w.platform}">${w.platform.toUpperCase()}</span>
+                        <span class="difficulty-badge ${w.difficulty}">${w.difficulty}</span>
+                    </div>
+                    <div class="writeup-body">
+                        <h3 class="writeup-title">
+                            <span class="os-icon">${w.os === 'linux' ? '🐧' : '🪟'}</span>
+                            ${w.title}
+                        </h3>
+                        <div class="writeup-meta">${w.os.charAt(0).toUpperCase() + w.os.slice(1)}</div>
+                        <p class="writeup-description">${w.description}</p>
+                        <div class="writeup-tags">
+                            ${w.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="writeup-footer">
+                        <span class="read-more">Read writeup</span>
+                        <span class="writeup-date">${w.date}</span>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        // Update Stats
+        function updateStats() {
+            document.getElementById('totalWriteups').textContent = writeups.length;
+            document.getElementById('htbCount').textContent = writeups.filter(w => w.platform === 'htb').length;
+            document.getElementById('thmCount').textContent = writeups.filter(w => w.platform === 'thm').length;
+        }
+
+        // Filter Buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderWriteups(btn.dataset.filter);
+            });
+        });
+
+        // Initial Render
+        renderWriteups();
+        updateStats();
+    </script>
+</body>
+</html>
