@@ -383,8 +383,8 @@
             color: var(--accent);
         }
           
-        .nav-link.prev { text-align: left;}
-        .nav-link.prev::before { content: '← '; }
+        .nav-link.prev { text-align: left; }
+        .nav-link.prev::before { content: none;}
         .nav-link.next { text-align: right; }
         .nav-link.next::after { content: ' →'; }
         .nav-link span {
@@ -759,7 +759,7 @@ PS C:\Users\Administrator\Desktop> type root.txt
             <nav class="article-nav">
                 <a href="#" class="nav-link prev">
                     <span>Previous</span>
-                    Previous Box
+                    ← Previous Box
                 </a>
                 <a href="#" class="nav-link next">
                     <span>Next</span>
