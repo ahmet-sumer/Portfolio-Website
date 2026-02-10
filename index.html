@@ -144,6 +144,45 @@
         .btn-writeups:hover { background: var(--accent); color: var(--bg-primary); box-shadow: 0 0 30px var(--accent-glow); transform: translateY(-2px); }
         .btn-writeups::after { content: '→'; transition: transform 0.2s; }
         .btn-writeups:hover::after { transform: translateX(4px); }
+        #guides { background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%); position: relative; }
+        #guides::before, #guides::after { content: ''; position: absolute; left: 50%; transform: translateX(-50%); width: 80%; height: 1px; background: linear-gradient(90deg, transparent, var(--blue, #60a5fa), transparent); }
+        #guides::before { top: 0; }
+        #guides::after { bottom: 0; }
+        [data-theme="light"] { --blue: #2563eb; --purple: #7c3aed; }
+        .guides-header { text-align: center; margin-bottom: 3rem; }
+        .guides-header .section-tag { display: inline-block; background: rgba(96, 165, 250, 0.15); padding: 0.3rem 1rem; border-radius: 4px; border: 1px solid var(--blue, #60a5fa); margin-bottom: 1rem; color: var(--blue, #60a5fa); }
+        .guides-header .section-title { font-size: 2.5rem; background: linear-gradient(135deg, var(--text-primary) 0%, var(--blue, #60a5fa) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .guides-stats { display: flex; justify-content: center; gap: 3rem; margin-bottom: 3rem; flex-wrap: wrap; }
+        .guides-stat { text-align: center; }
+        .guides-stat-value { font-family: 'JetBrains Mono', monospace; font-size: 2.5rem; font-weight: 700; color: var(--blue, #60a5fa); display: block; }
+        .guides-stat-label { font-size: 0.85rem; color: var(--text-secondary); }
+        .guides-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .guide-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; transition: all 0.3s; position: relative; overflow: hidden; text-decoration: none; display: block; }
+        .guide-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--blue, #60a5fa), var(--accent)); opacity: 0; transition: opacity 0.3s; }
+        .guide-card:hover { border-color: var(--blue, #60a5fa); transform: translateY(-5px); box-shadow: 0 10px 40px rgba(96, 165, 250, 0.15); }
+        .guide-card:hover::before { opacity: 1; }
+        .guide-badges { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .guide-badge { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; padding: 0.3rem 0.6rem; border-radius: 4px; text-transform: uppercase; font-weight: 600; }
+        .guide-badge.guide-type { background: rgba(96, 165, 250, 0.2); color: var(--blue, #60a5fa); }
+        .guide-badge.arch { background: rgba(167, 139, 250, 0.2); color: var(--purple, #a78bfa); }
+        .guide-badge.security { background: var(--accent-glow); color: var(--accent); }
+        .guide-card h3 { font-family: 'JetBrains Mono', monospace; font-size: 1.2rem; color: var(--text-primary); margin-bottom: 0.5rem; }
+        .guide-card p { color: var(--text-secondary); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; }
+        .guide-meta { display: flex; justify-content: space-between; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-muted); }
+        .guide-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .guide-tag-item { color: var(--text-muted); }
+        .guide-tag-item::before { content: '#'; opacity: 0.5; }
+        .guide-read-more { color: var(--blue, #60a5fa); display: flex; align-items: center; gap: 0.3rem; }
+        .guide-read-more::after { content: '→'; transition: transform 0.2s; }
+        .guide-card:hover .guide-read-more::after { transform: translateX(4px); }
+        .guide-card.coming-soon { border-style: dashed; opacity: 0.6; }
+        .guide-card.coming-soon:hover { border-color: var(--border); transform: none; box-shadow: none; }
+        .guide-card.coming-soon::before { display: none; }
+        .guides-cta { text-align: center; margin-top: 2rem; }
+        .btn-guides { font-family: 'JetBrains Mono', monospace; font-size: 1rem; padding: 1rem 2.5rem; background: transparent; border: 2px solid var(--blue, #60a5fa); color: var(--blue, #60a5fa); border-radius: 8px; cursor: pointer; transition: all 0.3s; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; }
+        .btn-guides:hover { background: var(--blue, #60a5fa); color: var(--bg-primary); box-shadow: 0 0 30px rgba(96, 165, 250, 0.3); transform: translateY(-2px); }
+        .btn-guides::after { content: '→'; transition: transform 0.2s; }
+        .btn-guides:hover::after { transform: translateX(4px); }
         .certs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
         .cert-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; transition: all 0.3s; position: relative; }
         .cert-card:hover { border-color: var(--accent); box-shadow: 0 0 30px var(--accent-glow); }
@@ -218,6 +257,7 @@
                 <ul class="nav-links">
                     <li><a href="#about">about</a></li>
                     <li><a href="#writeups" class="nav-highlight">writeups</a></li>
+                    <li><a href="#guides">guides</a></li>
                     <li><a href="#certs">certifications</a></li>
                     <li><a href="#projects">projects</a></li>
                     <li><a href="#skills">skills</a></li>
@@ -236,6 +276,7 @@
                     <p class="subtitle">Offensive security specialist. CTF challenges. Building portfolio. Hunting for opportunities.</p>
                     <div class="hero-cta">
                         <a href="#writeups" class="btn btn-primary">📝 View Writeups</a>
+                        <a href="#guides" class="btn btn-primary" style="background: var(--blue, #60a5fa);">🛡️ View Guides</a>
                         <a href="https://tryhackme.com/p/Pixrei" target="_blank" class="btn btn-secondary">TryHackMe</a>
                         <a href="https://app.hackthebox.com/public/users/2190520" target="_blank" class="btn btn-secondary">HackTheBox</a>
                     </div>
@@ -299,6 +340,36 @@
                 <div class="writeups-cta"><a href="blog/index.html" class="btn-writeups">View All Writeups</a></div>
             </div>
         </section>
+        <section id="guides">
+            <div class="container">
+                <div class="guides-header"><span class="section-tag">// practical knowledge</span><h2 class="section-title">Security Guides</h2><p class="section-subtitle">Hardening walkthroughs, tool setups, and offensive security guides</p></div>
+                <div class="guides-stats">
+                    <div class="guides-stat"><span class="guides-stat-value">1</span><span class="guides-stat-label">Published</span></div>
+                    <div class="guides-stat"><span class="guides-stat-value">3</span><span class="guides-stat-label">Coming Soon</span></div>
+                </div>
+                <div class="guides-grid">
+                    <a href="guides/arch-hardening/arch-hardening.html" class="guide-card">
+                        <div class="guide-badges"><span class="guide-badge guide-type">Guide</span><span class="guide-badge arch">Arch Linux</span><span class="guide-badge security">Hardening</span></div>
+                        <h3>Arch Linux Hardening for Pentesters</h3>
+                        <p>Step-by-step guide to securing an Arch Linux workstation — firewall, kernel hardening, Bluetooth lockdown, file integrity monitoring. Every parameter explained.</p>
+                        <div class="guide-meta"><div class="guide-tags"><span class="guide-tag-item">Firewall</span><span class="guide-tag-item">sysctl</span><span class="guide-tag-item">AIDE</span></div><span class="guide-read-more">Read</span></div>
+                    </a>
+                    <div class="guide-card coming-soon">
+                        <div class="guide-badges"><span class="guide-badge" style="background: var(--bg-secondary); color: var(--text-muted);">COMING SOON</span></div>
+                        <h3>VPN Kill Switch Setup</h3>
+                        <p>Configure a bulletproof VPN kill switch on Linux to prevent traffic leaks during pentesting engagements.</p>
+                        <div class="guide-meta"><div class="guide-tags"><span class="guide-tag-item">Network</span><span class="guide-tag-item">VPN</span></div></div>
+                    </div>
+                    <div class="guide-card coming-soon">
+                        <div class="guide-badges"><span class="guide-badge" style="background: var(--bg-secondary); color: var(--text-muted);">COMING SOON</span></div>
+                        <h3>Home Pentest Lab with Proxmox</h3>
+                        <p>Build an isolated penetration testing lab — vulnerable VMs, network segmentation, attack/defense scenarios on a budget.</p>
+                        <div class="guide-meta"><div class="guide-tags"><span class="guide-tag-item">Lab</span><span class="guide-tag-item">Proxmox</span></div></div>
+                    </div>
+                </div>
+                <div class="guides-cta"><a href="guides/index.html" class="btn-guides">View All Guides</a></div>
+            </div>
+        </section>
         <section id="certs">
             <div class="container">
                 <div class="section-header"><span class="section-tag">// credentials</span><h2 class="section-title">Certifications</h2><p class="section-subtitle">Building verified proof of skills</p></div>
@@ -351,6 +422,7 @@
                 <a href="https://tryhackme.com/p/Pixrei" target="_blank">TryHackMe</a>
                 <a href="https://app.hackthebox.com/public/users/2190520" target="_blank">HackTheBox</a>
                 <a href="blog/index.html">Blog</a>
+                <a href="guides/index.html">Guides</a>
             </div>
             <p class="footer-text">© 2025 PixRei // Aspiring Penetration Tester | Open to Opportunities</p>
         </div>
@@ -363,7 +435,7 @@
         themeToggle.addEventListener('click', () => setTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
         const particlesContainer = document.getElementById('particles');
         for (let i = 0; i < 50; i++) { const p = document.createElement('div'); p.className = 'particle'; p.style.left = Math.random() * 100 + '%'; p.style.top = Math.random() * 100 + '%'; p.style.animationDelay = Math.random() * 4 + 's'; p.style.animationDuration = (3 + Math.random() * 3) + 's'; const s = 1 + Math.random() * 3; p.style.width = s + 'px'; p.style.height = s + 'px'; particlesContainer.appendChild(p); }
-        const fadeElements = document.querySelectorAll('.project-card, .skill-card, .stat-card, .terminal-card, .roadmap-section, .cert-card, .writeup-card');
+        const fadeElements = document.querySelectorAll('.project-card, .skill-card, .stat-card, .terminal-card, .roadmap-section, .cert-card, .writeup-card, .guide-card');
         fadeElements.forEach(el => el.classList.add('fade-in'));
         const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); }); }, { threshold: 0.1 });
         fadeElements.forEach(el => observer.observe(el));
