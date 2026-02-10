@@ -31,9 +31,11 @@ Minimal, techy portfolio showcasing my journey in AI Security & Red Team researc
 ### Sections
 
 - **About** - Background, stats, live terminal status
-- **Projects** - Security ML applications in progress
-- **Skills** - ML, Offensive Security, Development
-- **Roadmap** - AI Security journey tracker
+- **Writeups** - Detailed walkthroughs of HTB and TryHackMe machines
+- **Certifications** - Building verified proof of skills
+- **Projects** - Security tools and research
+- **Skills** - Offensive Security, Development
+- **Roadmap** - Offensive Security journey tracker
 
 ### Run Locally
 
