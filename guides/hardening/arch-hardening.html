@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arch Linux Hardening - PixRei Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0f0a;
+            --bg-secondary: #0d120d;
+            --bg-card: #111611;
+            --text-primary: #c8d6c8;
+            --text-secondary: #6b7c6b;
+            --text-muted: #3d4a3d;
+            --accent: #00ff88;
+            --accent-dim: #00cc6a;
+            --accent-glow: rgba(0, 255, 136, 0.15);
+            --border: #1a251a;
+            --htb-green: #9fef00;
+            --thm-red: #ff4444;
+            --easy: #4ade80;
+            --medium: #fbbf24;
+            --hard: #ef4444;
+            --code-bg: #0d1117;
+            --blue: #60a5fa;
+            --purple: #a78bfa;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f0f4f0;
+            --bg-secondary: #e8ece8;
+            --bg-card: #ffffff;
+            --text-primary: #1a251a;
+            --text-secondary: #4a5a4a;
+            --text-muted: #8a9a8a;
+            --accent: #00994d;
+            --accent-dim: #007a3d;
+            --accent-glow: rgba(0, 153, 77, 0.1);
+            --border: #d0dcd0;
+            --code-bg: #f6f8fa;
+            --blue: #2563eb;
+            --purple: #7c3aed;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+
+        .grid-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            background-image:
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.3;
+        }
+
+        header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            background: rgba(10, 15, 10, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        [data-theme="light"] header {
+            background: rgba(240, 244, 240, 0.9);
+        }
+
+        nav {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .logo::before { content: '> '; opacity: 0.5; }
+
+        .nav-right {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .back-btn {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .theme-toggle {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--accent);
+            width: 40px; height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .theme-toggle:hover { border-color: var(--accent); }
+
+        .article-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 7rem 2rem 4rem;
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .badge.guide { background: rgba(96, 165, 250, 0.2); color: var(--blue); }
+        .badge.arch { background: rgba(167, 139, 250, 0.2); color: var(--purple); }
+        .badge.security { background: var(--accent-glow); color: var(--accent); }
+
+        .article-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .article-info {
+            display: flex;
+            gap: 2rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        /* TABLE OF CONTENTS */
+        .toc-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .toc-heading {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .toc-links {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .toc-links li { margin-bottom: 0.6rem; }
+        .toc-links li:last-child { margin-bottom: 0; }
+
+        .toc-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .toc-links a:hover { color: var(--accent); }
+        .toc-links a::before { content: '→ '; opacity: 0.5; }
+
+        /* CONTENT */
+        .content h2 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.4rem;
+            color: var(--accent);
+            margin: 3rem 0 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .content h3 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin: 2rem 0 1rem;
+        }
+
+        .content p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .content ul, .content ol {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        .content li { margin-bottom: 0.5rem; }
+        .content strong { color: var(--text-primary); }
+        .content a { color: var(--accent); text-decoration: none; }
+        .content a:hover { text-decoration: underline; }
+
+        /* CODE BLOCKS */
+        .code-block {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+        }
+
+        .code-header {
+            background: var(--bg-card);
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .code-lang {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .copy-btn {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .code-block pre {
+            padding: 1rem;
+            margin: 0;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .content code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            background: var(--bg-secondary);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            color: var(--accent);
+        }
+
+        .code-block code {
+            background: none;
+            padding: 0;
+        }
+
+        /* CONFIG BLOCKS */
+        .config-block {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+        }
+
+        .config-header {
+            background: var(--bg-card);
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .config-path {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--purple);
+        }
+
+        /* INFO BOXES */
+        .info-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .info-box.warning { border-left-color: var(--medium); }
+        .info-box.danger { border-left-color: var(--hard); }
+        .info-box.success { border-left-color: var(--easy); }
+        .info-box.blue { border-left-color: var(--blue); }
+
+        .info-box-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .info-box.warning .info-box-title { color: var(--medium); }
+        .info-box.danger .info-box-title { color: var(--hard); }
+        .info-box.success .info-box-title { color: var(--easy); }
+        .info-box.blue .info-box-title { color: var(--blue); }
+        .info-box p { margin-bottom: 0.5rem; font-size: 0.9rem; }
+        .info-box p:last-child { margin-bottom: 0; }
+        .info-box ul { margin-bottom: 0; font-size: 0.9rem; }
+
+        /* PARAMETER TABLE */
+        .param-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.85rem;
+        }
+
+        .param-table th {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            background: var(--bg-card);
+            color: var(--accent);
+            border: 1px solid var(--border);
+            text-transform: uppercase;
+        }
+
+        .param-table td {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        .param-table td code {
+            font-size: 0.8rem;
+        }
+
+        .param-table tr:hover td {
+            background: var(--bg-card);
+        }
+
+        /* TAKEAWAYS */
+        .takeaways {
+            background: var(--accent-glow);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .takeaways h3 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .takeaways ul { margin-bottom: 0; }
+
+        /* CHECKLIST */
+        .checklist {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .checklist h3 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .checklist ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .checklist li {
+            padding: 0.4rem 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .checklist li::before {
+            content: '☐ ';
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent);
+        }
+
+        /* NAVIGATION */
+        .article-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .nav-link {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            transition: all 0.2s;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .nav-link:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .nav-link.prev { text-align: left; }
+        .nav-link.next { text-align: right; }
+        .nav-link.next::after { content: ' →'; }
+        .nav-link span {
+            display: block;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        footer {
+            padding: 3rem 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .footer-text {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 768px) {
+            .article-title { font-size: 1.8rem; }
+            .article-container { padding: 6rem 1rem 2rem; }
+            .article-nav { flex-direction: column; }
+            .param-table { font-size: 0.75rem; }
+            .param-table td, .param-table th { padding: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+
+    <header>
+        <nav>
+            <a href="../../index.html" class="logo">PixRei ./guides/arch-hardening</a>
+            <div class="nav-right">
+                <a href="../index.html" class="back-btn">← All Guides</a>
+                <button class="theme-toggle" id="themeToggle">◐</button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <article class="article-container">
+            <!-- BADGES -->
+            <div class="article-meta">
+                <span class="badge guide">Guide</span>
+                <span class="badge arch">Arch Linux</span>
+                <span class="badge security">🛡️ Hardening</span>
+            </div>
+
+            <!-- TITLE -->
+            <h1 class="article-title">Arch Linux Hardening for Pentesters</h1>
+
+            <!-- INFO -->
+            <div class="article-info">
+                <span>📅 Feb 10, 2026</span>
+                <span>⏱️ 15 min read</span>
+                <span>🏷️ Firewall, Kernel, Bluetooth, sysctl, AIDE</span>
+            </div>
+
+            <!-- TABLE OF CONTENTS -->
+            <div class="toc-box">
+                <span class="toc-heading">// Table of Contents</span>
+                <ul class="toc-links">
+                    <li><a href="#overview">Overview</a></li>
+                    <li><a href="#firewall">Firewall (UFW)</a></li>
+                    <li><a href="#bluetooth">Bluetooth Hardening</a></li>
+                    <li><a href="#kernel">Kernel Hardening (sysctl)</a></li>
+                    <li><a href="#sudo">Sudo &amp; Login Security</a></li>
+                    <li><a href="#permissions">File Permission Hardening</a></li>
+                    <li><a href="#services">Service Minimization</a></li>
+                    <li><a href="#aide">File Integrity Monitoring (AIDE)</a></li>
+                    <li><a href="#dualboot">Dual Boot Considerations</a></li>
+                    <li><a href="#verification">Verification Checklist</a></li>
+                    <li><a href="#takeaways">Key Takeaways</a></li>
+                </ul>
+            </div>
+
+            <!-- CONTENT -->
+            <div class="content">
+                <h2 id="overview">Overview</h2>
+                <p>As a pentester, your own workstation should be the last machine to get compromised. Arch Linux ships minimal by default — no firewall, no hardened kernel parameters, no intrusion detection. That's great for customization, terrible for security.</p>
+                <p>This guide walks through hardening a daily-driver Arch + Hyprland setup used for both pentesting work and everyday use. Every step is explained so you understand <strong>what</strong> you're doing and <strong>why</strong> — because understanding defenses makes you a better attacker.</p>
+
+                <div class="info-box blue">
+                    <div class="info-box-title">🖥️ Environment</div>
+                    <p>
+                        <strong>OS:</strong> Arch Linux (rolling release)<br>
+                        <strong>WM:</strong> Hyprland (Wayland)<br>
+                        <strong>Setup:</strong> Windows dual boot, Bluetooth active, RustDesk remote access<br>
+                        <strong>Disk:</strong> NVMe, ext4 (no LUKS)
+                    </p>
+                </div>
+
+                <!-- FIREWALL -->
+                <h2 id="firewall">Firewall (UFW)</h2>
+                <p>Arch has no firewall by default. Every open port is exposed to whatever network you're on. UFW (Uncomplicated Firewall) is the fastest fix — it wraps iptables into a simple interface.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">bash</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>sudo pacman -S ufw
+sudo systemctl enable --now ufw
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw enable</code></pre>
+                </div>
+
+                <div class="info-box success">
+                    <div class="info-box-title">✅ What This Does</div>
+                    <p><strong>deny incoming</strong> — blocks all unsolicited inbound connections. If you're not running a server, nothing should be listening.</p>
+                    <p><strong>allow outgoing</strong> — lets your traffic out normally. Web browsing, updates, VPN connections all work fine.</p>
+                </div>
+
+                <h3>Verification</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">bash</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>$ sudo ufw status verbose
+Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), disabled (routed)</code></pre>
+                </div>
+
+                <p>Also check what's actually listening on your system:</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">bash</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>$ sudo ss -tlnp
+State  Recv-Q  Send-Q  Local Address:Port  Process
+LISTEN 0       0       127.0.0.1:631        cupsd    # Printer service
+LISTEN 0       0       127.0.0.1:9050       tor      # Tor SOCKS proxy</code></pre>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-box-title">💡 Reading ss Output</div>
+                    <p>Both services listen on <code>127.0.0.1</code> (localhost only) — they're not exposed to the network. If you see <code>0.0.0.0</code> or <code>[::]</code>, that service is accessible from outside. Investigate immediately.</p>
+                </div>
+
+                <!-- BLUETOOTH -->
+                <h2 id="bluetooth">Bluetooth Hardening</h2>
+                <p>Bluetooth is a common close-range attack vector — BlueBorne, KNOB, BIAS are all real exploits. If you use it for headphones or speakers, don't disable it — just restrict it.</p>
+
+                <div class="config-block">
+                    <div class="config-header">
+                        <span class="config-path">/etc/bluetooth/main.conf</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>[General]
+DiscoverableTimeout = 30
+Discoverable = false
+Pairable = false
+
+[Policy]
+AutoEnable = false</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">bash</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>sudo systemctl restart bluetooth</code></pre>
+                </div>
+
+                <table class="param-table">
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>What It Does</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>DiscoverableTimeout = 30</code></td>
+                            <td>Auto-disables discovery after 30 seconds when you manually turn it on</td>
+                        </tr>
+                        <tr>
+                            <td><code>Discoverable = false</code></td>
+                            <td>Your device is invisible to nearby Bluetooth scans by default</td>
+                        </tr>
+                        <tr>
+                            <td><code>Pairable = false</code></td>
+                            <td>No one can pair without you explicitly allowing it first</td>
+                        </tr>
+                        <tr>
+                            <td><code>AutoEnable = false</code></td>
+                            <td>Bluetooth doesn't auto-start on boot — you control when it's active</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- KERNEL HARDENING -->
+                <h2 id="kernel">Kernel Hardening (sysctl)</h2>
+                <p>These kernel parameters are your defense against network-level attacks and information leakage. Each one closes a specific attack vector that you'll encounter (and exploit) during pentests.</p>
+
+                <div class="config-block">
+                    <div class="config-header">
+                        <span class="config-path">/etc/sysctl.d/99-hardening.conf</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code># --- Network Protection ---
+
+# IP Spoofing protection (Reverse Path Filtering)
+net.ipv4.conf.all.rp_filter = 1
+net.ipv4.conf.default.rp_filter = 1
+
+# Reject ICMP redirects
+net.ipv4.conf.all.accept_redirects = 0
+net.ipv4.conf.default.accept_redirects = 0
+net.ipv6.conf.all.accept_redirects = 0
+net.ipv6.conf.default.accept_redirects = 0
+
+# Don't send ICMP redirects
+net.ipv4.conf.all.send_redirects = 0
+net.ipv4.conf.default.send_redirects = 0
+
+# SYN flood protection
+net.ipv4.tcp_syncookies = 1
+
+# Reject source-routed packets
+net.ipv4.conf.all.accept_source_route = 0
+net.ipv6.conf.all.accept_source_route = 0
+
+# --- Memory &amp; Kernel Protection ---
+
+# ASLR maximum level
+kernel.randomize_va_space = 2
+
+# Restrict core dumps from SUID programs
+fs.suid_dumpable = 0
+
+# Hide kernel pointers
+kernel.kptr_restrict = 2
+
+# Restrict dmesg access
+kernel.dmesg_restrict = 1</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">bash</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>sudo sysctl --system</code></pre>
+                </div>
+
+                <h3>Why Each Parameter Matters</h3>
+
+                <table class="param-table">
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Protects Against</th>
+                            <th>How It Works</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>rp_filter = 1</code></td>
+                            <td>IP Spoofing, MITM</td>
+                            <td>Validates incoming packet source matches the expected interface — drops packets with fake source IPs</td>
+                        </tr>
+                        <tr>
+                            <td><code>accept_redirects = 0</code></td>
+                            <td>Traffic hijacking</td>
+                            <td>Ignores ICMP "send your traffic here instead" messages that an attacker could use to reroute your traffic through their machine</td>
+                        </tr>
+                        <tr>
+                            <td><code>send_redirects = 0</code></td>
+                            <td>Information leakage</td>
+                            <td>Stops your machine from telling others to redirect traffic — you're not a router</td>
+                        </tr>
+                        <tr>
+                            <td><code>tcp_syncookies = 1</code></td>
+                            <td>SYN flood DoS</td>
+                            <td>TCP handshake: SYN → SYN-ACK → ACK. Attacker sends thousands of SYNs without completing. Syncookies use crypto verification instead of holding connections in memory</td>
+                        </tr>
+                        <tr>
+                            <td><code>accept_source_route = 0</code></td>
+                            <td>Firewall bypass</td>
+                            <td>Rejects packets that specify their own route through the network — normally routers decide the path</td>
+                        </tr>
+                        <tr>
+                            <td><code>randomize_va_space = 2</code></td>
+                            <td>Buffer overflow</td>
+                            <td>ASLR randomizes stack, heap, and mmap addresses every execution. Attackers need predictable addresses — this makes exploitation significantly harder</td>
+                        </tr>
+                        <tr>
+                            <td><code>suid_dumpable = 0</code></td>
+                            <td>Credential theft</td>
+                            <td>Prevents SUID (root-level) programs from writing memory dumps to disk — those dumps could contain passwords and tokens</td>
+                        </tr>
+                        <tr>
+                            <td><code>kptr_restrict = 2</code></td>
+                            <td>Kernel exploitation</td>
+                            <td>Hides kernel memory addresses from <code>/proc/kallsyms</code> — essential info for writing kernel exploits, now hidden even from root</td>
+                        </tr>
+                        <tr>
+                            <td><code>dmesg_restrict = 1</code></td>
+                            <td>Reconnaissance</td>
+                            <td>Blocks unprivileged access to kernel logs containing hardware info, driver details, and memory addresses. <code>sudo dmesg</code> still works</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-box">
+                    <div class="info-box-title">💡 Daily Impact</div>
+                    <p>None of these affect normal usage. <code>sudo dmesg</code> still works. Your apps run fine. Core dumps from regular programs still work via <code>coredumpctl</code>. If you need to temporarily disable something (e.g., <code>kptr_restrict</code> for kernel debugging), use <code>sudo sysctl kernel.kptr_restrict=0</code> — it resets on reboot.</p>
+                </div>
+
+                <!-- SUDO & LOGIN -->
+                <h2 id="sudo">Sudo &amp; Login Security</h2>
+
+                <h3>Sudo Timeout</h3>
+                <p>By default, sudo caches your password for 5 minutes. If someone accesses your terminal during that window, they have root. Shorten it.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">bash</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>sudo visudo
+# Find the Defaults line and change to:
+Defaults env_reset, timestamp_timeout=1</code></pre>
+                </div>
+
+                <p>Now sudo asks for your password again after just 1 minute of inactivity instead of 5.</p>
+
+                <h3>Login Brute Force Protection</h3>
+                <p>Limit failed login attempts to slow down brute force attacks on your local login.</p>
+
+                <div class="config-block">
+                    <div class="config-header">
+                        <span class="config-path">/etc/security/faillock.conf</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>deny = 5
+unlock_time = 300</code></pre>
+                </div>
+
+                <div class="info-box warning">
+                    <div class="info-box-title">⚠️ What This Means</div>
+                    <p>After <strong>5 failed attempts</strong>, the account locks for <strong>5 minutes</strong> (300 seconds). Simple but effective — it makes password brute forcing impractical for local access.</p>
+                </div>
+
+                <!-- FILE PERMISSIONS -->
+                <h2 id="permissions">File Permission Hardening</h2>
+                <p>These are critical system files. Wrong permissions here is a classic privilege escalation vector you'll see in CTFs and real pentests.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">bash</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>sudo chmod 600 /etc/shadow      # Password hashes — root only
+sudo chmod 600 /etc/gshadow     # Group password hashes — root only
+sudo chmod 644 /etc/passwd       # User list — readable, not writable
+sudo chmod 644 /etc/group        # Group list — readable, not writable</code></pre>
+                </div>
+
+                <div class="info-box danger">
+                    <div class="info-box-title">🚨 Why /etc/shadow Matters</div>
+                    <p><code>/etc/shadow</code> contains password hashes. If a regular user can read it, they can copy the hashes and crack them offline with tools like <strong>hashcat</strong> or <strong>john</strong>. This is one of the first things you check during Linux privilege escalation — and it's one of the first things to lock down on your own machine.</p>
+                </div>
+
+                <!-- SERVICE MINIMIZATION -->
+                <h2 id="services">Service Minimization</h2>
+                <p>The hardening principle is simple: <strong>if you don't need it running, turn it off</strong>. Every running service is a potential attack surface.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">bash</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code># Check all listening services
+sudo ss -tlnp
+
+# Disable services you only use occasionally
+sudo systemctl disable tor         # Start manually: sudo systemctl start tor
+sudo systemctl disable bluetooth   # If you rarely use it</code></pre>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-box-title">💡 Rule of Thumb</div>
+                    <p>If you see a service listening on <code>0.0.0.0</code> or <code>[::]</code> and you don't know why — investigate it. If you don't need it, disable it. Services on <code>127.0.0.1</code> are localhost-only and lower risk, but still worth auditing.</p>
+                </div>
+
+                <h3>Kernel Update Notifications</h3>
+                <p>Create a pacman hook to remind you to reboot after kernel updates:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">bash</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>sudo mkdir -p /etc/pacman.d/hooks</code></pre>
+                </div>
+
+                <div class="config-block">
+                    <div class="config-header">
+                        <span class="config-path">/etc/pacman.d/hooks/security-check.hook</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>[Trigger]
+Operation = Upgrade
+Type = Package
+Target = linux
+Target = linux-headers
+
+[Action]
+Description = Kernel updated — reboot recommended
+When = PostTransaction
+Exec = /usr/bin/echo "&gt;&gt;&gt; KERNEL UPDATED - Reboot recommended &lt;&lt;&lt;"</code></pre>
+                </div>
+
+                <!-- AIDE -->
+                <h2 id="aide">File Integrity Monitoring (AIDE)</h2>
+                <p>AIDE (Advanced Intrusion Detection Environment) takes a snapshot of your system files and their hashes. If anything changes — a rootkit modifies a binary, an attacker alters a config — AIDE flags it. This is a blue team staple, and understanding it makes you a better red teamer.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">bash</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code># Install
+sudo pacman -S aide
+
+# Initialize database (takes ~1 min for ~450k files)
+sudo aide --init
+
+# Activate the database
+sudo cp /var/lib/aide/aide.db.new.gz /var/lib/aide/aide.db.gz
+
+# Enable daily automatic checks
+sudo systemctl enable --now aidecheck.timer</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">usage</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code># Manual integrity check
+sudo aide --check
+
+# View automated check logs
+sudo journalctl -abu aidecheck
+
+# After system updates, refresh the database
+sudo aide --update
+sudo cp /var/lib/aide/aide.db.new.gz /var/lib/aide/aide.db.gz</code></pre>
+                </div>
+
+                <div class="info-box warning">
+                    <div class="info-box-title">⚠️ Important</div>
+                    <p>Run <code>aide --update</code> after legitimate system updates (pacman -Syu), otherwise AIDE will flag every updated file as a potential intrusion. Update the database after you've verified the changes are expected.</p>
+                </div>
+
+                <!-- DUAL BOOT -->
+                <h2 id="dualboot">Dual Boot Considerations</h2>
+                <p>Running Windows alongside Arch introduces additional attack surface. The key concern: <strong>Windows can access your Arch partition</strong> with third-party tools, and vice versa.</p>
+
+                <div class="info-box danger">
+                    <div class="info-box-title">🚨 Physical Access Risk</div>
+                    <ul>
+                        <li><strong>No LUKS = No disk encryption</strong> — anyone booting a live USB can read your entire Arch partition</li>
+                        <li><strong>Windows side access</strong> — ext4 readers exist for Windows, your files aren't safe just because it's a different filesystem</li>
+                        <li><strong>GRUB tampering</strong> — without Secure Boot, the bootloader can be modified</li>
+                    </ul>
+                </div>
+
+                <h3>Mitigations</h3>
+                <ul>
+                    <li><strong>LUKS encryption</strong> is the real fix, but requires an Arch reinstall</li>
+                    <li><strong>GRUB password</strong> can prevent unauthorized boot option changes</li>
+                    <li>Keep <strong>BitLocker enabled</strong> on the Windows side</li>
+                    <li>Keep <strong>both OSes updated</strong> — a compromised Windows can pivot to Arch</li>
+                </ul>
+
+                <!-- VERIFICATION -->
+                <h2 id="verification">Verification Checklist</h2>
+                <p>Run these commands to verify everything is properly configured:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">bash</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code># Firewall active?
+sudo ufw status verbose
+
+# Kernel parameters applied?
+sysctl kernel.randomize_va_space    # Should return: 2
+sysctl net.ipv4.conf.all.rp_filter  # Should return: 1
+sysctl kernel.kptr_restrict          # Should return: 2
+sysctl kernel.dmesg_restrict         # Should return: 1
+
+# No unexpected listeners?
+sudo ss -tlnp
+
+# AIDE database exists?
+ls -la /var/lib/aide/aide.db.gz
+
+# AIDE timer active?
+systemctl status aidecheck.timer
+
+# File permissions correct?
+ls -la /etc/shadow    # Should be: -rw-------
+ls -la /etc/passwd    # Should be: -rw-r--r--</code></pre>
+                </div>
+
+                <!-- TAKEAWAYS -->
+                <div class="takeaways" id="takeaways">
+                    <h3>🎯 Key Takeaways</h3>
+                    <ul>
+                        <li><strong>Arch ships insecure by default</strong> — no firewall, no hardened kernel, no IDS. You have to build your own defenses.</li>
+                        <li><strong>Firewall first</strong> — UFW with deny incoming is the single most impactful change you can make in 30 seconds.</li>
+                        <li><strong>sysctl hardening</strong> closes network-level attack vectors (spoofing, redirects, SYN flood) and kernel information leakage that you'll actively exploit during pentests.</li>
+                        <li><strong>Service minimization</strong> reduces attack surface — if it's not running, it can't be exploited.</li>
+                        <li><strong>AIDE gives you tripwire detection</strong> — understanding blue team tools makes your red team work better.</li>
+                        <li><strong>Know your defenses to break others'</strong> — every hardening step you apply is something you'll test for (and exploit when missing) in real engagements.</li>
+                    </ul>
+                </div>
+
+                <h2>What's Next</h2>
+                <ul>
+                    <li><strong>LUKS full disk encryption</strong> — the ultimate physical access protection</li>
+                    <li><strong>AppArmor profiles</strong> — mandatory access control for application sandboxing</li>
+                    <li><strong>Secure Boot</strong> — prevent boot-level tampering</li>
+                    <li><strong>USB device whitelisting</strong> — block BadUSB / Rubber Ducky attacks</li>
+                    <li><strong>Network segmentation</strong> — isolate pentest lab traffic from personal traffic</li>
+                    <li><strong>VPN kill switch</strong> — ensure traffic doesn't leak outside VPN during engagements</li>
+                </ul>
+
+                <h2>Resources</h2>
+                <ul>
+                    <li><a href="https://wiki.archlinux.org/title/Security" target="_blank">Arch Wiki — Security</a></li>
+                    <li><a href="https://www.cisecurity.org/benchmark/distribution_independent_linux" target="_blank">CIS Benchmarks — Linux</a></li>
+                    <li><a href="https://www.ssi.gouv.fr/en/guide/linux-configuration/" target="_blank">ANSSI — Linux Hardening Guide</a></li>
+                </ul>
+            </div>
+
+            <!-- NAV -->
+            <nav class="article-nav">
+                <a href="#" class="nav-link prev">
+                    <span>Previous</span>
+                    ← Previous Guide
+                </a>
+                <a href="#" class="nav-link next">
+                    <span>Next</span>
+                    Next Guide
+                </a>
+            </nav>
+        </article>
+    </main>
+
+    <footer>
+        <p class="footer-text">© 2026 PixRei // Security Guides</p>
+    </footer>
+
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+
+        function setTheme(theme) {
+            html.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            themeToggle.textContent = theme === 'dark' ? '◐' : '◑';
+        }
+
+        setTheme(localStorage.getItem('theme') || 'dark');
+
+        themeToggle.addEventListener('click', () => {
+            setTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        });
+
+        function copyCode(btn) {
+            const code = btn.closest('.code-block, .config-block').querySelector('code').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                btn.textContent = 'Copied!';
+                btn.style.color = 'var(--accent)';
+                btn.style.borderColor = 'var(--accent)';
+                setTimeout(() => {
+                    btn.textContent = 'Copy';
+                    btn.style.color = '';
+                    btn.style.borderColor = '';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
