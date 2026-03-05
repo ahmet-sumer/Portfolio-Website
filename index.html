@@ -221,7 +221,7 @@
         .roadmap-title { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; color: var(--accent); }
         .roadmap-progress-text { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text-secondary); }
         .progress-bar { height: 8px; background: var(--bg-secondary); border-radius: 4px; overflow: hidden; margin-bottom: 2rem; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent-dim), var(--accent)); border-radius: 4px; width: 5%; position: relative; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent-dim), var(--accent)); border-radius: 4px; width: 20%; position: relative; }
         .progress-fill::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); animation: progress-shine 2s ease-in-out infinite; }
         @keyframes progress-shine { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
         .roadmap-phases { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; }
@@ -376,9 +376,9 @@
                 <div class="certs-grid">
                     <div class="cert-card completed"><div class="cert-status completed">Completed</div><div class="cert-icon">🏆</div><h3>TryHackMe Jr Pentester Path</h3><p>Comprehensive learning path covering penetration testing methodology and tools.</p></div>
                     <div class="cert-card completed"><div class="cert-status completed">Completed</div><div class="cert-icon">🔴</div><h3>TryHackMe Red Teamer Path</h3><p>Advanced path covering red team operations, C2 frameworks, and adversary emulation.</p></div>
-                    <div class="cert-card in-progress"><div class="cert-status in-progress">In Progress</div><div class="cert-icon">🔓</div><h3>eJPT - Junior Penetration Tester</h3><p>INE Security hands-on certification. 72-hour practical exam proving real pentesting skills. Target: April 2026.</p></div>
+                    <div class="cert-card completed"><div class="cert-status completed">In Progress</div><div class="cert-icon">🔓</div><h3>eJPT - Junior Penetration Tester</h3><p>INE Security hands-on certification. 72-hour practical exam proving real pentesting skills. Target: April 2026.</p></div>
+                    <div class="cert-card in-progress"><div class="cert-status in-progress">Planned</div><div class="cert-icon">💥</div><h3>CPTS - Certified Penetration Testing Specialist</h3><p>HackTheBox advanced certification. Comprehensive practical exam covering full penetration testing methodology. OSCP alternative.</p></div>
                     <div class="cert-card"><div class="cert-status planned">Planned</div><div class="cert-icon">🎯</div><h3>CAP - Certified AppSec Practitioner</h3><p>SecOps Group certification covering OWASP Top 10 and web application security fundamentals.</p></div>
-                    <div class="cert-card"><div class="cert-status planned">Planned</div><div class="cert-icon">💥</div><h3>CPTS - Certified Penetration Testing Specialist</h3><p>HackTheBox advanced certification. Comprehensive practical exam covering full penetration testing methodology. OSCP alternative.</p></div>
                 </div>
             </div>
         </section>
@@ -405,8 +405,8 @@
                     <div class="roadmap-header"><div class="roadmap-title">Roadmap: Jr_Pentester → Red_Teamer</div><div class="roadmap-progress-text">Phase 0</div></div>
                     <div class="progress-bar"><div class="progress-fill"></div></div>
                     <div class="roadmap-phases">
-                        <div class="phase active"><div class="phase-label">Stage 1</div><div class="phase-name">eJPT</div></div>
-                        <div class="phase"><div class="phase-label">Stage 2</div><div class="phase-name">Portfolio</div></div>
+                        <div class="phase"><div class="phase-label">Stage 1</div><div class="phase-name">eJPT</div></div>
+                        <div class="phase active"><div class="phase-label">Stage 2</div><div class="phase-name">Portfolio</div></div>
                         <div class="phase"><div class="phase-label">Stage 3</div><div class="phase-name">CPTS</div></div>
                         <div class="phase"><div class="phase-label">Stage 4</div><div class="phase-name">Job Hunt</div></div>
                     </div>
