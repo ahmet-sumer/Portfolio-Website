@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PixRei Blog - Security Writeups</title>
+    <title>PixRei Blog - Security Research & Writeups</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -386,6 +386,40 @@
             color: var(--insane);
         }
 
+        .type-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .type-badge.type-writeup {
+            background: rgba(0, 255, 136, 0.15);
+            color: var(--accent);
+        }
+
+        .type-badge.type-deepdive {
+            background: rgba(99, 179, 237, 0.2);
+            color: #63b3ed;
+        }
+
+        .type-badge.type-fieldnote {
+            background: rgba(251, 191, 36, 0.15);
+            color: var(--medium);
+        }
+
+        .writeup-card.deep-dive:hover {
+            border-color: #63b3ed;
+            box-shadow: 0 10px 40px rgba(99, 179, 237, 0.15);
+        }
+
+        .writeup-card.field-note:hover {
+            border-color: var(--medium);
+            box-shadow: 0 10px 40px rgba(251, 191, 36, 0.15);
+        }
+
         .writeup-body {
             padding: 1.5rem;
         }
@@ -530,11 +564,11 @@
 
     <header>
         <nav>
-            <a href="https://pixrei.xyz" class="logo">PixRei ./writeups</a>
+            <a href="https://pixrei.xyz" class="logo">PixRei ./blog</a>
             <div class="nav-right">
                 <ul class="nav-links">
                     <li><a href="https://pixrei.xyz">home</a></li>
-                    <li><a href="blog/index.html">writeups</a></li>
+                    <li><a href="blog/index.html">blog</a></li>
                     <li><a href="https://pixrei.xyz#projects">projects</a></li>
                     <li><a href="https://pixrei.xyz#skills">skills</a></li>
                 </ul>
@@ -546,8 +580,8 @@
     <main>
         <section class="blog-hero">
             <div class="container">
-                <h1>./writeups</h1>
-                <p>Detailed walkthroughs of \\Exploited machines. Learning in public, documenting everything.</p>
+                <h1>./blog</h1>
+                <p>Breaking down tools, techniques, and attack paths — one module at a time.</p>
             </div>
         </section>
 
@@ -555,11 +589,11 @@
             <div class="container">
                 <div class="filter-container">
                     <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="writeup">Writeups</button>
+                    <button class="filter-btn" data-filter="deep-dive">Deep Dives</button>
+                    <button class="filter-btn" data-filter="field-note">Field Notes</button>
                     <button class="filter-btn htb" data-filter="htb">HackTheBox</button>
                     <button class="filter-btn thm" data-filter="thm">TryHackMe</button>
-                    <button class="filter-btn" data-filter="easy">Easy</button>
-                    <button class="filter-btn" data-filter="medium">Medium</button>
-                    <button class="filter-btn" data-filter="hard">Hard</button>
                     <button class="filter-btn" data-filter="linux">Linux</button>
                     <button class="filter-btn" data-filter="windows">Windows</button>
                 </div>
@@ -569,16 +603,16 @@
         <section class="container">
             <div class="stats-bar">
                 <div class="stat-item">
-                    <div class="value" id="totalWriteups">0</div>
+                    <div class="value" id="totalPosts">0</div>
+                    <div class="label">Total Posts</div>
+                </div>
+                <div class="stat-item">
+                    <div class="value" id="writeupCount">0</div>
                     <div class="label">Writeups</div>
                 </div>
                 <div class="stat-item">
-                    <div class="value" id="htbCount">0</div>
-                    <div class="label">HackTheBox</div>
-                </div>
-                <div class="stat-item">
-                    <div class="value" id="thmCount">0</div>
-                    <div class="label">TryHackMe</div>
+                    <div class="value" id="deepDiveCount">0</div>
+                    <div class="label">Deep Dives</div>
                 </div>
             </div>
 
@@ -602,7 +636,7 @@
                 <a href="https://tryhackme.com/p/Pixrei" target="_blank">TryHackMe</a>
                 <a href="https://app.hackthebox.com/profile/Pixrei" target="_blank">HackTheBox</a>
             </div>
-            <p class="footer-text">© 2025 PixRei // Security Writeups & Research</p>
+            <p class="footer-text">© 2025 PixRei // Security Research & Writeups</p>
         </div>
     </footer>
 
@@ -625,13 +659,12 @@
             setTheme(current === 'dark' ? 'light' : 'dark');
         });
 
-        // Writeups Data  
-        const writeups = [
-            // Example writeup 
-            
+        // Posts Data  
+        const posts = [
             {
                 id: 'access',
                 title: 'Access',
+                type: 'writeup',
                 platform: 'htb',
                 difficulty: 'easy',
                 os: 'windows',
@@ -639,36 +672,34 @@
                 description: 'Physical security machine exploiting anonymous FTP, MDB database credentials, and Windows saved credentials for privilege escalation.',
                 tags: ['ftp', 'database', 'telnet', 'savedcreds'],
                 url: 'writeups/access.html'
-            }/*
-            {
-                id: 'blue',
-                title: 'Blue',
-                platform: 'htb',
-                difficulty: 'easy',
-                os: 'windows',
-                date: '2025-01-17',
-                description: 'EternalBlue exploitation on Windows. Introduction to famous MS17-010 vulnerability.',
-                tags: ['eternalblue', 'smb', 'windows'],
-                url: 'writeups/blue.html'
-            },
-            */
+            }
+            // Future posts:
+            // { id: 'nmap-beyond-basics', title: 'Nmap Beyond the Basics', type: 'deep-dive', date: '...', description: '...', tags: [...], url: 'posts/nmap-beyond-basics.html' }
+            // { id: 'field-note-example', title: '...', type: 'field-note', ... }
         ];
 
-        // Render Writeups
+        // Render Posts
         const writeupsGrid = document.getElementById('writeupsGrid');
         const emptyState = document.getElementById('emptyState');
         let currentFilter = 'all';
 
-        function renderWriteups(filter = 'all') {
+        // Type labels and colors
+        const typeConfig = {
+            'writeup': { label: 'WRITEUP', class: 'type-writeup' },
+            'deep-dive': { label: 'DEEP DIVE', class: 'type-deepdive' },
+            'field-note': { label: 'FIELD NOTE', class: 'type-fieldnote' }
+        };
+
+        function renderPosts(filter = 'all') {
             currentFilter = filter;
             
-            let filtered = writeups;
+            let filtered = posts;
             
             if (filter !== 'all') {
-                filtered = writeups.filter(w => {
-                    if (filter === 'htb' || filter === 'thm') return w.platform === filter;
-                    if (filter === 'easy' || filter === 'medium' || filter === 'hard' || filter === 'insane') return w.difficulty === filter;
-                    if (filter === 'linux' || filter === 'windows') return w.os === filter;
+                filtered = posts.filter(p => {
+                    if (filter === 'writeup' || filter === 'deep-dive' || filter === 'field-note') return p.type === filter;
+                    if (filter === 'htb' || filter === 'thm') return p.platform === filter;
+                    if (filter === 'linux' || filter === 'windows') return p.os === filter;
                     return true;
                 });
             }
@@ -681,36 +712,49 @@
 
             emptyState.style.display = 'none';
 
-            writeupsGrid.innerHTML = filtered.map(w => `
-                <a href="${w.url}" class="writeup-card ${w.platform}">
+            writeupsGrid.innerHTML = filtered.map(p => {
+                const tc = typeConfig[p.type] || typeConfig['writeup'];
+                const platformBadge = p.platform 
+                    ? `<span class="platform-badge ${p.platform}">${p.platform.toUpperCase()}</span>` 
+                    : '';
+                const diffBadge = p.difficulty 
+                    ? `<span class="difficulty-badge ${p.difficulty}">${p.difficulty}</span>` 
+                    : '';
+                const osIcon = p.os === 'linux' ? '🐧' : p.os === 'windows' ? '🪟' : '📝';
+                
+                return `
+                <a href="${p.url}" class="writeup-card ${p.platform || p.type}">
                     <div class="writeup-header">
-                        <span class="platform-badge ${w.platform}">${w.platform.toUpperCase()}</span>
-                        <span class="difficulty-badge ${w.difficulty}">${w.difficulty}</span>
+                        <span class="type-badge ${tc.class}">${tc.label}</span>
+                        <div style="display:flex;gap:0.5rem;">
+                            ${platformBadge}
+                            ${diffBadge}
+                        </div>
                     </div>
                     <div class="writeup-body">
                         <h3 class="writeup-title">
-                            <span class="os-icon">${w.os === 'linux' ? '🐧' : '🪟'}</span>
-                            ${w.title}
+                            <span class="os-icon">${osIcon}</span>
+                            ${p.title}
                         </h3>
-                        <div class="writeup-meta">${w.os.charAt(0).toUpperCase() + w.os.slice(1)}</div>
-                        <p class="writeup-description">${w.description}</p>
+                        ${p.os ? `<div class="writeup-meta">${p.os.charAt(0).toUpperCase() + p.os.slice(1)}</div>` : ''}
+                        <p class="writeup-description">${p.description}</p>
                         <div class="writeup-tags">
-                            ${w.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                            ${p.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
                         </div>
                     </div>
                     <div class="writeup-footer">
-                        <span class="read-more">Read writeup</span>
-                        <span class="writeup-date">${w.date}</span>
+                        <span class="read-more">Read post</span>
+                        <span class="writeup-date">${p.date}</span>
                     </div>
                 </a>
-            `).join('');
+            `}).join('');
         }
 
         // Update Stats
         function updateStats() {
-            document.getElementById('totalWriteups').textContent = writeups.length;
-            document.getElementById('htbCount').textContent = writeups.filter(w => w.platform === 'htb').length;
-            document.getElementById('thmCount').textContent = writeups.filter(w => w.platform === 'thm').length;
+            document.getElementById('totalPosts').textContent = posts.length;
+            document.getElementById('writeupCount').textContent = posts.filter(p => p.type === 'writeup').length;
+            document.getElementById('deepDiveCount').textContent = posts.filter(p => p.type === 'deep-dive').length;
         }
 
         // Filter Buttons
@@ -718,12 +762,12 @@
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                renderWriteups(btn.dataset.filter);
+                renderPosts(btn.dataset.filter);
             });
         });
 
         // Initial Render
-        renderWriteups();
+        renderPosts();
         updateStats();
     </script>
 </body>

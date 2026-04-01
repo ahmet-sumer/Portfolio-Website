@@ -418,9 +418,9 @@
 
     <header>
         <nav>
-            <a href="../../index.html" class="logo">PixRei ./writeups/Access</a>
+            <a href="../../index.html" class="logo">PixRei ./blog/Access</a>
             <div class="nav-right">
-                <a href="../index.html" class="back-btn">← All Writeups</a>
+                <a href="../index.html" class="back-btn">← All Posts</a>
                 <button class="theme-toggle" id="themeToggle">◐</button>
             </div>
         </nav>
@@ -617,8 +617,8 @@ cat "Access Control.mbox"</code></pre>
                         <span class="code-lang">email content</span>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
-                    <pre><code>From: john@megacorp.com
-To: security@accesscontrolsystems.com
+                    <pre><code>From: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b5dfdadddbf5d8d0d2d4d6dac7c59bd6dad8">[email&#160;protected]</a>
+To: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f380969086819a878ab3929090968080909c9d87819c9f808a8087969e80dd909c9e">[email&#160;protected]</a>
 Subject: Credentials Update
 
 The password for the "security" account has been 
@@ -770,10 +770,10 @@ PS C:\Users\Administrator\Desktop> type root.txt
     </main>
 
     <footer>
-        <p class="footer-text">© 2025 PixRei // Security Writeups</p>
+        <p class="footer-text">© 2025 PixRei // Security Research & Writeups</p>
     </footer>
 
-    <script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         const themeToggle = document.getElementById('themeToggle');
         const html = document.documentElement;
 
@@ -786,16 +786,4 @@ PS C:\Users\Administrator\Desktop> type root.txt
         setTheme(localStorage.getItem('theme') || 'dark');
 
         themeToggle.addEventListener('click', () => {
-            setTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-        });
-
-        function copyCode(btn) {
-            const code = btn.closest('.code-block').querySelector('code').textContent;
-            navigator.clipboard.writeText(code).then(() => {
-                btn.textContent = 'Copied!';
-                setTimeout(() => btn.textContent = 'Copy', 2000);
-            });
-        }
-    </script>
-</body>
-</html>
+            setTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'
