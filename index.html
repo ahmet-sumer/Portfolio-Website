@@ -221,7 +221,7 @@
         .roadmap-title { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; color: var(--accent); }
         .roadmap-progress-text { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text-secondary); }
         .progress-bar { height: 8px; background: var(--bg-secondary); border-radius: 4px; overflow: hidden; margin-bottom: 2rem; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent-dim), var(--accent)); border-radius: 4px; width: 35%; position: relative; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent-dim), var(--accent)); border-radius: 4px; width: 70%; position: relative; }
         .progress-fill::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); animation: progress-shine 2s ease-in-out infinite; }
         @keyframes progress-shine { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
         .roadmap-phases { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; }
@@ -288,28 +288,27 @@
                 <div class="section-header"><span class="section-tag">// who am i</span><h2 class="section-title">About</h2></div>
                 <div class="about-grid">
                     <div class="about-text">
-                        <p>Penetration testing methodology focused on <strong>systematic enumeration, vulnerability analysis, and exploitation</strong>. Experienced with web application security testing, network penetration testing, and Windows/Linux privilege escalation techniques.</p>
+                        <p>Penetration testing methodology focused on <strong>systematic enumeration, vulnerability analysis, and exploitation</strong>.
                         <p>Core competencies include <strong>reconnaissance and OSINT, service enumeration, manual and automated vulnerability assessment, exploitation, and post-exploitation</strong>. Comfortable working with industry-standard tools and custom scripting for automation.</p>
-                        <p>Currently pursuing <strong>eJPT certification</strong> while actively documenting methodologies through detailed writeups. Background in IT operations and Python automation provides strong foundation for security tooling development.</p>
+                        <p>Currently pursuing <strong>CPTS certification</strong> while actively documenting methodologies through detailed writeups. Background in IT operations and Python automation provides strong foundation for security tooling development.</p>
                     </div>
                     <div class="stats-grid">
-                        <div class="stat-card"><div class="stat-value">3+</div><div class="stat-label">Upcoming Projects</div></div>
-                        <div class="stat-card"><div class="stat-value">Top 6%</div><div class="stat-label">THM Global Rank</div></div>
-                        <div class="stat-card"><div class="stat-value">45+</div><div class="stat-label">HTB Machines Pwned</div></div>
-                        <div class="stat-card"><div class="stat-value">2+</div><div class="stat-label">Learning Paths Done</div></div>
+                        <div class="stat-card"><div class="stat-value">3</div><div class="stat-label">Certifications</div></div>
+                        <div class="stat-card"><div class="stat-value">1+</div><div class="stat-label">walkthroughs</div></div>
+                        <div class="stat-card"><div class="stat-value">1</div><div class="stat-label">Guides</div></div>
                     </div>
                 </div>
                 <div class="terminal-card">
                     <div class="terminal-header"><div class="terminal-dot red"></div><div class="terminal-dot yellow"></div><div class="terminal-dot green"></div><div class="terminal-title">pixrei@arch:~/security</div></div>
                     <div class="terminal-body">
                         <div class="terminal-line"><span class="terminal-prompt">$</span><span class="terminal-cmd">cat current_status.txt</span></div>
-                        <div class="terminal-output">→ Status: Available for opportunities</div>
-                        <div class="terminal-output">→ Location: Türkiye (Remote preferred)</div>
+                        <div class="terminal-output">→ Status: Actively Developing</div>
+                        <div class="terminal-output">→ Location: Türkiye</div>
                         <div class="terminal-output">→ Focus: Penetration Testing | Web App Security</div>
                         <div class="terminal-line" style="margin-top: 1rem;"><span class="terminal-prompt">$</span><span class="terminal-cmd">ls ./active_work/</span></div>
-                        <div class="terminal-output" style="color: var(--accent);">→ eJPT_lab_progress.md</div>
-                        <div class="terminal-output" style="color: var(--accent);">→ htb_writeups/</div>
-                        <div class="terminal-output" style="color: var(--accent);">→ automation_scripts/</div>
+                        <div class="terminal-output" style="color: var(--accent);">→ CPTS_Nmap_Modules.md</div>
+                        <div class="terminal-output" style="color: var(--accent);">→ module_writeups/</div>
+                        <div class="terminal-output" style="color: var(--accent);">→ scripts/</div>
                         <div class="terminal-line" style="margin-top: 0.5rem;"><span class="terminal-prompt">$</span><span class="terminal-cursor"></span></div>
                     </div>
                 </div>
@@ -333,8 +332,8 @@
                     <div class="writeup-card" style="border-style: dashed; opacity: 0.6;">
                         <div class="writeup-badges"><span class="writeup-badge" style="background: var(--bg-secondary); color: var(--text-muted);">COMING SOON</span></div>
                         <h3>Next Writeup</h3>
-                        <p>More writeups coming soon! Currently working on documenting HTB and THM machines.</p>
-                        <div class="writeup-meta"><div class="writeup-tags"><span class="writeup-tag">soon</span></div></div>
+                        <p>More writeups coming soon! Currently working on documenting on exploited machines.</p>
+                        <div class="writeup-meta"><div class="writeup-tags"><span class="writeup-tag">SOON</span></div></div>
                     </div>
                 </div>
                 <div class="writeups-cta"><a href="blog/index.html" class="btn-writeups">View All Writeups</a></div>
@@ -345,7 +344,7 @@
                 <div class="guides-header"><span class="section-tag">// practical knowledge</span><h2 class="section-title">Security Guides</h2><p class="section-subtitle">Hardening walkthroughs, tool setups, and offensive security guides</p></div>
                 <div class="guides-stats">
                     <div class="guides-stat"><span class="guides-stat-value">1</span><span class="guides-stat-label">Published</span></div>
-                    <div class="guides-stat"><span class="guides-stat-value">3</span><span class="guides-stat-label">Coming Soon</span></div>
+                    <div class="guides-stat"><span class="guides-stat-value">~</span><span class="guides-stat-label">Coming Soon</span></div>
                 </div>
                 <div class="guides-grid">
                     <a href="guides/arch-hardening/arch-hardening.html" class="guide-card">
@@ -356,15 +355,15 @@
                     </a>
                     <div class="guide-card coming-soon">
                         <div class="guide-badges"><span class="guide-badge" style="background: var(--bg-secondary); color: var(--text-muted);">COMING SOON</span></div>
-                        <h3>VPN Kill Switch Setup</h3>
-                        <p>Configure a bulletproof VPN kill switch on Linux to prevent traffic leaks during pentesting engagements.</p>
-                        <div class="guide-meta"><div class="guide-tags"><span class="guide-tag-item">Network</span><span class="guide-tag-item">VPN</span></div></div>
+                        <h3>COMING SOON</h3>
+                        <p></p>
+                        <div class="guide-meta"><div class="guide-tags"><span class="guide-tag-item"></span><span class="guide-tag-item"></span></div></div>
                     </div>
                     <div class="guide-card coming-soon">
                         <div class="guide-badges"><span class="guide-badge" style="background: var(--bg-secondary); color: var(--text-muted);">COMING SOON</span></div>
-                        <h3>Home Pentest Lab with Proxmox</h3>
-                        <p>Build an isolated penetration testing lab — vulnerable VMs, network segmentation, attack/defense scenarios on a budget.</p>
-                        <div class="guide-meta"><div class="guide-tags"><span class="guide-tag-item">Lab</span><span class="guide-tag-item">Proxmox</span></div></div>
+                        <h3>COMING SOON</h3>
+                        <p></p>
+                        <div class="guide-meta"><div class="guide-tags"><span class="guide-tag-item"></span><span class="guide-tag-item"></span></div></div>
                     </div>
                 </div>
                 <div class="guides-cta"><a href="guides/index.html" class="btn-guides">View All Guides</a></div>
@@ -377,8 +376,8 @@
                     <div class="cert-card completed"><div class="cert-status completed">Completed</div><div class="cert-icon">🏆</div><h3>TryHackMe Jr Pentester Path</h3><p>Comprehensive learning path covering penetration testing methodology and tools.</p></div>
                     <div class="cert-card completed"><div class="cert-status completed">Completed</div><div class="cert-icon">🔴</div><h3>TryHackMe Red Teamer Path</h3><p>Advanced path covering red team operations, C2 frameworks, and adversary emulation.</p></div>
                     <div class="cert-card completed"><div class="cert-status completed">Completed</div><div class="cert-icon">🔓</div><h3>eJPT - Junior Penetration Tester</h3><p>INE Security hands-on certification. 48-hour practical exam proving real pentesting skills.</p></div>
-                    <div class="cert-card in-progress"><div class="cert-status in-progress">Planned</div><div class="cert-icon">💥</div><h3>CPTS - Certified Penetration Testing Specialist</h3><p>HackTheBox advanced certification. Comprehensive practical exam covering full penetration testing methodology. OSCP alternative.</p></div>
-                    <div class="cert-card"><div class="cert-status planned">Planned</div><div class="cert-icon">🎯</div><h3>CAP - Certified AppSec Practitioner</h3><p>SecOps Group certification covering OWASP Top 10 and web application security fundamentals.</p></div>
+                    <div class="cert-card in-progress"><div class="cert-status in-progress">In Progress</div><div class="cert-icon">💥</div><h3>CPTS - Certified Penetration Testing Specialist</h3><p>HackTheBox advanced certification. Comprehensive practical exam covering full penetration testing methodology. OSCP alternative.</p></div>
+                    <div class="cert-card"><div class="cert-status planned">Planned</div><div class="cert-icon">🎯</div><h3>OSCP - Offensive Security Certified Professional</h3><p>Offensive Security Certified Professional (also known as OffSec Certified Professional) is an ethical hacking certification offered by Offensive Security, that teaches penetration testing methodologies and the use of the tools included with the Kali Linux distribution (successor of BackTrack).</p></div>
                 </div>
             </div>
         </section>
@@ -386,9 +385,9 @@
             <div class="container">
                 <div class="section-header"><span class="section-tag">// what i build</span><h2 class="section-title">Projects</h2><p class="section-subtitle">Security tools and research</p></div>
                 <div class="projects-grid">
-                    <div class="project-card"><div class="project-status planned">PLANNED</div><div class="project-icon">🔍</div><h3>Port Scanner</h3><p>Custom Python port scanner with service detection. Building fundamental security tooling from scratch.</p><div class="project-tags"><span class="tag">Python</span><span class="tag">Networking</span><span class="tag">Tool Dev</span></div></div>
-                    <div class="project-card"><div class="project-status planned">PLANNED</div><div class="project-icon">🛒</div><h3>E-commerce Security Audit</h3><p>Security assessment framework for Shopify stores. Combining business experience with security knowledge.</p><div class="project-tags"><span class="tag">E-commerce</span><span class="tag">Audit</span><span class="tag">OWASP</span></div></div>
-                    <div class="project-card"><div class="project-status planned">PLANNED</div><div class="project-icon">🎣</div><h3>Phishing Analysis Reports</h3><p>Analysis of real phishing attempts with IOC extraction. Documenting threat intelligence from actual attacks.</p><div class="project-tags"><span class="tag">Threat Intel</span><span class="tag">Analysis</span><span class="tag">IOCs</span></div></div>
+                    <div class="project-card"><div class="project-status active">IN PROGRESS</div><div class="project-icon">🌳</div><h3>CPTS/HTB Methodology Wiki</h3><p>Interactive attack decision tree built from HTB machines. Mapping enumeration to foothold to privesc across real-world scenarios</p><div class="project-tags"><span class="tag">Methodology</span><span class="tag">Documentation</span><span class="tag">HTB</span></div></div>
+                    <div class="project-card"><div class="project-status planned">PLANNED</div><div class="project-icon">📄</div><h3>Automated Pentest Report Generator</h3><p>Python tool that converts structured findings into professional PDF reports. Streamlining the reporting phase of penetration tests</p><div class="project-tags"><span class="tag">Python</span><span class="tag">Automation</span><span class="tag">Reporting</span></div></div>
+                    <div class="project-card"><div class="project-status planned">PLANNED</div><div class="project-icon">🎯</div><h3>Threat Hunt Dashboard</h3><p>Extracts IOCs from phishing email headers and enriches them via VirusTotal and AbuseIPDB APIs. Turning raw threats into actionable intelligence.</p><div class="project-tags"><span class="tag">Threat Intel</span><span class="tag">Phishing</span><span class="tag">API</span></div></div>
                 </div>
             </div>
         </section>
@@ -402,7 +401,7 @@
                     <div class="skill-card"><h3>Platforms</h3><ul class="skill-list"><li>TryHackMe (Top 6%)</li><li>HackTheBox</li><li>Linux (Arch BTW)</li><li>Windows Server</li><li>Kali Linux</li></ul></div>
                 </div>
                 <div class="roadmap-section">
-                    <div class="roadmap-header"><div class="roadmap-title">Roadmap: Jr_Pentester → Red_Teamer</div><div class="roadmap-progress-text">Phase 0</div></div>
+                    <div class="roadmap-header"><div class="roadmap-title">Roadmap: Penetration Tester</div><div class="roadmap-progress-text">Phase 0</div></div>
                     <div class="progress-bar"><div class="progress-fill"></div></div>
                     <div class="roadmap-phases">
                         <div class="phase"><div class="phase-label">Stage 1</div><div class="phase-name">eJPT</div></div>
