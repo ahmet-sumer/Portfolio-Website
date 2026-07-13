@@ -614,6 +614,10 @@
                     <div class="value" id="deepDiveCount">0</div>
                     <div class="label">Deep Dives</div>
                 </div>
+                <div class="stat-item">
+                    <div class="value" id="fieldNoteCount">0</div>
+                    <div class="label">Field Notes</div>
+                </div>
             </div>
 
             <div class="writeups-grid" id="writeupsGrid">
@@ -787,6 +791,7 @@
             document.getElementById('totalPosts').textContent = posts.length;
             document.getElementById('writeupCount').textContent = posts.filter(p => p.type === 'writeup').length;
             document.getElementById('deepDiveCount').textContent = posts.filter(p => p.type === 'deep-dive').length;
+            document.getElementById('fieldNoteCount').textContent = posts.filter(p => p.type === 'field-note').length;
         }
 
         // Filter Buttons
