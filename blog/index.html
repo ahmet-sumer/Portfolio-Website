@@ -631,8 +631,8 @@
     <footer>
         <div class="container">
             <div class="footer-links">
-                <a href="https://github.com/Pixrei" target="_blank">GitHub</a>
-                <a href="https://linkedin.com/in/pixrei" target="_blank">LinkedIn</a>
+                <a href="https://github.com/ahmet-sumer" target="_blank">GitHub</a>
+                <a href="https://linkedin.com/in/ahmet-sumer" target="_blank">LinkedIn</a>
                 <a href="https://tryhackme.com/p/Pixrei" target="_blank">TryHackMe</a>
                 <a href="https://app.hackthebox.com/profile/Pixrei" target="_blank">HackTheBox</a>
             </div>
@@ -662,6 +662,39 @@
         // Posts Data  
         const posts = [
             {
+                id: 'password-attacks-hard',
+                title: 'Password Attacks',
+                type: 'writeup',
+                platform: 'htb',
+                difficulty: 'hard',
+                os: 'windows',
+                date: '2026-07-13',
+                description: 'Full AD compromise driven by password attacks: SSH spraying, ProxyChains pivoting, cracking a Password Safe vault, LSASS dumping, pass-the-hash, and NTDS.dit extraction.',
+                tags: ['spray', 'pivoting', 'lsass', 'pass-the-hash', 'ntds'],
+                url: 'writeups/password-attacks-hard.html'
+            },
+            {
+                id: 'attacking-common-services-hard',
+                title: 'Attacking Common Services',
+                type: 'writeup',
+                platform: 'htb',
+                difficulty: 'hard',
+                os: 'windows',
+                date: '2026-07-13',
+                description: 'SMB enumeration to MSSQL impersonation and self-referencing linked-server abuse, escalating to xp_cmdshell command execution as NT AUTHORITY\\SYSTEM.',
+                tags: ['smb', 'mssql', 'impersonation', 'linked-servers', 'xp_cmdshell'],
+                url: 'writeups/attacking-common-services-hard.html'
+            },
+            {
+                id: 'nmap-beyond-basics',
+                title: 'Nmap Beyond the Basics',
+                type: 'field-note',
+                date: '2026-04-01',
+                description: 'Scan timing, NSE scripts, firewall evasion, and output formatting — the stuff that actually matters past nmap -sV.',
+                tags: ['nmap', 'enumeration', 'nse', 'evasion'],
+                url: 'posts/nmap-deep-dive.html'
+            },
+            {
                 id: 'access',
                 title: 'Access',
                 type: 'writeup',
@@ -673,9 +706,6 @@
                 tags: ['ftp', 'database', 'telnet', 'savedcreds'],
                 url: 'writeups/access.html'
             }
-            // Future posts:
-            // { id: 'nmap-beyond-basics', title: 'Nmap Beyond the Basics', type: 'deep-dive', date: '...', description: '...', tags: [...], url: 'posts/nmap-beyond-basics.html' }
-            // { id: 'field-note-example', title: '...', type: 'field-note', ... }
         ];
 
         // Render Posts
