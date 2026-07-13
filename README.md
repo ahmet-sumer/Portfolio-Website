@@ -9,7 +9,7 @@
 
 ## Personal Portfolio
 
-Minimal, techy portfolio showcasing my journey in AI Security & Red Team research.
+Minimal, techy portfolio showcasing my journey in Offensive Security
 
 ### Stack
 
@@ -31,7 +31,7 @@ Minimal, techy portfolio showcasing my journey in AI Security & Red Team researc
 ### Sections
 
 - **About** - Background, stats, live terminal status
-- **Writeups** - Detailed walkthroughs of HTB and TryHackMe machines
+- **Writeups** - Detailed walkthroughs
 - **Certifications** - Building verified proof of skills
 - **Projects** - Security tools and research
 - **Skills** - Offensive Security, Development
@@ -50,12 +50,12 @@ python -m http.server 8000
 ### Links
 
 - [Live Site](https://pixrei.xyz)
-- [Email](mailto:ahmetefe@pixrei.xyz)
+- [Email](mailto:ahmet_sumer@pixrei.xyz)
 - [GitHub](https://github.com/Ahmet-sumer)
 - [LinkedIn](https://linkedin.com/in/ahmet-sumer)
 
 ---
 
 ```
-> Building AI-powered security systems_
+> Self-developing for better security
 ```
