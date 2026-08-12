@@ -197,7 +197,7 @@
         .cert-status.completed { background: rgba(40, 201, 64, 0.2); color: var(--success); }
         .cert-status.in-progress { background: rgba(255, 189, 46, 0.2); color: var(--warning); }
         .cert-status.planned { background: var(--accent-glow); color: var(--accent); }
-        .cert-icon { font-size: 2rem; margin-bottom: 1rem; }
+        .cert-icon { font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 600; color: var(--accent); margin-bottom: 1rem; opacity: 0.7; }
         .cert-card h3 { font-family: 'JetBrains Mono', monospace; font-size: 1rem; margin-bottom: 0.5rem; }
         .cert-card p { color: var(--text-secondary); font-size: 0.85rem; }
         .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem; }
@@ -208,7 +208,7 @@
         .project-status { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; padding: 0.3rem 0.6rem; border-radius: 4px; display: inline-block; margin-bottom: 1rem; }
         .project-status.active { background: rgba(255, 189, 46, 0.2); color: var(--warning); }
         .project-status.planned { background: var(--accent-glow); color: var(--accent); }
-        .project-icon { font-size: 2rem; margin-bottom: 1rem; }
+        .project-icon { font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 600; color: var(--accent); margin-bottom: 1rem; opacity: 0.7; }
         .project-card h3 { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; margin-bottom: 0.8rem; }
         .project-card p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem; line-height: 1.6; }
         .project-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
@@ -221,21 +221,6 @@
         .skill-list li { color: var(--text-secondary); font-size: 0.9rem; padding: 0.4rem 0; border-bottom: 1px solid var(--border); }
         .skill-list li:last-child { border-bottom: none; }
         .skill-list li::before { content: '→ '; color: var(--accent); opacity: 0.5; }
-        .roadmap-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; margin-top: 3rem; }
-        .roadmap-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
-        .roadmap-title { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; color: var(--accent); }
-        .roadmap-progress-text { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text-secondary); }
-        .progress-bar { height: 8px; background: var(--bg-secondary); border-radius: 4px; overflow: hidden; margin-bottom: 2rem; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent-dim), var(--accent)); border-radius: 4px; width: 64%; position: relative; }
-        .progress-fill::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); animation: progress-shine 2s ease-in-out infinite; }
-        @keyframes progress-shine { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-        .roadmap-phases { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; }
-        .phase { text-align: center; padding: 1rem; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border); }
-        .phase.completed { border-color: var(--success); background: rgba(40, 201, 64, 0.1); }
-        .phase.active { border-color: var(--accent); background: var(--accent-glow); }
-        .phase-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.3rem; }
-        .phase-name { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-secondary); }
-        .phase.active .phase-name, .phase.completed .phase-name { color: var(--text-primary); }
         footer { padding: 3rem 0; border-top: 1px solid var(--border); text-align: center; }
         .footer-links { display: flex; justify-content: center; gap: 2rem; margin-bottom: 1rem; flex-wrap: wrap; }
         .footer-links a { font-family: 'JetBrains Mono', monospace; color: var(--text-secondary); text-decoration: none; font-size: 0.85rem; }
@@ -280,8 +265,8 @@
                     <p class="tagline">Developing Skills</p>
                     <p class="subtitle">Offensive security, CTF challenges, Building portfolio.</p>
                     <div class="hero-cta">
-                        <a href="#writeups" class="btn btn-primary">📝 View Blog Posts</a>
-                        <a href="#guides" class="btn btn-primary" style="background: var(--blue, #60a5fa);">🛡️ View Guides</a>
+                        <a href="#writeups" class="btn btn-primary">View Blog Posts</a>
+                        <a href="#guides" class="btn btn-primary" style="background: var(--blue, #60a5fa);">View Guides</a>
                         <a href="https://app.hackthebox.com/public/users/2190520" target="_blank" class="btn btn-secondary">HackTheBox</a>
                     </div>
                 </div>
@@ -320,7 +305,7 @@
         </section>
         <section id="writeups">
             <div class="container">
-                <div class="writeups-header"><span class="section-tag">// what i write</span><h2 class="section-title">Blog</h2><p class="section-subtitle">Breaking down tools, techniques, and attack paths — one module at a time</p></div>
+                <div class="writeups-header"><span class="section-tag">// what i write</span><h2 class="section-title">Blog</h2><p class="section-subtitle">Breaking down tools, techniques, and attack paths, one module at a time</p></div>
                 <div class="writeup-stats">
                     <div class="writeup-stat"><span class="writeup-stat-value">3</span><span class="writeup-stat-label">Total Posts</span></div>
                     <div class="writeup-stat"><span class="writeup-stat-value">3</span><span class="writeup-stat-label">Writeups</span></div>
@@ -330,7 +315,7 @@
                     <a href="blog/writeups/password-attacks.html" class="writeup-card">
                         <div class="writeup-badges"><span class="writeup-badge htb">HackTheBox</span><span class="writeup-badge hard">Hard</span><span class="writeup-badge windows">AD / Linux</span></div>
                         <h3>Skill Assessment - Password Attacks</h3>
-                        <p>Full Active Directory compromise driven by password attacks — SSH spraying, ProxyChains pivoting, cracking a Password Safe vault, LSASS dumping, pass-the-hash, and NTDS.dit extraction.</p>
+                        <p>Full Active Directory compromise driven by password attacks: SSH spraying, ProxyChains pivoting, cracking a Password Safe vault, LSASS dumping, pass-the-hash, and NTDS.dit extraction.</p>
                         <div class="writeup-meta"><div class="writeup-tags"><span class="writeup-tag">Spray</span><span class="writeup-tag">LSASS</span><span class="writeup-tag">PtH</span></div><span class="writeup-read-more">Read</span></div>
                     </a>
                     <a href="blog/writeups/attacking-common-services-hard.html" class="writeup-card">
@@ -360,7 +345,7 @@
                     <a href="guides/arch-hardening/arch-hardening.html" class="guide-card">
                         <div class="guide-badges"><span class="guide-badge guide-type">Guide</span><span class="guide-badge arch">Arch Linux</span><span class="guide-badge security">Hardening</span></div>
                         <h3>Arch Linux Hardening for Pentesters</h3>
-                        <p>Step-by-step guide to securing an Arch Linux workstation — firewall, kernel hardening, Bluetooth lockdown, file integrity monitoring. Every parameter explained.</p>
+                        <p>Step-by-step guide to securing an Arch Linux workstation: firewall, kernel hardening, Bluetooth lockdown, file integrity monitoring. Every parameter explained.</p>
                         <div class="guide-meta"><div class="guide-tags"><span class="guide-tag-item">Firewall</span><span class="guide-tag-item">sysctl</span><span class="guide-tag-item">AIDE</span></div><span class="guide-read-more">Read</span></div>
                     </a>
                     <div class="guide-card coming-soon">
@@ -383,11 +368,11 @@
             <div class="container">
                 <div class="section-header"><span class="section-tag">// credentials</span><h2 class="section-title">Certifications</h2><p class="section-subtitle">Building verified proof of skills</p></div>
                 <div class="certs-grid">
-                    <div class="cert-card completed"><div class="cert-status completed">Completed</div><div class="cert-icon">🏆</div><h3>TryHackMe Jr Pentester Path</h3><p>Comprehensive learning path covering penetration testing methodology and tools.</p></div>
-                    <div class="cert-card completed"><div class="cert-status completed">Completed</div><div class="cert-icon">🔴</div><h3>TryHackMe Red Teamer Path</h3><p>Advanced path covering red team operations, C2 frameworks, and adversary emulation.</p></div>
-                    <div class="cert-card completed"><div class="cert-status completed">Completed</div><div class="cert-icon">🔓</div><h3>eJPT - Junior Penetration Tester</h3><p>INE Security hands-on certification. 48-hour practical exam proving real pentesting skills.</p></div>
-                    <div class="cert-card in-progress"><div class="cert-status in-progress">In Progress</div><div class="cert-icon">💥</div><h3>CPTS - Certified Penetration Testing Specialist</h3><p>HackTheBox advanced certification. Comprehensive practical exam covering full penetration testing methodology. OSCP alternative.</p></div>
-                    <div class="cert-card"><div class="cert-status planned">Planned</div><div class="cert-icon">🎯</div><h3>OSCP - Offensive Security Certified Professional</h3><p>Offensive Security Certified Professional (also known as OffSec Certified Professional) is an ethical hacking certification offered by Offensive Security, that teaches penetration testing methodologies and the use of the tools included with the Kali Linux distribution (successor of BackTrack).</p></div>
+                    <div class="cert-card completed"><div class="cert-status completed">Completed</div><div class="cert-icon">[✓]</div><h3>TryHackMe Jr Pentester Path</h3><p>Comprehensive learning path covering penetration testing methodology and tools.</p></div>
+                    <div class="cert-card completed"><div class="cert-status completed">Completed</div><div class="cert-icon">[✓]</div><h3>TryHackMe Red Teamer Path</h3><p>Advanced path covering red team operations, C2 frameworks, and adversary emulation.</p></div>
+                    <div class="cert-card completed"><div class="cert-status completed">Completed</div><div class="cert-icon">[✓]</div><h3>eJPT - Junior Penetration Tester</h3><p>INE Security hands-on certification. 48-hour practical exam proving real pentesting skills.</p></div>
+                    <div class="cert-card in-progress"><div class="cert-status in-progress">In Progress</div><div class="cert-icon">[~]</div><h3>CPTS - Certified Penetration Testing Specialist</h3><p>HackTheBox advanced certification. Comprehensive practical exam covering full penetration testing methodology. OSCP alternative.</p></div>
+                    <div class="cert-card"><div class="cert-status planned">Planned</div><div class="cert-icon">[ ]</div><h3>OSCP - Offensive Security Certified Professional</h3><p>OffSec's hands-on certification covering penetration testing methodology and the Kali Linux toolset. A 24-hour practical exam with an industry reputation for difficulty.</p></div>
                 </div>
             </div>
         </section>
@@ -395,9 +380,9 @@
             <div class="container">
                 <div class="section-header"><span class="section-tag">// what i build</span><h2 class="section-title">Projects</h2><p class="section-subtitle">Security tools and research</p></div>
                 <div class="projects-grid">
-                    <div class="project-card"><div class="project-status active">IN PROGRESS</div><div class="project-icon">🌳</div><h3>CPTS/HTB Methodology Wiki</h3><p>Interactive attack decision tree built from HTB machines. Mapping enumeration to foothold to privesc across real-world scenarios</p><div class="project-tags"><span class="tag">Methodology</span><span class="tag">Documentation</span><span class="tag">HTB</span></div></div>
-                    <div class="project-card"><div class="project-status planned">PLANNED</div><div class="project-icon">📄</div><h3>Automated Pentest Report Generator</h3><p>Python tool that converts structured findings into professional PDF reports. Streamlining the reporting phase of penetration tests</p><div class="project-tags"><span class="tag">Python</span><span class="tag">Automation</span><span class="tag">Reporting</span></div></div>
-                    <div class="project-card"><div class="project-status planned">PLANNED</div><div class="project-icon">🎯</div><h3>Threat Hunt Dashboard</h3><p>Extracts IOCs from phishing email headers and enriches them via VirusTotal and AbuseIPDB APIs. Turning raw threats into actionable intelligence.</p><div class="project-tags"><span class="tag">Threat Intel</span><span class="tag">Phishing</span><span class="tag">API</span></div></div>
+                    <div class="project-card"><div class="project-status active">IN PROGRESS</div><div class="project-icon">./</div><h3>CPTS/HTB Methodology Wiki</h3><p>Interactive attack decision tree built from HTB machines. Mapping enumeration to foothold to privesc across real-world scenarios</p><div class="project-tags"><span class="tag">Methodology</span><span class="tag">Documentation</span><span class="tag">HTB</span></div></div>
+                    <div class="project-card"><div class="project-status planned">PLANNED</div><div class="project-icon">./</div><h3>Automated Pentest Report Generator</h3><p>Python tool that converts structured findings into professional PDF reports. Streamlining the reporting phase of penetration tests</p><div class="project-tags"><span class="tag">Python</span><span class="tag">Automation</span><span class="tag">Reporting</span></div></div>
+                    <div class="project-card"><div class="project-status planned">PLANNED</div><div class="project-icon">./</div><h3>Threat Hunt Dashboard</h3><p>Extracts IOCs from phishing email headers and enriches them via VirusTotal and AbuseIPDB APIs. Turning raw threats into actionable intelligence.</p><div class="project-tags"><span class="tag">Threat Intel</span><span class="tag">Phishing</span><span class="tag">API</span></div></div>
                 </div>
             </div>
         </section>
@@ -405,20 +390,9 @@
             <div class="container">
                 <div class="section-header"><span class="section-tag">// my stack</span><h2 class="section-title">Skills</h2></div>
                 <div class="skills-grid">
-                    <div class="skill-card"><h3>Offensive Security</h3><ul class="skill-list"><li>Penetration Testing Methodology</li><li>Web Application Security</li><li>Network Enumeration</li><li>Privilege Escalation</li><li>Active Directory Attacks</li></ul></div>
-                    <div class="skill-card"><h3>Tools</h3><ul class="skill-list"><li>Nmap / Masscan</li><li>Burp Suite</li><li>Metasploit</li><li>Gobuster / Ffuf</li><li>Wireshark</li></ul></div>
-                    <div class="skill-card"><h3>Development</h3><ul class="skill-list"><li>Python Scripting</li><li>Bash Automation</li><li>Linux Administration</li><li>Git / GitHub</li><li>Docker Basics</li></ul></div>
-                    <div class="skill-card"><h3>Platforms</h3><ul class="skill-list"><li>TryHackMe (Top 6%)</li><li>HackTheBox</li><li>Linux (Arch BTW)</li><li>Windows Server</li><li>Kali Linux</li></ul></div>
-                </div>
-                <div class="roadmap-section">
-                    <div class="roadmap-header"><div class="roadmap-title">Roadmap: Penetration Tester</div><div class="roadmap-progress-text">Phase 0</div></div>
-                    <div class="progress-bar"><div class="progress-fill"></div></div>
-                    <div class="roadmap-phases">
-                        <div class="phase"><div class="phase-label">Stage 1</div><div class="phase-name">eJPT</div></div>
-                        <div class="phase"><div class="phase-label">Stage 2</div><div class="phase-name">Portfolio</div></div>
-                        <div class="phase active"><div class="phase-label">Stage 3</div><div class="phase-name">CPTS</div></div>
-                        <div class="phase"><div class="phase-label">Stage 4</div><div class="phase-name">Job Hunt</div></div>
-                    </div>
+                    <div class="skill-card"><h3>Offensive Security</h3><ul class="skill-list"><li>Network & Service Enumeration</li><li>Web Application Security</li><li>Privilege Escalation</li><li>Active Directory Attacks</li></ul></div>
+                    <div class="skill-card"><h3>Tools</h3><ul class="skill-list"><li>Nmap / Ffuf</li><li>Burp Suite</li><li>Metasploit</li><li>Wireshark</li></ul></div>
+                    <div class="skill-card"><h3>Development</h3><ul class="skill-list"><li>Python Scripting</li><li>Bash Automation</li><li>Linux (Arch BTW)</li><li>Git / Docker</li></ul></div>
                 </div>
             </div>
         </section>
@@ -433,7 +407,7 @@
                 <a href="blog/index.html">Blog</a>
                 <a href="guides/index.html">Guides</a>
             </div>
-            <p class="footer-text">© 2025 PixRei // Junior Penetration Tester</p>
+            <p class="footer-text">© 2026 PixRei // Junior Penetration Tester</p>
       </div>
     </footer>
     <script>
@@ -444,7 +418,7 @@
         themeToggle.addEventListener('click', () => setTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
         const particlesContainer = document.getElementById('particles');
         for (let i = 0; i < 50; i++) { const p = document.createElement('div'); p.className = 'particle'; p.style.left = Math.random() * 100 + '%'; p.style.top = Math.random() * 100 + '%'; p.style.animationDelay = Math.random() * 4 + 's'; p.style.animationDuration = (3 + Math.random() * 3) + 's'; const s = 1 + Math.random() * 3; p.style.width = s + 'px'; p.style.height = s + 'px'; particlesContainer.appendChild(p); }
-        const fadeElements = document.querySelectorAll('.project-card, .skill-card, .stat-card, .terminal-card, .roadmap-section, .cert-card, .writeup-card, .guide-card');
+        const fadeElements = document.querySelectorAll('.project-card, .skill-card, .stat-card, .terminal-card, .cert-card, .writeup-card, .guide-card');
         fadeElements.forEach(el => el.classList.add('fade-in'));
         const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); }); }, { threshold: 0.1 });
         fadeElements.forEach(el => observer.observe(el));
